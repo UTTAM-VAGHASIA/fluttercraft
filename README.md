@@ -12,7 +12,7 @@ From folder structure to backend integration, from icons to GitHub repo setup �
 ## ✨ Features
 
 - 📦 Flutter + FVM setup
-- 🧭 Guided lutter create wizard
+- 🧭 Guided Flutter create wizard
 - 🎨 Icon automation
 - 🔥 Firebase / Supabase integration
 - 🛠️ Platform publishing (Android, iOS, Web, Desktop)
@@ -23,14 +23,14 @@ From folder structure to backend integration, from icons to GitHub repo setup �
 
 ## ⚡ Quick Start
 
-`bash
+```bash
 git clone https://github.com/UTTAM-VAGHASIA/fluttercraft.git
 cd fluttercraft
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -e .
 fluttercraft create
-`
+```
 
 ---
 
