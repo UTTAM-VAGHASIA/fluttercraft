@@ -26,7 +26,7 @@ jobs:
       - name: Lint
         run: |
           pip install flake8
-          flake8 fluttercraft
+          if [ -d "fluttercraft" ]; then flake8 fluttercraft; else echo "No code folder yet. Skipping lint."; fi
 
       - name: Run CLI help
         run: |
