@@ -23,7 +23,7 @@ From folder structure to backend integration, from icons to GitHub repo setup â€
 
 ## âš¡ Quick Start
 
-`ash
+`bash
 git clone https://github.com/UTTAM-VAGHASIA/fluttercraft.git
 cd fluttercraft
 python -m venv venv
