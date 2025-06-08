@@ -122,9 +122,22 @@ Run setup tools + generate docs
 
 ## 🧪 Testing Strategy
 
-* Use `pytest`
-* Command-line behavior tested via subprocess mocks
-* Utilities tested as standalone functions
+### Test Coverage Requirements
+* **Minimum Coverage**: 80% for all modules
+* **Target Coverage**: 90%+ for production readiness
+* **Critical Modules**: 95%+ coverage (core.py, validation.py, shell.py)
+
+### Test Types
+* **Unit Tests**: Individual function and class testing with `pytest`
+* **Integration Tests**: CLI command flow testing with mocked external dependencies
+* **CLI Tests**: End-to-end command execution with subprocess mocks
+* **Template Tests**: Jinja2 template rendering validation
+
+### Mocking Strategy
+* Mock external commands (`flutter`, `git`, `gh`) using `unittest.mock`
+* Mock file system operations for isolated testing
+* Mock network requests for backend integration tests
+* Use pytest fixtures for reusable test data
 
 ---
 
