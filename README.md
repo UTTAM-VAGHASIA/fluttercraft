@@ -42,7 +42,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute and local s
 
 ## 📜 License
 
-[MIT](LICENSE)
+[AGPL-3.0](LICENSE)
 
 ---
 
