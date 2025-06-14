@@ -1,9 +1,11 @@
+from turtle import width
 import typer
 from rich.console import Console
 from rich.panel import Panel
 import pyfiglet
 
 from fluttercraft.commands.start import start_command
+from fluttercraft import __version__
 
 app = typer.Typer(help="FlutterCraft: Automate your Flutter app setup like a pro.")
 console = Console()
@@ -11,7 +13,7 @@ console = Console()
 
 def display_welcome_art():
     """Display the FlutterCraft ASCII art and welcome message."""
-    art = pyfiglet.figlet_format("FlutterCraft", font="slant")
+    art = pyfiglet.figlet_format("Flutter Craft", font="banner3-D")
     console.print(
         Panel.fit(
             f"[bold cyan]{art}[/]\n"
@@ -20,7 +22,7 @@ def display_welcome_art():
             "GitHub repo setup — FlutterCraft does it all.[/]",
             border_style="blue",
             title="Welcome to FlutterCraft 🛠️🚀",
-            subtitle="v0.1.0"
+            subtitle=f"v{__version__}"
         )
     )
 
