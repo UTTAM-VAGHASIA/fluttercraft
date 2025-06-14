@@ -30,6 +30,68 @@ jobs:
         name: python-package-distributions
         path: dist/
 
+  create-github-release:
+    name: Create GitHub Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Extract version
+        id: extract-version
+        run: |
+          # Extract version without the 'v' prefix
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Extract changelog
+        id: extract-changelog
+        run: |
+          # Extract the changelog section for the current version
+          VERSION="${{ steps.extract-version.outputs.version }}"
+          
+          # Python script to extract changelog section
+          python -c "
+          import re
+          with open('CHANGELOG.md', 'r') as f:
+              content = f.read()
+          
+          # Pattern to match the section for the current version
+          pattern = rf'## \[{re.escape(\"$VERSION\")}\].*?(?=## \[|$)'
+          match = re.search(pattern, content, re.DOTALL)
+          
+          if match:
+              changelog = match.group(0).strip()
+              # Escape newlines for GitHub Actions
+              changelog = changelog.replace('\n', '%0A')
+              print(f'changelog<<EOF\n{changelog}\nEOF')
+              with open('changelog_content.md', 'w') as out:
+                  out.write(match.group(0).strip())
+          else:
+              print('changelog=No changelog found for this version')
+              with open('changelog_content.md', 'w') as out:
+                  out.write('No changelog found for this version')
+          " >> $GITHUB_OUTPUT
+      
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: changelog_content.md
+          files: dist/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   publish-to-pypi:
     name: Publish Python distribution 📦 to PyPI
     needs: [build]
