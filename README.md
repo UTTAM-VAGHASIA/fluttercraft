@@ -3,7 +3,7 @@
 **Automate your Flutter app setup like a pro.**  
 From folder structure to backend integration, from icons to GitHub repo setup — FlutterCraft does it all, in one CLI command.
 
-![MIT License](https://img.shields.io/badge/license-MIT-green)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![Build](https://github.com/UTTAM-VAGHASIA/fluttercraft/actions/workflows/cli-check.yml/badge.svg)
 ![Stars](https://img.shields.io/github/stars/UTTAM-VAGHASIA/fluttercraft)
 
@@ -42,7 +42,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute and local s
 
 ## 📜 License
 
-[AGPL-3.0](LICENSE)
+[AGPL v3](LICENSE)
 
 ---
 
