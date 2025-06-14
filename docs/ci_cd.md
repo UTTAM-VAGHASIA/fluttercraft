@@ -14,15 +14,17 @@ This workflow runs on every push and pull request to the `main` branch.
 
 ### 🧪 What It Does
 
-* Installs Python
-* Installs dependencies
-* Runs CLI help to verify boot integrity
-* Optionally lints or tests the CLI
+* Sets up Python 3.10
+* Installs dependencies and the package in development mode
+* Lints the code with flake8
+* Verifies the CLI help command works
+* Tests the version flag
 
-### ✅ Example: `cli-check.yml`
+### ✅ Current Workflow: `cli-check.yml`
 
 ```yaml
-name: Lint & Test CLI
+# .github/workflows/cli-check.yml
+name: Lint & Test
 
 on:
   push:
@@ -31,11 +33,11 @@ on:
     branches: [ main ]
 
 jobs:
-  check:
+  lint-test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -43,18 +45,22 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
+          pip install typer[all] pyfiglet colorama rich
           pip install -e .
 
       - name: Lint
         run: |
           pip install flake8
-          if [ -d "fluttercraft" ]; then flake8 fluttercraft; else echo "No code folder yet. Skipping lint."; fi
+          flake8 fluttercraft
 
       - name: Run CLI help
         run: |
-          python -c "import fluttercraft" 2>/dev/null && python -m fluttercraft --help || echo "fluttercraft module does not exist yet. Skipping CLI help check."
+          fluttercraft --help
 
+      - name: Test version flag
+        run: |
+          fluttercraft --version || echo "Version flag not implemented yet."
 ```
 
 ---
@@ -92,21 +98,21 @@ fluttercraft ci generate flavors      # sets up env-specific builds
     └── cli-check.yml     # CI for CLI validation
 ```
 
-> You can add additional workflows for `lint`, `test`, `build`, and `release` based on project maturity.
+> As the project grows, additional workflows like `test` and `release` can be added.
 
 ---
 
 ## 📘 Recommended CI Practices
 
-* Keep your CLI output clean — avoid unnecessary print statements
-* Use exit codes wisely (`sys.exit(1)` for failure)
-* Use `.env` or `secrets.GH_TOKEN` instead of hardcoding values
+* Keep CLI output clean — avoid unnecessary print statements
+* Use exit codes properly (`sys.exit(1)` for failure)
+* Use environment variables for sensitive information
 * Badge your README with CI status
 
 ```md
-![CI](https://github.com/your-username/fluttercraft/actions/workflows/cli-check.yml/badge.svg)
+![Build](https://github.com/UTTAM-VAGHASIA/fluttercraft/actions/workflows/cli-check.yml/badge.svg)
 ```
 
 ---
 
-With CI/CD integrated from the start, FlutterCraft isn’t just fast—it’s continuous. ⚡
+This CI/CD configuration will be expanded as more features are implemented.
