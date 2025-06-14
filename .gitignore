@@ -195,3 +195,4 @@ cython_debug/
 .cursorindexingignore
 
 fluttercraft.prd.md
+docs/publish-to-pypi.md
