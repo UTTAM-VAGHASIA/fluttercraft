@@ -35,4 +35,4 @@ jobs:
 
       - name: Test version flag
         run: |
-          fluttercraft --version || echo "Version flag not implemented yet."
+          fluttercraft --version || echo "Version flag not implemented yet 🥲"
