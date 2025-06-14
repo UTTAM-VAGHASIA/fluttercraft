@@ -1,150 +1,105 @@
-# FlutterCraft — Internal Architecture Guide
+# FlutterCraft — Architecture Guide
+
+This document outlines the current architecture of the FlutterCraft CLI tool.
 
 ---
 
-## 🧠 Overview
+## 🏗️ Current Architecture
 
-FlutterCraft is a modular, Python-based CLI tool built using [Typer](https://typer.tiangolo.com/), designed to automate full-stack Flutter app scaffolding. It cleanly separates core logic, CLI commands, utilities, templates, and documentation, allowing for intuitive scaling and open-source collaboration.
-
----
-
-## 🗂️ Project Structure Breakdown
+### Core Components
 
 ```
 fluttercraft/
-├── fluttercraft/            # Python package for the CLI tool
-│   ├── __main__.py          # Entry point: `python -m fluttercraft`
-│   ├── core.py              # Central coordination logic
-│   ├── commands/            # Individual CLI commands
-│   ├── utils/               # Shell + path helpers, validation
-│   ├── config/              # Central constants and config
-│
-├── templates/              # Jinja2 templates for scaffolding
-├── docs/                   # Markdown documentation
-├── tests/                  # Pytest-based unit/integration tests
-├── .github/                # GitHub Actions & OSS configs
-├── pyproject.toml          # Dependency and entrypoint config
+├── main.py              # CLI entrypoint and Typer app configuration
+├── commands/            # Command implementations
+│   ├── __init__.py      # Package initialization
+│   └── start.py         # Start command implementation
+├── config/              # Configuration handling (future)
+│   └── __init__.py      # Package initialization
+└── utils/               # Utility functions (future)
+    └── __init__.py      # Package initialization
+```
+
+### Entry Point
+
+The main entry point is `fluttercraft/main.py`, which:
+1. Sets up the Typer CLI app
+2. Defines the welcome ASCII art display function
+3. Registers the `start` command
+4. Provides a callback for global CLI options
+
+### Commands
+
+Currently, only the `start` command is implemented:
+
+- **start.py**: Implements the interactive CLI with:
+  - Command prompt using Rich
+  - Help command display
+  - Placeholder responses for unimplemented commands
+  - Exit command handling
+
+### Installation
+
+The package is installed via `setup.py`, which:
+1. Configures dependencies (typer, pyfiglet, colorama, rich)
+2. Sets up the console script entry point
+3. Defines package metadata
+
+---
+
+## 🔄 Command Flow
+
+```mermaid
+sequenceDiagram
+    User->>CLI: fluttercraft start
+    CLI->>main.py: Parse command
+    main.py->>main.py: Display welcome art
+    main.py->>start.py: Call start_command()
+    start.py->>User: Show prompt
+    User->>start.py: Enter command
+    start.py->>start.py: Process command
+    start.py->>User: Display response
 ```
 
 ---
 
-## 🔌 Module Responsibilities
+## 🧩 Component Details
 
-### `__main__.py`
+### 1. CLI Processing
 
-* Entry CLI hook using Typer
-* Registers all commands from `commands/`
+The command line processing is handled by Typer, which provides:
+- Command registration
+- Help text generation
+- Command parsing and dispatch
+- Option handling
 
-### `core.py`
+### 2. Start Command
 
-* Core orchestration for multi-step flows (like `create`)
-* Responsible for shared execution logic
+The start command implements a simple Read-Evaluate-Print Loop (REPL) that:
+1. Displays a prompt using Rich
+2. Reads user input
+3. Processes commands (help, exit, etc.)
+4. Displays appropriate responses
 
-### `commands/`
+### 3. ASCII Art Display
 
-* Each file is a self-contained CLI feature:
-
-  * `create.py`: Full interactive setup (MVP anchor)
-  * `flutter.py`: Flutter installation logic
-  * `fvm.py`: FVM detection and management
-  * `backend.py`: Firebase/Supabase setup
-  * `logo.py`: Icon generation
-  * `publish.py`: Deployment config
-  * `github.py`: GitHub repo creation and push
-
-### `utils/`
-
-* `io.py`: File handling, project path helpers
-* `shell.py`: Cross-platform subprocess runners
-* `validation.py`: Input verification (e.g., app name format)
-* `osinfo.py`: Detect OS for platform-specific logic
-
-### `config/`
-
-* `defaults.py`: CLI defaults, versioning info
-* `paths.py`: Base path constants and derived paths
+The welcome display uses:
+- pyfiglet for ASCII art generation
+- Rich for colored text and panels
+- Informative welcome messages
 
 ---
 
-## 🧩 Template Engine (Jinja2)
+## 🔮 Future Architecture
 
-Jinja templates live under `templates/`. These are used to generate:
+As development continues, the following components will be added:
 
-* Flutter project structures
-* README and doc files
-* CI/CD workflows
-* Flavor environment configs
-
-They allow dynamic rendering based on user input from CLI prompts.
-
----
-
-## 📦 Dependency Management
-
-FlutterCraft uses either `pip` with `pyproject.toml` or `poetry` for managing:
-
-* Python dependencies (`typer`, `questionary`, `jinja2`, etc.)
-* Entry point for CLI (`[tool.poetry.scripts]` or `[project.scripts]`)
+1. **Utility Modules**: For file I/O, shell execution, and validation
+2. **Configuration System**: For managing user preferences
+3. **Create Command**: For Flutter project generation
+4. **Environment Management**: Flutter and FVM installation
+5. **Integration Features**: Backend and GitHub integration
 
 ---
 
-## 🔄 Execution Flow Diagram (for `fluttercraft create`)
-
-```text
-User invokes `fluttercraft create`
-    ↓
-Prompt: App name, platforms, use FVM?
-    ↓
-  └─▶ If FVM: Check & install → set version
-    ↓
-Prompt: Destination folder
-    ↓
-Prompt: Create GitHub repo?
-    ↓
-  └─▶ If yes: Init, configure, push
-    ↓
-Run `flutter create`
-    ↓
-Prompt: Icons? Backend? State mgmt?
-    ↓
-Run setup tools + generate docs
-```
-
----
-
-## 🔐 Security Considerations
-
-* No credentials stored
-* GitHub repo creation uses `gh` CLI (token handled by user)
-* Firebase/Supabase setup is local-only
-
----
-
-## 🧪 Testing Strategy
-
-### Test Coverage Requirements
-* **Minimum Coverage**: 80% for all modules
-* **Target Coverage**: 90%+ for production readiness
-* **Critical Modules**: 95%+ coverage (core.py, validation.py, shell.py)
-
-### Test Types
-* **Unit Tests**: Individual function and class testing with `pytest`
-* **Integration Tests**: CLI command flow testing with mocked external dependencies
-* **CLI Tests**: End-to-end command execution with subprocess mocks
-* **Template Tests**: Jinja2 template rendering validation
-
-### Mocking Strategy
-* Mock external commands (`flutter`, `git`, `gh`) using `unittest.mock`
-* Mock file system operations for isolated testing
-* Mock network requests for backend integration tests
-* Use pytest fixtures for reusable test data
-
----
-
-## 📈 Designed for Growth
-
-* Add new CLI commands by dropping files into `commands/`
-* Templates modular and customizable
-* Config-driven for future plugin ecosystem
-
-FlutterCraft’s architecture is built to scale with the ambition of your ideas—and the reality of your deadlines.
+This document will be updated as new components are implemented.

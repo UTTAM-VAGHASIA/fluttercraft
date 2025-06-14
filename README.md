@@ -27,9 +27,10 @@ From folder structure to backend integration, from icons to GitHub repo setup â€
 git clone https://github.com/UTTAM-VAGHASIA/fluttercraft.git
 cd fluttercraft
 python -m venv venv
-.\venv\Scripts\Activate.ps1
+.\venv\Scripts\Activate.ps1  # On Windows
+# source venv/bin/activate   # On macOS/Linux
 pip install -e .
-fluttercraft create
+fluttercraft start
 ```
 
 ---

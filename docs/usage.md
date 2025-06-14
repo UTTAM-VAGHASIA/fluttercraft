@@ -9,28 +9,50 @@
 First, ensure you have Python 3.10+ installed. Then clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/your-username/fluttercraft.git
+git clone https://github.com/UTTAM-VAGHASIA/fluttercraft.git
 cd fluttercraft
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+python -m venv venv
+# On Linux/macOS:
+source venv/bin/activate  
+# On Windows:
+.\venv\Scripts\Activate.ps1
 pip install -e .
 ```
 
-> Alternatively, use `poetry install` if you're using Poetry.
+> This will install the package in development mode, allowing you to make changes to the code without reinstalling.
 
 ---
 
 ## 🧪 Verify the CLI
 
 ```bash
-python -m fluttercraft --help
+fluttercraft --help
 ```
 
 This should display all available commands.
 
 ---
 
-## 🛠 Commands Overview
+## 🛠 Current Commands 
+
+### `fluttercraft start`
+
+Starts the interactive FlutterCraft CLI with welcome ASCII art.
+
+```bash
+fluttercraft start
+```
+
+**Interactive Commands:**
+* `help` or `h` - Display available commands
+* `create` - Create a new Flutter project (placeholder for future implementation)
+* `flutter install` - Install Flutter (placeholder for future implementation)
+* `fvm setup` - Setup Flutter Version Manager (placeholder for future implementation)
+* `exit`, `quit` or `q` - Exit the CLI
+
+---
+
+## 🧪 Planned Commands (Coming Soon)
 
 ### `fluttercraft create`
 
@@ -40,8 +62,7 @@ Interactive command to scaffold a full-featured Flutter app.
 fluttercraft create
 ```
 
-**Prompts:**
-
+**Future Prompts:**
 * App name & org ID
 * Platform targets (Android, iOS, Web, etc.)
 * Use FVM or not
@@ -54,51 +75,27 @@ fluttercraft create
 
 ### `fluttercraft flutter install`
 
-Checks if Flutter is installed, installs it if not.
-
-```bash
-fluttercraft flutter install
-```
+Will check if Flutter is installed, installs it if not.
 
 ### `fluttercraft fvm setup`
 
-Installs FVM (if not available) and configures desired Flutter version.
-
-```bash
-fluttercraft fvm setup
-```
+Will install FVM (if not available) and configure desired Flutter version.
 
 ### `fluttercraft backend connect`
 
-Guided integration of Firebase or Supabase.
-
-```bash
-fluttercraft backend connect
-```
+Will guide integration of Firebase or Supabase.
 
 ### `fluttercraft logo set`
 
-Handles app icon generation using an image.
-
-```bash
-fluttercraft logo set
-```
+Will handle app icon generation using an image.
 
 ### `fluttercraft publish prep`
 
-Guides user through platform-specific release setup (Android/iOS/Web/Desktop).
-
-```bash
-fluttercraft publish prep
-```
+Will guide user through platform-specific release setup (Android/iOS/Web/Desktop).
 
 ### `fluttercraft github push`
 
-Creates GitHub repo, adds LICENSE, README, pushes first commit.
-
-```bash
-fluttercraft github push
-```
+Will create GitHub repo, add LICENSE, README, push first commit.
 
 ---
 
@@ -107,16 +104,17 @@ fluttercraft github push
 | Issue                        | Fix                                                                      |
 | ---------------------------- | ------------------------------------------------------------------------ |
 | `ModuleNotFoundError`        | Activate your virtual environment or run `pip install -e .`              |
-| `gh: command not found`      | Install GitHub CLI from [https://cli.github.com](https://cli.github.com) |
-| Chocolatey issues on Windows | Run terminal as Administrator                                            |
+| `UnicodeDecodeError`         | Check encoding of README.md or use explicit encoding in setup.py         |
+| Missing dependencies         | Run `pip install typer pyfiglet colorama rich` if not automatically installed |
 
 ---
 
 ## 📘 Notes
 
-* Commands are modular — you can use `create` or individual commands
-* Works across Linux, macOS, and Windows (with fallback instructions)
-* Open-source, MIT licensed — contributions welcome!
+* The current version features a functional interactive CLI framework
+* Future versions will implement actual Flutter app creation and customization
+* Works across Linux, macOS, and Windows
+* Open-source, AGPL v3 licensed — contributions welcome!
 
 ---
 
@@ -125,7 +123,7 @@ fluttercraft github push
 You can always type:
 
 ```bash
-fluttercraft <command> --help
+fluttercraft --help
 ```
 
 to view usage and options for any command.
