@@ -36,7 +36,12 @@ def run_with_loading(cmd, status_message=None, shell=True, should_display_comman
         status_message = f"[bold yellow]Running {cmd_str}, please wait...[/]"
 
     with console.status(status_message):
-        result = subprocess.run(cmd, capture_output=True, text=True, shell=shell,)
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            shell=shell,
+        )
 
     return result
 
