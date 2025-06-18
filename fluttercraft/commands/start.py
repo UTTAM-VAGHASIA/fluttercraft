@@ -1,6 +1,11 @@
 """Start command for FlutterCraft CLI."""
 from rich.console import Console
 from rich.prompt import Prompt
+import platform
+import os
+import sys
+
+from fluttercraft.utils.platform_utils import get_platform_info
 
 console = Console()
 
@@ -10,7 +15,13 @@ def start_command():
     Start the interactive CLI session.
     This is the main command that users will use to start creating Flutter apps.
     """
+    # Get platform information using the utility function
+    platform_info = get_platform_info()
+    
     console.print("[bold green]FlutterCraft CLI started![/]")
+    console.print(f"[bold blue]Platform: {platform_info['system']}[/]")
+    console.print(f"[bold blue]Shell: {platform_info['shell']}[/]")
+    console.print(f"[bold blue]Python version: {platform_info['python_version']}[/]")
     console.print(
         "[bold]Enter commands or type 'exit' or 'quit' or 'q' to quit[/]"
     )
