@@ -6,6 +6,8 @@ From folder structure to backend integration, from icons to GitHub repo setup â€
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![Build](https://github.com/UTTAM-VAGHASIA/fluttercraft/actions/workflows/cli-check.yml/badge.svg)
 ![Stars](https://img.shields.io/github/stars/UTTAM-VAGHASIA/fluttercraft)
+[![PyPI version](https://badge.fury.io/py/fluttercraft.svg)](https://badge.fury.io/py/fluttercraft)
+[![PyPI Downloads](https://static.pepy.tech/badge/fluttercraft)](https://pepy.tech/project/fluttercraft)
 
 ---
 
@@ -21,7 +23,33 @@ From folder structure to backend integration, from icons to GitHub repo setup â€
 
 ---
 
-## âš¡ Quick Start
+## ðŸ“¥ Installation
+
+### From PyPI (Recommended)
+
+```bash
+pip install fluttercraft
+```
+
+### From TestPyPI
+
+```bash
+pip install --index-url https://test.pypi.org/simple/ fluttercraft
+```
+
+### Start FlutterCraft
+
+After installation, run:
+
+```bash
+fluttercraft start
+```
+
+---
+
+## âš¡ Development Setup
+
+If you want to contribute or modify the code:
 
 ```bash
 git clone https://github.com/UTTAM-VAGHASIA/fluttercraft.git
