@@ -1,1 +1,1 @@
-"""FlutterCraft configuration module.""" 
+"""FlutterCraft configuration module."""

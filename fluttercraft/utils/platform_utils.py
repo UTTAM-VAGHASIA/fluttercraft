@@ -1,4 +1,5 @@
 """Utility functions for platform detection."""
+
 import platform
 import os
 import sys
@@ -7,7 +8,7 @@ import sys
 def get_platform_info():
     """
     Get information about the current platform and environment.
-    
+
     Returns:
         dict: A dictionary containing platform information.
     """
@@ -19,14 +20,14 @@ def get_platform_info():
         "processor": platform.processor(),
         "python_version": platform.python_version(),
     }
-    
+
     # Get shell information
     if info["system"] == "Windows":
-        info["shell"] = os.environ.get('COMSPEC', '')
+        info["shell"] = os.environ.get("COMSPEC", "")
     else:
-        info["shell"] = os.environ.get('SHELL', '')
-    
+        info["shell"] = os.environ.get("SHELL", "")
+
     # Get additional environment information
-    info["path"] = os.environ.get('PATH', '')
-    
-    return info 
+    info["path"] = os.environ.get("PATH", "")
+
+    return info

@@ -3,6 +3,7 @@
 import re
 from fluttercraft.utils.terminal_utils import run_with_loading
 
+
 def check_flutter_version():
     """Check if Flutter is installed and get version information."""
     flutter_installed = False
@@ -71,4 +72,4 @@ def check_flutter_version():
         "installed": flutter_installed,
         "current_version": current_version,
         "latest_version": latest_version,
-    } 
+    }

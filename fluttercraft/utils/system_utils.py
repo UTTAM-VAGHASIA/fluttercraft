@@ -2,6 +2,7 @@
 
 from fluttercraft.utils.terminal_utils import run_with_loading
 
+
 def check_chocolatey_installed():
     """Check if Chocolatey is installed on Windows."""
     choco_installed = False
@@ -23,4 +24,4 @@ def check_chocolatey_installed():
     except FileNotFoundError:
         pass
 
-    return {"installed": False, "version": None} 
+    return {"installed": False, "version": None}
