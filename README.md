@@ -23,6 +23,33 @@ From folder structure to backend integration, from icons to GitHub repo setup �
 
 ---
 
+## 🤖 CLI Status
+
+The interactive CLI is under active development. Here's a look at what's working and what's coming next.
+
+### ✅ Current Features
+
+- **Interactive Shell**: Start the CLI with `fluttercraft start`.
+- **Environment Check**: Automatically detects existing Flutter and FVM installations.
+- **FVM Management**:
+  - `fvm install`: Install the Flutter Version Manager.
+  - `fvm uninstall`: Remove the Flutter Version Manager.
+- **Basic Commands**: `help`, `clear`, and `exit` are available.
+
+### 🚀 Upcoming Features
+
+- **Project Creation**: `create` command to generate new Flutter projects with a wizard.
+- **Enhanced FVM Control**:
+  - `fvm releases`: List all the released flutter versions.
+  - `fvm list`: List all installed Flutter SDK versions.
+  - `fvm remove <version>`: Uninstall a specific Flutter SDK version.
+  - `fvm setup <version>`: To install and setup a flutter version.
+- **Backend Integration**: Connect to Firebase or Supabase projects.
+- **GitHub Automation**: Create and push to a new repository on GitHub.
+- **App Icon Generation**: Automatically generate app icons for all platforms.
+
+---
+
 ## 📥 Installation
 
 ### From PyPI (Recommended)
@@ -34,7 +61,7 @@ pip install fluttercraft
 ### From TestPyPI
 
 ```bash
-pip install --index-url https://test.pypi.org/simple/ fluttercraft
+pip install --index-url https://test.pypi.org/simple/fluttercraft
 ```
 
 ### Start FlutterCraft
