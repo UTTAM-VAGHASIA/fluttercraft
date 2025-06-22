@@ -61,7 +61,7 @@ pip install fluttercraft
 ### From TestPyPI
 
 ```bash
-pip install --index-url https://test.pypi.org/simple/fluttercraft
+pip install -i https://test.pypi.org/simple/ fluttercraft
 ```
 
 ### Start FlutterCraft
