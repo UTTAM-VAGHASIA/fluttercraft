@@ -35,13 +35,13 @@ The interactive CLI is under active development. Here's a look at what's working
   - `fvm install`: Install the Flutter Version Manager.
   - `fvm uninstall`: Remove the Flutter Version Manager.
   - `fvm releases`: List all the released flutter versions.
+  - `fvm list`: List all installed Flutter SDK versions.
 - **Basic Commands**: `help`, `clear`, and `exit` are available.
 
 ### 🚀 Upcoming Features
 
 - **Project Creation**: `create` command to generate new Flutter projects with a wizard.
 - **Enhanced FVM Control**:
-  - `fvm list`: List all installed Flutter SDK versions.
   - `fvm remove <version>`: Uninstall a specific Flutter SDK version.
   - `fvm setup <version>`: To install and setup a flutter version.
 - **Backend Integration**: Connect to Firebase or Supabase projects.

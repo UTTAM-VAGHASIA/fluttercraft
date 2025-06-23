@@ -15,37 +15,25 @@ console = Console()
 
 
 def show_global_help():
-    """Display the main help for FlutterCraft CLI."""
+    """Display global help information."""
     console.print("[bold cyan]FlutterCraft CLI Help[/]", justify="center")
-    console.print("\n[bold green]Usage:[/]")
-    console.print("  fluttercraft [command] [options]")
-    console.print("  command help - Show help for a specific command")
-    console.print("  command --help - Show help for a specific command")
 
     console.print("\n[bold green]Available Commands:[/]")
 
-    # Core commands table
-    core_table = Table(title="[bold]Core Commands[/]", show_header=True, box=None)
-    core_table.add_column("Command", style="cyan")
-    core_table.add_column("Description", style="green")
+    # Current commands table
+    current_table = Table(show_header=True, box=None)
+    current_table.add_column("Command", style="cyan")
+    current_table.add_column("Description", style="green")
 
-    core_table.add_row("help, h", "Show this help message")
-    core_table.add_row("exit, quit, q", "Exit the CLI")
-    core_table.add_row("clear", "Clear the terminal screen")
+    current_table.add_row("help", "Display this help information")
+    current_table.add_row("exit, quit, q", "Exit the FlutterCraft CLI")
+    current_table.add_row("clear", "Clear the terminal screen")
+    current_table.add_row("fvm install", "Install Flutter Version Manager")
+    current_table.add_row("fvm uninstall", "Uninstall Flutter Version Manager")
+    current_table.add_row("fvm releases", "List all available Flutter versions")
+    current_table.add_row("fvm list", "List all installed Flutter versions")
 
-    console.print(core_table)
-
-    # FVM commands table
-    fvm_table = Table(title="\n[bold]FVM Commands[/]", show_header=True, box=None)
-    fvm_table.add_column("Command", style="cyan")
-    fvm_table.add_column("Description", style="green")
-
-    fvm_table.add_row("fvm help", "Show FVM-specific help")
-    fvm_table.add_row("fvm install", "Install Flutter Version Manager")
-    fvm_table.add_row("fvm uninstall", "Uninstall Flutter Version Manager")
-    fvm_table.add_row("fvm releases", "Show available Flutter versions")
-
-    console.print(fvm_table)
+    console.print(current_table)
 
     # Coming Soon table
     future_table = Table(
@@ -54,10 +42,18 @@ def show_global_help():
     future_table.add_column("Command", style="cyan")
     future_table.add_column("Description", style="green")
 
-    future_table.add_row("create", "Create a new Flutter project")
-    future_table.add_row("flutter install", "Install Flutter SDK")
-    future_table.add_row("fvm setup", "Setup Flutter Version Manager")
-    future_table.add_row("flutter version", "Check and switch Flutter versions")
+    future_table.add_row(
+        "create", "Create a new Flutter project with configuration wizard"
+    )
+    future_table.add_row("flutter", "Run Flutter commands with extra features")
+    future_table.add_row(
+        "fvm setup", "Install and configure a specific Flutter version"
+    )
+    future_table.add_row("fvm remove", "Remove a specific Flutter version")
+    future_table.add_row("firebase", "Firebase integration commands")
+    future_table.add_row("supabase", "Supabase integration commands")
+    future_table.add_row("icon", "Generate app icons for all platforms")
+    future_table.add_row("github", "Create and manage GitHub repositories")
 
     console.print(future_table)
 
@@ -104,6 +100,7 @@ def show_fvm_help():
         "fvm releases [channel]",
         "List Flutter versions filtered by channel (stable, beta, dev, all)",
     )
+    table.add_row("fvm list", "List all installed Flutter SDK versions managed by FVM")
 
     console.print(table)
 
@@ -235,6 +232,35 @@ def show_fvm_releases_help():
     return "Displayed fvm releases help"
 
 
+def show_fvm_list_help():
+    """Display help information for the 'fvm list' command."""
+    console.print("[bold cyan]fvm list - Command Help[/]", justify="center")
+
+    console.print("\n[bold green]Description:[/]")
+    console.print(
+        "Lists all installed Flutter SDK versions managed by FVM on your system. "
+        "This includes global and local (project-specific) versions."
+    )
+
+    console.print("\n[bold green]Usage:[/]")
+    console.print("  [cyan]fvm list[/]")
+
+    console.print("\n[bold green]Output Information:[/]")
+    console.print("  The command displays:")
+    console.print("    • Cache directory location")
+    console.print("    • Total size of all installed Flutter versions")
+    console.print("    • Version number and details for each installed SDK")
+    console.print("    • Which version is set as global (if any)")
+    console.print(
+        "    • Which version is set as local for the current project (if any)"
+    )
+
+    console.print("\n[bold green]Examples:[/]")
+    console.print("  [cyan]fvm list[/] - Show all installed Flutter versions")
+
+    return "Displayed fvm list help"
+
+
 def show_clear_help():
     """Display help information for the 'clear' command."""
     console.print("[bold cyan]clear - Command Help[/]", justify="center")
@@ -288,6 +314,8 @@ def handle_help_command(command_parts):
                 return show_fvm_uninstall_help()
             elif command_parts[1] == "releases":
                 return show_fvm_releases_help()
+            elif command_parts[1] == "list":
+                return show_fvm_list_help()
     elif (
         command_parts[0] == "clear"
         and len(command_parts) >= 2

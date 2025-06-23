@@ -17,6 +17,7 @@ from fluttercraft.commands.fvm_commands import (
     fvm_install_command,
     fvm_uninstall_command,
     fvm_releases_command,
+    fvm_list_command,
 )
 from fluttercraft.commands.help_commands import (
     show_global_help,
@@ -24,6 +25,7 @@ from fluttercraft.commands.help_commands import (
     show_fvm_install_help,
     show_fvm_uninstall_help,
     show_fvm_releases_help,
+    show_fvm_list_help,
     show_clear_help,
 )
 
@@ -118,6 +120,8 @@ def start_command():
                             show_fvm_uninstall_help()
                         elif cmd_parts[1] == "releases":
                             show_fvm_releases_help()
+                        elif cmd_parts[1] == "list":
+                            show_fvm_list_help()
                         else:
                             # Unknown fvm command
                             show_fvm_help()
@@ -206,6 +210,22 @@ def start_command():
 
             # Add to history
             add_to_history(command, cmd_output)
+        elif command.lower() == "fvm list":
+            # Show installed Flutter versions through FVM
+            try:
+                cmd_output = fvm_list_command()
+            except Exception as e:
+                with OutputCapture() as output:
+                    console.print(
+                        f"[bold red]Error fetching installed Flutter versions: {str(e)}[/]"
+                    )
+                    console.print(
+                        "[yellow]Make sure FVM is properly installed. Try running 'fvm install' first.[/]"
+                    )
+                cmd_output = output.get_output()
+
+            # Add to history
+            add_to_history(command, cmd_output)
         elif command.lower().startswith("flutter"):
             # Capture output from flutter command
             with OutputCapture() as output:
@@ -216,7 +236,12 @@ def start_command():
             # Add to history
             add_to_history(command, output.get_output())
         elif command.lower().startswith("fvm"):
-            if command.lower() in ["fvm install", "fvm uninstall", "fvm releases"]:
+            if command.lower() in [
+                "fvm install",
+                "fvm uninstall",
+                "fvm releases",
+                "fvm list",
+            ]:
                 # Already handled above
                 pass
             else:
