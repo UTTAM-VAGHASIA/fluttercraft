@@ -16,6 +16,7 @@ from fluttercraft.commands.fvm_commands import (
     check_fvm_version,
     fvm_install_command,
     fvm_uninstall_command,
+    fvm_releases_command,
 )
 
 console = Console()
@@ -89,6 +90,16 @@ def start_command():
                     "  [bold]fvm uninstall[/] - Uninstall Flutter Version Manager"
                 )
                 console.print(
+                    "  [bold]fvm releases[/] - Show available Flutter versions"
+                )
+                console.print("    [dim]Usage: fvm releases [channel][/]")
+                console.print(
+                    "    [dim]Options: --channel/-c [stable|beta|dev|all] - Filter versions by channel[/]"
+                )
+                console.print(
+                    "    [dim]Example: fvm releases beta  or  fvm releases --channel=beta[/]"
+                )
+                console.print(
                     "  [bold]clear[/] - Clear the terminal screen but preserve header and info"
                 )
                 console.print("  [bold]help, h[/] - Show this help message")
@@ -144,6 +155,46 @@ def start_command():
             if updated_fvm_info != fvm_info:
                 fvm_info = updated_fvm_info
                 refresh_display(platform_info, flutter_info, fvm_info)
+        elif command.lower().startswith("fvm releases"):
+            # Parse the command to check for channel parameter
+            cmd_parts = command.lower().split()
+            channel = None
+
+            # Check if --channel or -c is provided
+            if len(cmd_parts) >= 3:
+                # Handle --channel=value format
+                if any(part.startswith("--channel=") for part in cmd_parts):
+                    for part in cmd_parts:
+                        if part.startswith("--channel="):
+                            channel = part.split("=")[1]
+                            break
+                # Handle -c value or --channel value format
+                elif cmd_parts[2] in ["-c", "--channel"] and len(cmd_parts) >= 4:
+                    channel = cmd_parts[3]
+                # If just a single parameter is provided without flags (e.g. "fvm releases beta")
+                elif len(cmd_parts) == 3 and cmd_parts[2] in [
+                    "stable",
+                    "beta",
+                    "dev",
+                    "all",
+                ]:
+                    channel = cmd_parts[2]
+
+            # Show Flutter releases available through FVM with optional channel filter
+            try:
+                cmd_output = fvm_releases_command(channel)
+            except Exception as e:
+                with OutputCapture() as output:
+                    console.print(
+                        f"[bold red]Error fetching Flutter releases: {str(e)}[/]"
+                    )
+                    console.print(
+                        "[yellow]Try using: fvm releases --channel [stable|beta|dev|all][/]"
+                    )
+                cmd_output = output.get_output()
+
+            # Add to history
+            add_to_history(command, cmd_output)
         elif command.lower().startswith("flutter"):
             # Capture output from flutter command
             with OutputCapture() as output:
@@ -154,7 +205,7 @@ def start_command():
             # Add to history
             add_to_history(command, output.get_output())
         elif command.lower().startswith("fvm"):
-            if command.lower() == "fvm install" or command.lower() == "fvm uninstall":
+            if command.lower() in ["fvm install", "fvm uninstall", "fvm releases"]:
                 # Already handled above
                 pass
             else:

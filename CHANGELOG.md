@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - Unreleased
+
+### Added
+
+- Added fvm commands: `fvm install` and `fvm uninstall`.
+- Added `fvm releases` command to display available Flutter versions with an enhanced UI.
+  - Added support for channel filtering: `fvm releases --channel [stable|beta|dev|all]`
+  - Improved version sorting and presentation
+- Added `clear` command to clear the CLI outputs.
+
+### Changed
+
+- Changed the Output printing logic, now it is more user friendly.
+
+### Fixed
+
+- Made the project structure modular.
+
+
 ## [0.1.1] - 2025-06-15
 
 ### Fixed
