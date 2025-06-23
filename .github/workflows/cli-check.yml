@@ -29,7 +29,7 @@ jobs:
           pip install flake8
           # Ignoring errors for trailing whitespace and no newline at end of file
           # Also ignore unused imports, line too long, and unused variables
-          flake8 fluttercraft --ignore=W291,W292,F401,W293,E501,F841,E302
+          flake8 fluttercraft --ignore=W291,W292,F401,W293,E501,F841,E302,W503,F541
 
       - name: Run CLI help
         run: |

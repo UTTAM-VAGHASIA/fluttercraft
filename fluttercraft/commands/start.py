@@ -18,6 +18,14 @@ from fluttercraft.commands.fvm_commands import (
     fvm_uninstall_command,
     fvm_releases_command,
 )
+from fluttercraft.commands.help_commands import (
+    show_global_help,
+    show_fvm_help,
+    show_fvm_install_help,
+    show_fvm_uninstall_help,
+    show_fvm_releases_help,
+    show_clear_help,
+)
 
 console = Console()
 
@@ -74,45 +82,48 @@ def start_command():
     # Simple REPL for demonstration
     while True:
         command = Prompt.ask("[bold cyan]fluttercraft>[/]")
+        cmd_parts = command.lower().strip().split()
 
-        if command.lower() in ["exit", "quit", "q"]:
+        # Handle empty command
+        if not cmd_parts:
+            continue
+
+        # Exit commands
+        if cmd_parts[0] in ["exit", "quit", "q"]:
             console.print("[yellow]Thank you for using FlutterCraft! Goodbye![/]")
             break
-        elif command.lower() in ["help", "h"]:
+
+        # Help command handling
+        elif cmd_parts[0] in ["help", "h"]:
             # Capture output from help command
             with OutputCapture() as output:
-                console.print("[green]Available commands:[/]")
-                console.print("[bold cyan]Implemented commands:[/]")
-                console.print(
-                    "  [bold]fvm install[/] - Install Flutter Version Manager"
-                )
-                console.print(
-                    "  [bold]fvm uninstall[/] - Uninstall Flutter Version Manager"
-                )
-                console.print(
-                    "  [bold]fvm releases[/] - Show available Flutter versions"
-                )
-                console.print("    [dim]Usage: fvm releases [channel][/]")
-                console.print(
-                    "    [dim]Options: --channel/-c [stable|beta|dev|all] - Filter versions by channel[/]"
-                )
-                console.print(
-                    "    [dim]Example: fvm releases beta  or  fvm releases --channel=beta[/]"
-                )
-                console.print(
-                    "  [bold]clear[/] - Clear the terminal screen but preserve header and info"
-                )
-                console.print("  [bold]help, h[/] - Show this help message")
-                console.print("  [bold]exit, quit, q[/] - Exit the CLI")
-
-                console.print("\n[bold yellow]Coming in future updates:[/]")
-                console.print("  [bold]create[/] - Create a new Flutter project")
-                console.print("  [bold]flutter install[/] - Install Flutter")
-                console.print("  [bold]fvm setup[/] - Setup Flutter Version Manager")
-                console.print(
-                    "  [bold]flutter version[/] - Check and switch Flutter versions"
-                )
-
+                show_global_help()
+            # Add to history
+            add_to_history(command, output.get_output())
+        # Check for command-specific help using the "command help" format
+        elif len(cmd_parts) > 1 and cmd_parts[-1] in ["help", "--help", "-h"]:
+            # Handle command-specific help
+            with OutputCapture() as output:
+                if cmd_parts[0] == "clear":
+                    show_clear_help()
+                elif cmd_parts[0] == "fvm":
+                    if len(cmd_parts) == 2:
+                        # "fvm help"
+                        show_fvm_help()
+                    else:
+                        # "fvm <command> help"
+                        if cmd_parts[1] == "install":
+                            show_fvm_install_help()
+                        elif cmd_parts[1] == "uninstall":
+                            show_fvm_uninstall_help()
+                        elif cmd_parts[1] == "releases":
+                            show_fvm_releases_help()
+                        else:
+                            # Unknown fvm command
+                            show_fvm_help()
+                else:
+                    # Fallback to global help
+                    show_global_help()
             # Add to history
             add_to_history(command, output.get_output())
         elif command.lower() == "create":
@@ -211,9 +222,13 @@ def start_command():
             else:
                 # Capture output from other fvm commands
                 with OutputCapture() as output:
-                    console.print(
-                        "[yellow]In a future update, this would handle additional FVM commands![/]"
-                    )
+                    if cmd_parts[0] == "fvm" and len(cmd_parts) == 1:
+                        # Just "fvm" without args, show fvm help
+                        show_fvm_help()
+                    else:
+                        console.print(
+                            "[yellow]In a future update, this would handle additional FVM commands![/]"
+                        )
 
                 # Add to history
                 add_to_history(command, output.get_output())

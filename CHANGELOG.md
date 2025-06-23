@@ -14,10 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added support for channel filtering: `fvm releases --channel [stable|beta|dev|all]`
   - Improved version sorting and presentation
 - Added `clear` command to clear the CLI outputs.
+- Added comprehensive help system:
+  - Global help: `help` or `h`
+  - Command group help: `fvm help`
+  - Command-specific help: `command help` or `command --help`
+  - Detailed usage instructions and examples
 
 ### Changed
 
 - Changed the Output printing logic, now it is more user friendly.
+- Improved help messages with detailed descriptions and examples for each command.
 
 ### Fixed
 
