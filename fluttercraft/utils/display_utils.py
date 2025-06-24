@@ -79,6 +79,9 @@ def refresh_display(platform_info, flutter_info, fvm_info, should_clear=False):
     """Clear the screen, redisplay the header with updated version info,
     and restore command history.
     """
+    # Store the existing history if we're not clearing it
+    saved_history = [] if should_clear else list(command_history)
+    
     # Redisplay full header with current version info
     display_full_header(platform_info, flutter_info, fvm_info)
 
@@ -86,9 +89,13 @@ def refresh_display(platform_info, flutter_info, fvm_info, should_clear=False):
     if should_clear:
         command_history.clear()
     else:
-        for cmd, output in command_history:
+        # Clear the history list before repopulating it
+        command_history.clear()
+        # Add back all saved history items
+        for cmd, output in saved_history:
             console.print(f"[bold cyan]fluttercraft>[/] {cmd}")
             console.print(output)
+            command_history.append((cmd, output))
 
 
 def add_to_history(command, output):

@@ -156,7 +156,7 @@ def start_command():
             # If FVM version changed, refresh the display
             if updated_fvm_info != fvm_info:
                 fvm_info = updated_fvm_info
-                refresh_display(platform_info, flutter_info, fvm_info)
+                refresh_display(platform_info, flutter_info, fvm_info, should_clear=False)  # Don't clear command history
         elif command.lower() == "fvm uninstall":
             # Uninstall FVM and capture the output
             updated_fvm_info, cmd_output = fvm_uninstall_command(
@@ -169,7 +169,7 @@ def start_command():
             # If FVM version changed, refresh the display
             if updated_fvm_info != fvm_info:
                 fvm_info = updated_fvm_info
-                refresh_display(platform_info, flutter_info, fvm_info)
+                refresh_display(platform_info, flutter_info, fvm_info, should_clear=False)  # Don't clear command history
         elif command.lower().startswith("fvm releases"):
             # Parse the command to check for channel parameter
             cmd_parts = command.lower().split()

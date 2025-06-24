@@ -1,10 +1,5 @@
-"""Help commands for FlutterCraft CLI - Backward compatibility module.
+"""Help commands for FlutterCraft CLI."""
 
-This module re-exports the functions from the modular structure in the help/ package
-to maintain backward compatibility with existing code.
-"""
-
-# Re-export all help functions from the new modular structure
 from fluttercraft.commands.help.global_help import show_global_help
 from fluttercraft.commands.help.fvm_help import (
     show_fvm_help,
@@ -25,4 +20,4 @@ __all__ = [
     'show_fvm_list_help',
     'show_clear_help',
     'handle_help_command',
-]
+] 

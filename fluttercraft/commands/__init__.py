@@ -1,15 +1,15 @@
 """FlutterCraft CLI commands package."""
 
 from fluttercraft.commands.start import start_command
-from fluttercraft.commands.flutter_commands import check_flutter_version
-from fluttercraft.commands.fvm_commands import (
+from fluttercraft.commands.flutter import check_flutter_version
+from fluttercraft.commands.fvm import (
     check_fvm_version,
     fvm_install_command,
     fvm_uninstall_command,
     fvm_releases_command,
     fvm_list_command,
 )
-from fluttercraft.commands.help_commands import (
+from fluttercraft.commands.help import (
     show_global_help,
     show_fvm_help,
     show_fvm_install_help,
