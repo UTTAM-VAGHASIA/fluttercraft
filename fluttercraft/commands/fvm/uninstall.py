@@ -121,7 +121,7 @@ def fvm_uninstall_command(platform_info, flutter_info, fvm_info):
             )
 
             # Use PowerShell's Start-Process with -Verb RunAs to request elevation
-            admin_cmd = "powershell -Command \"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command choco uninstall fvm -y' -Verb RunAs -Wait\""
+            admin_cmd = "powershell -Command \"Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command choco uninstall fvm -y' -Verb RunAs -Wait\""
 
             result = run_with_loading(
                 admin_cmd,

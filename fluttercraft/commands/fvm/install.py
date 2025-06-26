@@ -63,7 +63,7 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
 
                 # Need to run as admin
                 # Use PowerShell's Start-Process with -Verb RunAs to request elevation
-                admin_cmd = f"powershell -Command \"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command {choco_install_cmd}' -Verb RunAs -Wait\""
+                admin_cmd = f"powershell -Command \"Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command {choco_install_cmd}' -Verb RunAs -Wait\""
 
                 result = run_with_loading(
                     admin_cmd,
@@ -91,7 +91,7 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
             )
 
             # Use PowerShell's Start-Process with -Verb RunAs to request elevation
-            admin_cmd = "powershell -Command \"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command choco install fvm -y' -Verb RunAs -Wait\""
+            admin_cmd = "powershell -Command \"Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command choco install fvm -y' -Verb RunAs -Wait\""
 
             result = run_with_loading(
                 admin_cmd,
