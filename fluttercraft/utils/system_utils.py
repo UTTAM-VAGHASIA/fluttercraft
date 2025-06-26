@@ -20,8 +20,8 @@ def check_chocolatey_installed():
         if choco_version_process.returncode == 0:
             choco_installed = True
             version = choco_version_process.stdout.strip()
-            return {"installed": True, "version": version}
+            return {"installed": choco_installed, "version": version}
     except FileNotFoundError:
         pass
 
-    return {"installed": False, "version": None}
+    return {"installed": choco_installed, "version": None}
