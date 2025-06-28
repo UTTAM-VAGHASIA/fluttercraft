@@ -88,63 +88,17 @@ fvm uninstall
 * On Windows, uses Chocolatey
 * On macOS/Linux, uses the FVM installer script with --uninstall flag
 
-#### `fvm releases`
-
-Lists all available Flutter SDK versions that can be installed through FVM.
-
-```bash
-# List all stable versions (default)
-fvm releases
-
-# List versions from a specific channel
-fvm releases beta
-
-# List versions with explicit channel flag
-fvm releases --channel dev
-
-# List versions with short channel flag
-fvm releases -c all
-```
-
-Available channels: `stable` (default), `beta`, `dev`, `all`
-
-#### `fvm list`
-
-Lists all installed Flutter SDK versions managed by FVM on your system.
-
-```bash
-fvm list
-```
-
-* Shows cache directory location and size
-* Displays details for each installed SDK
-* Highlights which version is set as global/local
-* Sorts versions by release date (newest first)
-
-### Help System
-
-FlutterCraft includes a comprehensive help system:
-
-```bash
-# Global help
-help
-
-# FVM-specific help
-fvm help
-
-# Command-specific help
-fvm install help
-fvm releases help
-fvm list help
-clear help
-
-# Alternative syntax
-fvm install --help
-```
-
 ---
 
 ## 🧪 Planned Commands (Coming Soon)
+
+### `fvm releases`
+
+Will list all available Flutter SDK versions that can be installed through FVM.
+
+### `fvm list`
+
+Will list all installed Flutter SDK versions managed by FVM on your system.
 
 ### `fvm remove <version>`
 
@@ -173,7 +127,7 @@ fluttercraft create
 
 ### `fluttercraft flutter install`
 
-Will check if Flutter is installed, installs it if not.
+Will check if Flutter is installed, and installs it if not.
 
 ### `fluttercraft backend connect`
 

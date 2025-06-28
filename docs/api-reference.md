@@ -37,17 +37,6 @@ fluttercraft start
 #### FVM Commands
 - `fvm install` - Install Flutter Version Manager on your system
 - `fvm uninstall` - Uninstall Flutter Version Manager from your system
-- `fvm releases` - List all available Flutter SDK versions for installation
-  - `fvm releases [channel]` - List versions filtered by channel (stable, beta, dev, all)
-  - `fvm releases --channel [channel]` - List versions with explicit channel flag
-  - `fvm releases -c [channel]` - List versions with short channel flag
-- `fvm list` - List all installed Flutter SDK versions managed by FVM
-
-#### Help System
-- `help` - Show global help
-- `fvm help` - Show FVM-specific help
-- `command help` - Show help for a specific command (e.g., `fvm install help`)
-- `command --help` - Alternative syntax for command help
 
 **Examples:**
 ```bash
@@ -56,18 +45,6 @@ fluttercraft start
 
 # Inside the CLI, install FVM
 fvm install
-
-# List available Flutter versions
-fvm releases
-
-# List available Flutter versions from beta channel
-fvm releases beta
-
-# List installed Flutter versions
-fvm list
-
-# Get help on a specific command
-fvm releases help
 ```
 
 ---
@@ -91,23 +68,6 @@ Uninstalls Flutter Version Manager (FVM) from your system.
 - **Interactive**: Will ask if you want to remove all cached Flutter versions
 - **On Windows**: Uses Chocolatey package manager
 - **On macOS/Linux**: Uses the FVM installer script with --uninstall flag
-
-#### `fvm releases`
-
-Lists all available Flutter SDK versions that can be installed through FVM.
-
-- **Parameters**:
-  - `channel`: Filter versions by release channel (stable, beta, dev, all)
-- **Output**: Displays version numbers, release dates, and channels in a formatted table
-- **Default**: Shows stable channel versions if no channel specified
-
-#### `fvm list`
-
-Lists all installed Flutter SDK versions managed by FVM on your system.
-
-- **Output**: Displays cache directory location, size, and details for each installed SDK
-- **Indicators**: Shows which version is set as global and/or local for the current project
-- **Sorting**: Versions are sorted by release date (newest first)
 
 ---
 

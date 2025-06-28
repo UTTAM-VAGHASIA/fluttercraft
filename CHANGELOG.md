@@ -10,26 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added fvm commands: `fvm install` and `fvm uninstall`.
-- Added `fvm releases` command to display available Flutter versions with an enhanced UI.
-  - Added support for channel filtering: `fvm releases --channel [stable|beta|dev|all]`
-  - Improved version sorting and presentation
-- Added `fvm list` command to display installed Flutter versions with enhanced formatting.
-  - Shows cache directory location and size
-  - Highlights global and project-specific Flutter versions
-  - Provides helpful usage hints for version management
-  - Enhanced visual presentation with colored borders and status indicators
 - Added `clear` command to clear the CLI outputs.
 - Added comprehensive help system:
   - Global help: `help` or `h`
-  - Command group help: `fvm help`
   - Command-specific help: `command help` or `command --help`
   - Detailed usage instructions and examples
 
 ### Changed
 
 - Changed the Output printing logic, now it is more user friendly.
-- Improved help messages with detailed descriptions and examples for each command.
-- Enhanced table UI with rounded borders, better spacing, and colored indicators.
+- Refactored the project structure for better maintainability.
 
 ### Fixed
 
@@ -56,4 +46,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - N/A (initial release)
 
 ### Fixed
-- N/A (initial release) 
+- N/A (initial release)

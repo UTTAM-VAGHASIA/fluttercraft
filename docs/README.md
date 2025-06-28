@@ -46,13 +46,11 @@ Welcome to the comprehensive documentation for FlutterCraft! 🛠️🚀
 - **Interactive CLI** - Start with `fluttercraft start`
 - **FVM Management**:
   - Install/uninstall Flutter Version Manager
-  - List available Flutter versions with channel filtering
-  - List installed Flutter versions with detailed information
 - **Help System** - Comprehensive help for all commands
 - **Clear Command** - Clear the terminal while preserving context
 
 ### Upcoming Features
-- **Enhanced FVM Control** - Version removal and setup
+- **Enhanced FVM Control** - Version listing, removal and setup
 - **Flutter Management** - Detection and installation
 - **Project Creation** - Interactive wizard for Flutter projects
 - **Backend Integration** - Firebase and Supabase connectivity
