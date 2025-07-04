@@ -15,10 +15,11 @@ setup(
         "pyfiglet",
         "colorama",
         "rich",
+        "readchar"
     ],
     entry_points="""
         [console_scripts]
-        fluttercraft=fluttercraft.main:app
+        fluttercraft=fluttercraft.main:main
     """,
     python_requires=">=3.10",
     author="UTTAM-VAGHASIA",
