@@ -1,7 +1,7 @@
 # FlutterCraft 🛠️🚀
 
 **Automate your Flutter app setup like a pro.**  
-From folder structure to backend integration, from icons to GitHub repo setup — FlutterCraft does it all, in one CLI command.
+From folder structure to backend integration, from icons to GitHub repo setup — FlutterCraft does it all, with a beautiful GEMINI-inspired CLI interface.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![Build](https://github.com/UTTAM-VAGHASIA/fluttercraft/actions/workflows/cli-check.yml/badge.svg)
@@ -25,16 +25,24 @@ From folder structure to backend integration, from icons to GitHub repo setup �
 
 ## 🤖 CLI Status
 
-The interactive CLI is under active development. Here's a look at what's working and what's coming next.
+The interactive CLI is under active development with a GEMINI-inspired interface design. Here's a look at what's working and what's coming next.
+
+![FlutterCraft CLI Interface](https://github.com/UTTAM-VAGHASIA/fluttercraft/raw/main/docs/images/cli-interface.png)
 
 ### ✅ Current Features
 
+- **GEMINI-Inspired CLI Interface**: 
+  - Beautiful ASCII art logo that adapts to terminal width
+  - Intuitive GEMINI-style command prompt box
+  - Smart directory and Git branch display at the bottom
 - **Interactive Shell**: Start the CLI with `fluttercraft start`.
+- **Advanced Theming System**: Choose from multiple professionally designed themes.
+- **GEMINI-Like Interaction**: Chat-like interface with attractive styling.
 - **Environment Check**: Automatically detects existing Flutter and FVM installations.
 - **FVM Management**:
   - `fvm install`: Install the Flutter Version Manager.
   - `fvm uninstall`: Remove the Flutter Version Manager.
-- **Basic Commands**: `help`, `clear`, and `exit` are available.
+- **Basic Commands**: `help`, `theme`, `config`, and `exit` are available.
 
 ### 🚀 Upcoming Features
 

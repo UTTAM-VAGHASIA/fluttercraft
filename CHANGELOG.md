@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.2] - Unreleased
+## [0.1.2] - 2025-07-01
 
 ### Added
 
@@ -15,15 +15,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Global help: `help` or `h`
   - Command-specific help: `command help` or `command --help`
   - Detailed usage instructions and examples
+- Added GEMINI-inspired CLI interface:
+  - Beautiful ASCII art logo that adapts to terminal width
+  - Custom prompt box with improved styling
+  - Status bar showing current directory and Git branch
+  - Themed panels for messages and dialogs
 
 ### Changed
 
 - Changed the Output printing logic, now it is more user friendly.
 - Refactored the project structure for better maintainability.
+- Enhanced the welcome and goodbye screens with styled ASCII art
+- Improved theme management system with GEMINI-inspired themes
 
 ### Fixed
 
 - Made the project structure modular.
+- Fixed cursor positioning in the prompt box
+- Fixed display issues with ASCII art on different terminal widths
 
 
 ## [0.1.1] - 2025-06-15
