@@ -79,7 +79,7 @@ class FlutterCraftCompleter(Completer):
             for cmd, desc in SLASH_COMMANDS.items():
                 if cmd.startswith(text):
                     yield Completion(
-                        cmd[len(text) :],  # Only complete the remaining part
+                        cmd[len(text):],  # Only complete the remaining part
                         display=cmd,
                         display_meta=desc,
                     )
@@ -99,7 +99,7 @@ class FlutterCraftCompleter(Completer):
             for cmd, desc in ALL_COMMANDS.items():
                 if cmd.lower().startswith(text.lower()):
                     yield Completion(
-                        cmd[len(text) :],  # Only complete the remaining part
+                        cmd[len(text):],  # Only complete the remaining part
                         display=cmd,
                         display_meta=desc,
                     )
@@ -137,7 +137,7 @@ def get_git_info():
             return f"{branch}{status_indicator}"
         else:
             return None
-    except:
+    except Exception:
         return None
 
 
@@ -152,7 +152,7 @@ def get_current_path():
             return f"~\\{rel_path}"
         except ValueError:
             return str(cwd)
-    except:
+    except Exception:
         return os.getcwd()
 
 
@@ -230,7 +230,7 @@ def get_input_border_top():
         import shutil
 
         width = shutil.get_terminal_size().columns
-    except:
+    except Exception:
         width = 120
 
     # Ensure minimum width
@@ -246,7 +246,7 @@ def get_input_border_bottom():
         import shutil
 
         width = shutil.get_terminal_size().columns
-    except:
+    except Exception:
         width = 120
 
     # Ensure minimum width
@@ -337,7 +337,7 @@ def prompt_user_with_border(completer, history):
 
         # Get visible slice of completions
         visible_completions = current_completions[
-            scroll_offset[0] : scroll_offset[0] + VISIBLE_ITEMS
+            scroll_offset[0]: scroll_offset[0] + VISIBLE_ITEMS
         ]
 
         # Format completions as FormattedText with highlighting
