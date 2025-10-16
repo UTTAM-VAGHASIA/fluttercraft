@@ -55,4 +55,4 @@ def handle_help_command(command_parts):
         return show_clear_help()
 
     # If we reach here, it's not a recognized help command
-    return show_global_help() 
+    return show_global_help()

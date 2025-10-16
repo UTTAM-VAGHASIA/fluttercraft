@@ -30,34 +30,35 @@ def start_command():
     This is the main command that users will use to start creating Flutter apps.
     """
     import platform
-    
+
     # Check platform first
     current_platform = platform.system()
-    
+
     # If macOS or Linux, show coming soon message
     if current_platform in ["Darwin", "Linux"]:
         from fluttercraft.utils.beautiful_display import show_platform_not_supported
+
         show_platform_not_supported(current_platform)
         return
-    
+
     # Show ASCII art
     console.print(f"[bold cyan]{create_ascii_art()}[/]\n")
-    
+
     # Show loading spinner
     spinner = Spinner("dots", text="[cyan]Loading system information...[/]")
     with Live(spinner, console=console, refresh_per_second=10):
         # Get platform information (fast, no external calls)
         platform_info = get_platform_info()
         time.sleep(0.3)  # Small delay to show spinner
-        
+
         # Check Flutter installation and version (silent mode)
         flutter_info = check_flutter_version(silent=True)
         time.sleep(0.3)  # Small delay to show spinner
-        
+
         # Check FVM installation (silent mode)
         fvm_info = check_fvm_version(silent=True)
         time.sleep(0.3)  # Small delay to show spinner
-    
+
     # Clear screen and display static header
     clear_screen()
     display_welcome_header(platform_info, flutter_info, fvm_info, show_ascii=True)
@@ -77,7 +78,7 @@ def start_command():
 
             # Execute command
             should_continue = handler.execute_command(command)
-            
+
             # Update system info from handler (in case versions changed)
             platform_info = handler.platform_info
             flutter_info = handler.flutter_info

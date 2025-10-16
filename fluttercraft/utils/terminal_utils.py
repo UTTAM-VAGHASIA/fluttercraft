@@ -91,7 +91,7 @@ def run_with_loading(
 
     # Track if we've collected any output at all
     has_output = False
-    
+
     # Loading animation frames
     loading_frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
     frame_index = [0]  # Use list to make it mutable
@@ -99,7 +99,11 @@ def run_with_loading(
     # Use Live display with transient=True to allow removing the panel completely
     # We'll manually manage when to show/hide it
     live = Live(
-        Panel(f"{loading_frames[0]} {status_message}\n", title="Command Output", width=panel_width),
+        Panel(
+            f"{loading_frames[0]} {status_message}\n",
+            title="Command Output",
+            width=panel_width,
+        ),
         console=console,
         refresh_per_second=10,
         transient=True,  # This allows the panel to be removed completely when stopped
@@ -119,7 +123,7 @@ def run_with_loading(
             # Update loading animation frame
             frame_index[0] = (frame_index[0] + 1) % len(loading_frames)
             current_frame = loading_frames[frame_index[0]]
-            
+
             # Check for output from stdout
             try:
                 while not stdout_queue.empty():
@@ -148,15 +152,18 @@ def run_with_loading(
                         output_lines.pop(0)
             except Empty:
                 pass
-            
+
             # Update the panel with loading indicator
             if output_lines:
                 # Show output with loading indicator at top
-                content = f"[cyan]{current_frame}[/cyan] {status_message}\n\n" + "\n".join(output_lines)
+                content = (
+                    f"[cyan]{current_frame}[/cyan] {status_message}\n\n"
+                    + "\n".join(output_lines)
+                )
             else:
                 # Show just loading indicator
                 content = f"[cyan]{current_frame}[/cyan] {status_message}"
-            
+
             live.update(
                 Panel(
                     content,
@@ -195,52 +202,62 @@ def run_with_loading(
         # - Always show on failure (to help user debug)
         # - Hide on success if clear_on_success is True
         # - Show on success if show_output_on_failure is True (for consistency)
-        should_show_panel = (not success) or (success and not clear_on_success) or show_output_on_failure
+        should_show_panel = (
+            (not success)
+            or (success and not clear_on_success)
+            or show_output_on_failure
+        )
 
         if should_show_panel and (has_output or not success):
             # Build final output
             final_output = []
-            
+
             # Add output lines if any
             if output_lines:
                 final_output.extend(output_lines)
-            
+
             # Always add status message on failure, optionally on success
             if not success:
                 # On failure, always show error message
-                error_msg = f"[bold red]✗ Command failed with exit code {process.returncode}[/]"
+                error_msg = (
+                    f"[bold red]✗ Command failed with exit code {process.returncode}[/]"
+                )
                 final_output.append("")
                 final_output.append(error_msg)
             elif show_status_message:
                 # On success, only if requested
                 final_output.append("")
                 final_output.append("[bold green]✓ Command completed successfully[/]")
-            
+
             # If no output but command failed, show a message
             if not output_lines and not success:
                 final_output.insert(0, "[dim]No output captured[/]")
 
             live.update(
                 Panel(
-                    "\n".join(final_output), 
-                    title="Command Output" if success else "[red]Command Failed[/red]", 
+                    "\n".join(final_output),
+                    title="Command Output" if success else "[red]Command Failed[/red]",
                     width=panel_width,
-                    border_style="red" if not success else "cyan"
+                    border_style="red" if not success else "cyan",
                 )
             )
 
             # Stop live display
             live.stop()
-            
+
             # Print the panel permanently so it stays visible
             # (both on success and failure when we want to show output)
             if final_output:  # Only print if there's actual output
                 console.print(
                     Panel(
-                        "\n".join(final_output), 
-                        title="[red]Command Failed[/red]" if not success else "Command Output", 
+                        "\n".join(final_output),
+                        title=(
+                            "[red]Command Failed[/red]"
+                            if not success
+                            else "Command Output"
+                        ),
                         width=panel_width,
-                        border_style="red" if not success else "cyan"
+                        border_style="red" if not success else "cyan",
                     )
                 )
         else:

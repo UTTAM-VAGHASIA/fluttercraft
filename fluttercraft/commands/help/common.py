@@ -21,4 +21,4 @@ def show_clear_help():
     console.print("\n[bold green]Examples:[/]")
     console.print("  [cyan]clear[/] - Clear the terminal screen")
 
-    return "Displayed clear help" 
+    return "Displayed clear help"

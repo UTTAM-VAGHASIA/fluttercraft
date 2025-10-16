@@ -223,4 +223,4 @@ def fvm_releases_command(channel=None):
             "  [yellow]fvm use <version>[/] - Set a specific Flutter version as active"
         )
 
-        return output.get_output() 
+        return output.get_output()

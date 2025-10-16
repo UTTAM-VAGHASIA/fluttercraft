@@ -81,7 +81,7 @@ def refresh_display(platform_info, flutter_info, fvm_info, should_clear=False):
     """
     # Store the existing history if we're not clearing it
     saved_history = [] if should_clear else list(command_history)
-    
+
     # Redisplay full header with current version info
     display_full_header(platform_info, flutter_info, fvm_info)
 

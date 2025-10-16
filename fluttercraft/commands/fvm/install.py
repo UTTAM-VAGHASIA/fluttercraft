@@ -149,4 +149,4 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
                 console.print(
                     "[yellow]Please restart your terminal and run 'fvm --version' to verify installation.[/]"
                 )
-                return fvm_info, output.get_output() 
+                return fvm_info, output.get_output()

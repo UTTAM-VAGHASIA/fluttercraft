@@ -6,12 +6,12 @@ from fluttercraft.utils.terminal_utils import run_with_loading
 
 def check_flutter_version(silent=False):
     """Check if Flutter is installed and get version information.
-    
+
     Uses only 'flutter upgrade --verify-only' to check both installation and updates.
-    
+
     Args:
         silent: If True, suppress all loading indicators and output
-    
+
     Returns:
         dict: {
             "installed": bool,
@@ -31,23 +31,26 @@ def check_flutter_version(silent=False):
             # Silent mode - no loading indicators
             import subprocess
             import platform as plat
+
             upgrade_result = subprocess.run(
                 ["flutter", "upgrade", "--verify-only"],
                 capture_output=True,
                 text=True,
                 timeout=30,  # Increased timeout for slower systems
-                shell=(plat.system() == "Windows")  # Use shell on Windows to find flutter in PATH
+                shell=(
+                    plat.system() == "Windows"
+                ),  # Use shell on Windows to find flutter in PATH
             )
+
             # Create a simple object to match run_with_loading return
             class Result:
                 def __init__(self, returncode, stdout, stderr):
                     self.returncode = returncode
                     self.stdout = stdout
                     self.stderr = stderr
+
             upgrade_process = Result(
-                upgrade_result.returncode,
-                upgrade_result.stdout,
-                upgrade_result.stderr
+                upgrade_result.returncode, upgrade_result.stdout, upgrade_result.stderr
             )
         else:
             upgrade_process = run_with_loading(
@@ -65,11 +68,9 @@ def check_flutter_version(silent=False):
             # Case 1: When there's an update available
             if "A new version of Flutter is available" in output:
                 update_available = True
-                
+
                 # Latest version check
-                latest_match = re.search(
-                    r"The latest version: (\d+\.\d+\.\d+)", output
-                )
+                latest_match = re.search(r"The latest version: (\d+\.\d+\.\d+)", output)
                 if latest_match:
                     latest_version = latest_match.group(1)
 
@@ -83,13 +84,13 @@ def check_flutter_version(silent=False):
             # Case 2: When Flutter is already up to date
             elif "Flutter is already up to date" in output or "already on" in output:
                 update_available = False
-                
+
                 # Try to extract version from output
                 version_match = re.search(r"Flutter (\d+\.\d+\.\d+)", output)
                 if version_match:
                     current_version = version_match.group(1)
                     latest_version = current_version  # Same version
-                    
+
     except FileNotFoundError:
         # Flutter command not found
         flutter_installed = False
@@ -97,6 +98,7 @@ def check_flutter_version(silent=False):
         # Catch any other exceptions (timeout, etc.)
         if not silent:
             from rich.console import Console
+
             console = Console()
             console.print(f"[dim]Note: Could not check Flutter version: {str(e)}[/]")
 

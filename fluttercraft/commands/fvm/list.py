@@ -224,4 +224,4 @@ def fvm_list_command():
                     "\n[dim italic]💡 To learn more about a command, type: [cyan]command --help[/][/]"
                 )
 
-        return output.get_output() 
+        return output.get_output()

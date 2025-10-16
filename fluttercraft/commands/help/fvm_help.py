@@ -193,4 +193,4 @@ def show_fvm_list_help():
     console.print("\n[bold green]Examples:[/]")
     console.print("  [cyan]fvm list[/] - Show all installed Flutter versions")
 
-    return "Displayed fvm list help" 
+    return "Displayed fvm list help"

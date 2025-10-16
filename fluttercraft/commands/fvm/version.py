@@ -9,7 +9,7 @@ console = Console()
 
 def check_fvm_version(silent=False):
     """Check if FVM is installed and get version information.
-    
+
     Args:
         silent: If True, suppress all loading indicators and output
     """
@@ -21,21 +21,18 @@ def check_fvm_version(silent=False):
         if silent:
             # Silent mode - no loading indicators
             fvm_result = subprocess.run(
-                ["fvm", "--version"],
-                capture_output=True,
-                text=True,
-                timeout=5
+                ["fvm", "--version"], capture_output=True, text=True, timeout=5
             )
+
             # Create a simple object to match run_with_loading return
             class Result:
                 def __init__(self, returncode, stdout, stderr):
                     self.returncode = returncode
                     self.stdout = stdout
                     self.stderr = stderr
+
             fvm_version_process = Result(
-                fvm_result.returncode,
-                fvm_result.stdout,
-                fvm_result.stderr
+                fvm_result.returncode, fvm_result.stdout, fvm_result.stderr
             )
         else:
             fvm_version_process = run_with_loading(

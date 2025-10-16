@@ -192,4 +192,4 @@ def fvm_uninstall_command(platform_info, flutter_info, fvm_info):
                 console.print(
                     "[yellow]Please restart your terminal and check with 'fvm --version'.[/]"
                 )
-                return fvm_info, output.get_output() 
+                return fvm_info, output.get_output()

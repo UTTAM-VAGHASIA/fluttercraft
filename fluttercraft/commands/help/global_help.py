@@ -60,4 +60,4 @@ def show_global_help():
         "    [cyan]fvm install help[/] - Show help for the fvm install command"
     )
 
-    return "Displayed global help" 
+    return "Displayed global help"
