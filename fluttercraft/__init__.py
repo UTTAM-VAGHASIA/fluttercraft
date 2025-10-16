@@ -1,3 +1,3 @@
 """FlutterCraft: Automate your Flutter app setup like a pro."""
 
-__version__ = "0.1.2.dev1"
+__version__ = "0.1.2"

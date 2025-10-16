@@ -11,7 +11,7 @@ console = Console()
 @app.command()
 def start():
     """Start the FlutterCraft interactive CLI."""
-    display_welcome_art()
+    # Don't display old welcome art - start_command handles it
     start_command()
 
 

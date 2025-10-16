@@ -7,7 +7,7 @@ with io.open("README.md", encoding="utf-8") as f:
 
 setup(
     name="fluttercraft",
-    version="0.1.2.dev1",
+    version="0.1.2",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -15,6 +15,8 @@ setup(
         "pyfiglet",
         "colorama",
         "rich",
+        "prompt_toolkit>=3.0.0",
+        "pygments>=2.0.0",
     ],
     entry_points="""
         [console_scripts]
