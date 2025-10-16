@@ -2,27 +2,30 @@
 
 ## Overview
 
-The FlutterCraft CLI has been completely redesigned with a beautiful, modern interface inspired by Claude Code and Gemini CLI. The new interface features slash commands, multiline input support, auto-completion, and dynamic header updates.
+The FlutterCraft CLI has been completely redesigned with a beautiful, modern interface inspired by Claude Code and Gemini CLI. The latest iteration introduces a modular command registry, theming service, slash commands, multiline input support, adaptive auto-completion, and dynamic header updates.
 
 ## Key Features
 
 ### 1. Beautiful Interface
-- **ASCII Art Header**: Eye-catching FlutterCraft branding with bordered panel
-- **Color-Coded Output**: Rich formatting with colors for better readability
+- **Gradient ASCII Art Header**: Signature FlutterCraft palette rendered via the theming service
+- **Color-Coded Output**: Rich semantic colors sourced from active theme definitions
 - **Bottom Toolbar**: Helpful hints displayed at the bottom of the terminal
-- **Auto-Completion**: Smart command suggestions as you type
+- **Adaptive Auto-Completion**: Command registry provides live suggestions and descriptions
 
 ### 2. Slash Commands
-All system commands now use the `/` prefix for clarity:
+All system commands now use the `/` prefix and are registered through the command registry for consistent handling:
 
 - `/quit`, `/exit`, `/q` - Exit the CLI
 - `/clear` - Clear screen while preserving header
 - `/help` - Display help information
+- `/about` - Show CLI information and version
+- `/theme` - Launch the interactive theme selector and refresh header state
 
 ### 3. Dynamic Header Updates
-The header automatically updates when:
+All header rendering flows through `ThemeDisplayService`, ensuring consistent styling when:
 - **Flutter version changes**: Running `flutter upgrade` updates the version in the header
 - **FVM installation changes**: Installing/uninstalling FVM updates the header
+- **Theme changes**: `/theme` updates immediately reflect in ASCII art and panels
 - **Version information**: Shows current vs. latest version with helpful messages
 
 ### 4. Command History
@@ -34,7 +37,14 @@ The header automatically updates when:
 ### 5. Enhanced Error Handling
 - **Graceful Ctrl+C**: Doesn't exit, just cancels current input
 - **Ctrl+D Support**: Quick exit using Ctrl+D
-- **Clear Error Messages**: Helpful error messages with suggestions
+- **Clear Error Messages**: Helpful error messages with suggestions rendered through the theming service
+
+## Command Architecture Overview
+
+- **CommandRegistry**: Stores command metadata, aliases, and categories.
+- **CommandExecutor**: Parses user input, locates the correct command, and executes it safely.
+- **CommandContext**: Shares platform, Flutter, and FVM information with every command.
+- **CommandResult**: Standardizes success/failure messaging and whether the REPL should continue.
 
 ## Command Reference
 
@@ -49,7 +59,7 @@ Thank you for using FlutterCraft! Goodbye! 👋
 ```
 
 #### `/clear`
-Clear the screen and command history while preserving the header with current version information.
+Clear the screen and command history while preserving the header with current version information. Implemented via `ThemeDisplayService.clear_screen()` to ensure consistent cross-platform behaviour.
 
 ```
 fluttercraft> /clear
@@ -61,7 +71,13 @@ fluttercraft> /clear
 - Resets command history
 
 #### `/help`
-Display comprehensive help information about available commands.
+Display comprehensive help information about available commands using `ThemeDisplayService.show_help()`.
+
+#### `/about`
+Show rich CLI metadata (version, author, repository) rendered through `ThemeDisplayService.show_about()`.
+
+#### `/theme`
+Open the interactive theme selector and immediately refresh ASCII art and headers via the theming service.
 
 ```
 fluttercraft> /help

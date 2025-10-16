@@ -3,11 +3,14 @@
 import os
 from rich.console import Console
 from rich.prompt import Prompt
+
 from fluttercraft.utils.terminal_utils import run_with_loading, OutputCapture
 from fluttercraft.utils.system_utils import check_chocolatey_installed
+from fluttercraft.utils.themes.service import ThemeDisplayService
 from fluttercraft.commands.fvm.version import check_fvm_version
 
 console = Console()
+display = ThemeDisplayService(console)
 
 
 def fvm_install_command(platform_info, flutter_info, fvm_info):
@@ -23,12 +26,16 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
     with OutputCapture() as output:
         # First check if FVM is already installed
         if fvm_info["installed"]:
-            console.print(
-                f"[bold green]FVM is already installed (version: {fvm_info['version']})[/]"
+            display.print_success(
+                f"FVM is already installed (version: {fvm_info['version']})"
             )
             return fvm_info, output.get_output()
 
-        console.print("[bold blue]Installing Flutter Version Manager (FVM)...[/]")
+        console.print(
+            display.format_text(
+                "info", "Installing Flutter Version Manager (FVM)...", bold=True
+            )
+        )
 
         # Windows installation (using Chocolatey)
         if platform_info["system"].lower().startswith("windows"):
@@ -37,25 +44,44 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
 
             if not choco_info["installed"]:
                 console.print(
-                    "[bold yellow]Chocolatey package manager is required but not installed.[/]"
+                    display.format_text(
+                        "warning",
+                        "Chocolatey package manager is required but not installed.",
+                        bold=True,
+                    )
                 )
                 install_choco = Prompt.ask(
-                    "[bold yellow]Would you like to install Chocolatey? (requires admin privileges)[/]",
+                    display.format_text(
+                        "warning",
+                        "Would you like to install Chocolatey? (requires admin privileges)",
+                        bold=True,
+                    ),
                     choices=["y", "n"],
                     default="y",
                 )
 
                 if install_choco.lower() != "y":
                     console.print(
-                        "[red]FVM installation aborted. Chocolatey is required to install FVM on Windows.[/]"
+                        display.format_text(
+                            "error",
+                            "FVM installation aborted. Chocolatey is required to install FVM on Windows.",
+                        )
                     )
                     return fvm_info, output.get_output()
 
                 console.print(
-                    "[bold yellow]Installing Chocolatey. This requires administrative privileges...[/]"
+                    display.format_text(
+                        "warning",
+                        "Installing Chocolatey. This requires administrative privileges...",
+                        bold=True,
+                    )
                 )
                 console.print(
-                    "[bold yellow]Please allow the UAC prompt if it appears...[/]"
+                    display.format_text(
+                        "warning",
+                        "Please allow the UAC prompt if it appears...",
+                        bold=True,
+                    )
                 )
 
                 # Command to install Chocolatey
@@ -67,7 +93,9 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
 
                 result = run_with_loading(
                     admin_cmd,
-                    status_message="[bold yellow]Installing Chocolatey package manager...[/]",
+                    status_message=display.format_text(
+                        "warning", "Installing Chocolatey package manager...", bold=True
+                    ),
                     clear_on_success=True,
                     show_output_on_failure=True,
                 )
@@ -76,18 +104,30 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
                 choco_info = check_chocolatey_installed()
                 if not choco_info["installed"]:
                     console.print(
-                        "[bold red]Failed to install Chocolatey. Please install it manually.[/]"
+                        display.format_text(
+                            "error",
+                            "Failed to install Chocolatey. Please install it manually.",
+                            bold=True,
+                        )
                     )
                     return fvm_info, output.get_output()
                 else:
-                    console.print(
-                        f"[bold green]Chocolatey installed successfully (version: {choco_info['version']})![/]"
+                    display.print_success(
+                        f"Chocolatey installed successfully (version: {choco_info['version']})!"
                     )
 
             # Install FVM using Chocolatey
-            console.print("[bold yellow]Installing FVM using Chocolatey...[/]")
             console.print(
-                "[bold yellow]This requires administrative privileges. Please allow the UAC prompt if it appears...[/]"
+                display.format_text(
+                    "warning", "Installing FVM using Chocolatey...", bold=True
+                )
+            )
+            console.print(
+                display.format_text(
+                    "warning",
+                    "This requires administrative privileges. Please allow the UAC prompt if it appears...",
+                    bold=True,
+                )
             )
 
             # Use PowerShell's Start-Process with -Verb RunAs to request elevation
@@ -95,7 +135,9 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
 
             result = run_with_loading(
                 admin_cmd,
-                status_message="[bold yellow]Installing FVM via Chocolatey...[/]",
+                status_message=display.format_text(
+                    "warning", "Installing FVM via Chocolatey...", bold=True
+                ),
                 clear_on_success=True,
                 show_output_on_failure=True,
             )
@@ -103,50 +145,76 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
             # Verify installation
             updated_fvm_info = check_fvm_version()
             if updated_fvm_info["installed"]:
-                console.print(
-                    f"[bold green]FVM installed successfully (version: {updated_fvm_info['version']})![/]"
+                display.print_success(
+                    f"FVM installed successfully (version: {updated_fvm_info['version']})!"
                 )
                 return updated_fvm_info, output.get_output()
             else:
                 console.print(
-                    "[bold red]Failed to install FVM. Please try installing it manually.[/]"
+                    display.format_text(
+                        "error",
+                        "Failed to install FVM. Please try installing it manually.",
+                        bold=True,
+                    )
                 )
-                console.print("[yellow]You can try: choco install fvm -y[/]")
+                console.print(
+                    display.format_text("warning", "You can try: choco install fvm -y")
+                )
                 return fvm_info, output.get_output()
 
         # macOS and Linux installation (using curl)
         else:
-            console.print("[bold yellow]Installing FVM using curl...[/]")
+            console.print(
+                display.format_text(
+                    "warning", "Installing FVM using curl...", bold=True
+                )
+            )
 
             curl_cmd = "curl -fsSL https://fvm.app/install.sh | bash"
 
             result = run_with_loading(
                 curl_cmd,
-                status_message="[bold yellow]Installing FVM via curl...[/]",
+                status_message=display.format_text(
+                    "warning", "Installing FVM via curl...", bold=True
+                ),
                 clear_on_success=True,
                 show_output_on_failure=True,
             )
 
             if result.returncode != 0:
-                console.print("[bold red]Failed to install FVM. Error:[/]")
+                console.print(
+                    display.format_text(
+                        "error", "Failed to install FVM. Error:", bold=True
+                    )
+                )
                 console.print(result.stderr)
                 console.print(
-                    "[yellow]You can try installing manually: curl -fsSL https://fvm.app/install.sh | bash[/]"
+                    display.format_text(
+                        "warning",
+                        "You can try installing manually: curl -fsSL https://fvm.app/install.sh | bash",
+                    )
                 )
                 return fvm_info, output.get_output()
 
             # Verify installation
             updated_fvm_info = check_fvm_version()
             if updated_fvm_info["installed"]:
-                console.print(
-                    f"[bold green]FVM installed successfully (version: {updated_fvm_info['version']})![/]"
+                display.print_success(
+                    f"FVM installed successfully (version: {updated_fvm_info['version']})!"
                 )
                 return updated_fvm_info, output.get_output()
             else:
                 console.print(
-                    "[bold yellow]FVM may have been installed but needs a terminal restart to be detected.[/]"
+                    display.format_text(
+                        "warning",
+                        "FVM may have been installed but needs a terminal restart to be detected.",
+                        bold=True,
+                    )
                 )
                 console.print(
-                    "[yellow]Please restart your terminal and run 'fvm --version' to verify installation.[/]"
+                    display.format_text(
+                        "warning",
+                        "Please restart your terminal and run 'fvm --version' to verify installation.",
+                    )
                 )
                 return fvm_info, output.get_output()

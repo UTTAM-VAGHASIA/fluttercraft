@@ -13,14 +13,14 @@ From folder structure to backend integration, from icons to GitHub repo setup �
 
 ## ✨ Features
 
-- 🎨 **Beautiful CLI Interface** - Modern, Gemini-inspired design with ASCII art
-- 📦 **Flutter Version Management** - Upgrade Flutter with real-time progress tracking
-- 🔄 **FVM Integration** - Install, manage, and switch between Flutter SDK versions
-- ⚡ **Animated Loading Indicators** - Visual feedback during command execution
-- 📊 **Smart Version Tracking** - See available updates at a glance
-- 🛠️ **Comprehensive Help System** - Built-in help for all commands
-- ⌨️ **Auto-completion** - Tab completion with live command suggestions
-- 🎯 **Error Handling** - Clear, actionable error messages with debugging info
+- 🎛️ **Modular Command Registry** - Unified dispatcher with structured metadata for slash, FVM, and Flutter commands
+- 🎨 **Beautiful CLI Interface** - Rich-driven experience with gradient ASCII art and responsive layout
+- 🔄 **FVM Integration** - Install, list, and explore releases with consistent UX feedback
+- 📦 **Flutter Upgrade Pipeline** - Guided `flutter upgrade` flow with verify-only support and status refresh
+- 🌈 **Theming Service Layer** - Central theme renderer powering ASCII art, panels, and status messaging
+- ⌨️ **Adaptive Auto-completion** - Prompt suggestions sourced from the command registry, refreshed at runtime
+- ⚡ **Animated Loading Indicators** - Live spinners and progress cues during long operations
+- 🛡️ **Robust Error Handling** - Consistent success/error messaging with themed formatting
 
 ---
 
@@ -28,19 +28,18 @@ From folder structure to backend integration, from icons to GitHub repo setup �
 
 The interactive CLI features a **beautiful, modern interface**! 🎨
 
-### ✨ Beautiful Gemini-Style Interface
+### ✨ Modern Interface Backed by Services
 
-- **🎨 ANSI Shadow ASCII Art**: Modern, bold FlutterCraft branding
-- **📦 Bordered Input Box**: Professional Frame-based input with automatic borders
-- **📋 Permanent Completion Menu**: Dedicated area below input that updates live as you type
-- **⌨️ Interactive Navigation**: 
+- **🎨 Gradient ASCII Art**: Signature FlutterCraft palette rendered by the theming service
+- **📦 Bordered Input Box**: Frame-based prompt with contextual toolbar and command history
+- **📋 Dynamic Completion Menu**: Command registry drives descriptions and aliases in real time
+- **⌨️ Interactive Navigation**:
   - ↑/↓ arrows to navigate completions with visual highlighting
   - Tab to fill input without submitting
   - Enter to select from menu or submit command
-- **⚡ Slash Commands**: Modern command syntax (`/quit`, `/clear`, `/help`)
-- **🔄 Dynamic Updates**: Header automatically updates when Flutter version changes
-- **📍 Smart Footer**: Shows current path and git branch/status
-- **🎯 Live Completions**: Menu updates instantly as you type, showing command descriptions
+- **⚡ Slash Commands**: `/quit`, `/clear`, `/help`, `/about`, `/theme` registered through the command registry
+- **🔄 Live Header Refresh**: Platform, Flutter, and FVM state refreshed after every command execution
+- **📍 Smart Footer**: Displays current path and git status
 
 ### ✅ Current Features (v0.1.2)
 

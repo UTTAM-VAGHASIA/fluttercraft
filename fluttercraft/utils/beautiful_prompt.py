@@ -1,5 +1,7 @@
 """Beautiful prompt system using prompt_toolkit for FlutterCraft CLI."""
 
+from typing import Iterable, TYPE_CHECKING
+
 from prompt_toolkit import PromptSession, Application
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import InMemoryHistory
@@ -13,6 +15,9 @@ from rich.console import Console
 import os
 from pathlib import Path
 
+if TYPE_CHECKING:
+    from fluttercraft.commands.core import CommandMetadata
+
 console = Console()
 
 # Define slash commands with descriptions
@@ -21,6 +26,7 @@ SLASH_COMMANDS = {
     "/clear": "Clear screen and conversation history",
     "/help": "Show comprehensive help information",
     "/about": "Show information about FlutterCraft CLI",
+    "/theme": "Launch interactive theme selector",
 }
 
 # Define FVM commands with descriptions
@@ -44,7 +50,26 @@ FLUTTER_COMMANDS = {
 }
 
 # Combine all commands
-ALL_COMMANDS = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
+BASE_COMMANDS = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
+ALL_COMMANDS = dict(BASE_COMMANDS)
+
+
+# Completion management
+def update_command_completions(
+    command_metadata: Iterable["CommandMetadata"],
+) -> None:
+    """Refresh completion map from registered commands."""
+
+    global ALL_COMMANDS
+
+    commands = dict(BASE_COMMANDS)
+    for metadata in command_metadata:
+        description = metadata.help_text or ""
+        commands[metadata.name] = description
+        for alias in metadata.aliases:
+            commands[alias] = description
+
+    ALL_COMMANDS = commands
 
 
 # Define custom style for the prompt

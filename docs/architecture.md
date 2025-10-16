@@ -10,23 +10,30 @@ This document outlines the current architecture of the FlutterCraft CLI tool.
 
 ```
 fluttercraft/
-├── main.py                  # CLI entrypoint and Typer app configuration
-├── __main__.py              # Direct module execution entry point
-├── __init__.py              # Package initialization
-├── commands/                # Command implementations
-│   ├── __init__.py          # Package initialization and exports
-│   ├── start.py             # Start command implementation
-│   ├── fvm_commands.py      # FVM command implementations
-│   ├── flutter_commands.py  # Flutter command implementations
-│   └── help_commands.py     # Help system implementations
-├── config/                  # Configuration handling (future)
-│   └── __init__.py          # Package initialization
-└── utils/                   # Utility functions
-    ├── __init__.py          # Package initialization
-    ├── display_utils.py     # Display and UI utilities
-    ├── platform_utils.py    # Platform detection utilities
-    ├── system_utils.py      # System interaction utilities
-    └── terminal_utils.py    # Terminal and command execution utilities
+├── main.py                      # Typer entrypoint wiring CLI to start command
+├── __main__.py                  # Direct module execution entry point
+├── commands/
+│   ├── __init__.py
+│   ├── bootstrap.py             # Builds command registry + executor
+│   ├── core/                    # Shared command infrastructure
+│   │   ├── base.py              # Abstract command base class
+│   │   ├── executor.py          # CommandExecutor orchestrating dispatch
+│   │   ├── models.py            # Command metadata, context, result dataclasses
+│   │   └── registry.py          # CommandRegistry with alias/category support
+│   ├── start.py                 # Interactive REPL entrypoint
+│   ├── slash_commands.py        # `/quit`, `/clear`, `/help`, etc.
+│   ├── fvm_command.py           # Aggregated FVM command family
+│   └── flutter_command.py       # Flutter command family (upgrade, etc.)
+└── utils/
+    ├── __init__.py
+    ├── themed_display.py        # Facade delegating to theme display service
+    ├── beautiful_prompt.py      # Prompt session + completion plumbing
+    ├── platform_utils.py        # Platform detection utilities
+    ├── terminal_utils.py        # Terminal execution helpers
+    └── themes/
+        ├── service.py           # ThemeDisplayService central renderer
+        ├── theme_manager.py     # Theme persistence + lookup
+        └── professional_themes.py
 ```
 
 ### Entry Point
@@ -39,28 +46,13 @@ The main entry point is `fluttercraft/main.py`, which:
 
 ### Commands
 
-The following commands are implemented:
+The command layer is now driven by a registry/executor pair:
 
-- **start.py**: Implements the interactive CLI with:
-  - Command prompt using Rich
-  - Help command handling
-  - FVM command handling
-  - Clear command handling
-  - Exit command handling
-  - Environment information display
-
-- **fvm_commands.py**: Implements FVM-related commands:
-  - `check_fvm_version()`: Detects FVM installation
-  - `fvm_install_command()`: Installs FVM on different platforms
-  - `fvm_uninstall_command()`: Uninstalls FVM with cleanup options
-  - `fvm_releases_command()`: Lists available Flutter versions
-  - `fvm_list_command()`: Displays installed Flutter versions
-
-- **help_commands.py**: Implements the help system:
-  - Global help display
-  - FVM-specific help displays
-  - Command-specific help for each command
-  - Help command handling
+- **core/** modules define the contract every command follows. Each command returns a `CommandResult` to standardize success, messaging, and flow control (`should_continue`).
+- **bootstrap.py** registers built-in command families and produces a `CommandExecutor` consumed by `start.py`.
+- **slash_commands.py** implements `/quit`, `/clear`, `/help`, `/about`, and `/theme` as discrete command classes.
+- **fvm_command.py** and **flutter_command.py** wrap existing orchestration logic while emitting consistent results and refreshing display state.
+- **start.py** now focuses on the REPL: building context, delegating to the executor, and printing command results.
 
 ### Utility Modules
 
@@ -119,22 +111,19 @@ sequenceDiagram
 
 ### 1. CLI Processing
 
-The command line processing is handled by Typer, which provides:
-- Command registration
-- Help text generation
-- Command parsing and dispatch
-- Option handling
+Typer still provides the outer CLI surface (`fluttercraft start`). Once the REPL begins, command parsing is handled by the new registry/executor stack:
+- **CommandRegistry** resolves commands by name or alias and organises them by category.
+- **CommandExecutor** normalizes tokens, routes to the appropriate command, and safeguards against runtime errors.
+- **CommandContext** shares platform/Flutter/FVM state, Rich console, and prompt history across commands.
 
 ### 2. Start Command
 
-The start command implements a Read-Evaluate-Print Loop (REPL) that:
-1. Displays environment information
-2. Shows a prompt using Rich
-3. Reads user input
-4. Processes commands (help, fvm, clear, exit, etc.)
-5. Dispatches to appropriate command handlers
-6. Displays formatted responses
-7. Tracks command history
+`start.py` constructs the command system via `build_command_system()` and wires prompt completions with live metadata from the registry. The REPL loop now:
+1. Displays environment information using the theme service
+2. Prompts with `beautiful_prompt.py`
+3. Dispatches user input through `CommandExecutor`
+4. Prints `CommandResult` messages and respects `should_continue`
+5. Keeps context (platform/Flutter/FVM dictionaries) in sync for subsequent commands
 
 ### 3. FVM Commands
 
@@ -153,13 +142,13 @@ The help system provides:
 3. Command-specific help with usage examples
 4. Support for multiple help command formats
 
-### 5. Display Utilities
+### 5. Display & Theming
 
-The display utilities provide:
-1. Welcome ASCII art generation
-2. Rich formatting for tables and text
-3. Command history tracking
-4. Screen refreshing
+Display responsibilities now flow through `ThemeDisplayService` located in `utils/themes/service.py`:
+1. Renders ASCII art with a dedicated FlutterCraft gradient
+2. Produces welcome/about/help sections using theme semantic colors
+3. Exposes `print_success`/`print_error` helpers via `themed_display.py`
+4. Centralizes screen clearing and Rich console interactions
 
 ### 6. Terminal Utilities
 

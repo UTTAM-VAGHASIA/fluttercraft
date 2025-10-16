@@ -8,18 +8,21 @@ from rich.live import Live
 from prompt_toolkit.history import InMemoryHistory
 
 from fluttercraft.utils.platform_utils import get_platform_info
-from fluttercraft.utils.beautiful_display import (
-    display_welcome_header,
-    create_ascii_art,
+from fluttercraft.utils.beautiful_display import show_platform_not_supported
+from fluttercraft.utils.themed_display import (
+    display_themed_welcome_header,
+    create_themed_ascii_art,
     clear_screen,
 )
 from fluttercraft.utils.beautiful_prompt import (
     prompt_user_with_border,
     FlutterCraftCompleter,
+    update_command_completions,
 )
 from fluttercraft.commands.flutter_commands import check_flutter_version
 from fluttercraft.commands.fvm_commands import check_fvm_version
-from fluttercraft.commands.command_handler import CommandHandler
+from fluttercraft.commands.core import CommandContext
+from fluttercraft.commands.bootstrap import build_command_system
 
 console = Console()
 
@@ -36,13 +39,13 @@ def start_command():
 
     # If macOS or Linux, show coming soon message
     if current_platform in ["Darwin", "Linux"]:
-        from fluttercraft.utils.beautiful_display import show_platform_not_supported
-
         show_platform_not_supported(current_platform)
         return
 
-    # Show ASCII art
-    console.print(f"[bold cyan]{create_ascii_art()}[/]\n")
+    # Show themed ASCII art
+    ascii_art = create_themed_ascii_art()
+    console.print(ascii_art)
+    console.print()
 
     # Show loading spinner
     spinner = Spinner("dots", text="[cyan]Loading system information...[/]")
@@ -59,16 +62,26 @@ def start_command():
         fvm_info = check_fvm_version(silent=True)
         time.sleep(0.3)  # Small delay to show spinner
 
-    # Clear screen and display static header
+    # Clear screen and display themed static header
     clear_screen()
-    display_welcome_header(platform_info, flutter_info, fvm_info, show_ascii=True)
+    display_themed_welcome_header(
+        platform_info, flutter_info, fvm_info, show_ascii=True
+    )
 
     # Create completer and history for bordered prompt
     completer = FlutterCraftCompleter()
     history = InMemoryHistory()
 
-    # Create command handler
-    handler = CommandHandler(platform_info, flutter_info, fvm_info)
+    executor = build_command_system(console)
+    update_command_completions(executor.registry.to_metadata())
+
+    context = CommandContext(
+        platform_info=platform_info,
+        flutter_info=flutter_info,
+        fvm_info=fvm_info,
+        console=console,
+        prompt_history=history,
+    )
 
     # Main REPL loop
     while True:
@@ -77,14 +90,12 @@ def start_command():
             command = prompt_user_with_border(completer, history)
 
             # Execute command
-            should_continue = handler.execute_command(command)
+            result = executor.dispatch(command, context)
 
-            # Update system info from handler (in case versions changed)
-            platform_info = handler.platform_info
-            flutter_info = handler.flutter_info
-            fvm_info = handler.fvm_info
+            if result.message:
+                console.print(result.message)
 
-            if not should_continue:
+            if not result.should_continue:
                 break
 
         except KeyboardInterrupt:

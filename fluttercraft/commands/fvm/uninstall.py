@@ -131,7 +131,7 @@ def fvm_uninstall_command(platform_info, flutter_info, fvm_info):
             )
 
             # Verify uninstallation
-            updated_fvm_info = check_fvm_version()
+            updated_fvm_info = check_fvm_version(silent=True)
             if not updated_fvm_info["installed"]:
                 console.print("[bold green]FVM uninstalled successfully![/]")
                 return updated_fvm_info, output.get_output()
@@ -181,7 +181,7 @@ def fvm_uninstall_command(platform_info, flutter_info, fvm_info):
             )
 
             # Verify uninstallation
-            updated_fvm_info = check_fvm_version()
+            updated_fvm_info = check_fvm_version(silent=True)
             if not updated_fvm_info["installed"]:
                 console.print("[bold green]FVM uninstalled successfully![/]")
                 return updated_fvm_info, output.get_output()

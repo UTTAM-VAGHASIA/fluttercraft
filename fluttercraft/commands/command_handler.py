@@ -2,10 +2,11 @@
 
 from rich.console import Console
 
-from fluttercraft.utils.beautiful_display import (
-    display_command_help,
-    display_welcome_header,
-    update_system_info,
+from fluttercraft.utils.beautiful_display import update_system_info
+from fluttercraft.utils.themed_display import (
+    display_themed_help,
+    display_themed_about,
+    display_themed_welcome_header,
 )
 from fluttercraft.commands.flutter_commands import check_flutter_version
 from fluttercraft.commands.fvm_commands import (
@@ -61,21 +62,32 @@ class CommandHandler:
 
         # Clear command
         elif command == "/clear":
-            display_welcome_header(
+            display_themed_welcome_header(
                 self.platform_info, self.flutter_info, self.fvm_info, show_ascii=True
             )
             return True
 
         # Help command
         elif command == "/help":
-            display_command_help()
+            display_themed_help()
             return True
 
         # About command
         elif command == "/about":
-            from fluttercraft.utils.beautiful_display import display_about
+            display_themed_about()
+            return True
 
-            display_about()
+        # Theme command
+        elif command == "/theme":
+            from fluttercraft.commands.theme.interactive_selector import (
+                run_interactive_theme_selector,
+            )
+
+            run_interactive_theme_selector()
+            # Refresh display after theme change
+            display_themed_welcome_header(
+                self.platform_info, self.flutter_info, self.fvm_info, show_ascii=True
+            )
             return True
 
         else:
@@ -346,7 +358,7 @@ class CommandHandler:
         Returns:
             bool: True to continue
         """
-        display_command_help()
+        display_themed_help()
         return True
 
     def handle_regular_command(self, command):
