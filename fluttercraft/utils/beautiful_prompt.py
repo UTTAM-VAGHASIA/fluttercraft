@@ -54,6 +54,7 @@ FLUTTER_COMMANDS = {
 BASE_COMMANDS = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
 ALL_COMMANDS = dict(BASE_COMMANDS)
 
+
 # Completion management
 def update_command_completions(
     command_metadata: Iterable["CommandMetadata"],
@@ -396,13 +397,17 @@ def prompt_user_with_border(completer, history):
         focusable=False,
     )
 
-    def build_rounded_frame(content: LayoutWindow, *, style: str, with_prompt: bool = False) -> HSplit:
+    def build_rounded_frame(
+        content: LayoutWindow, *, style: str, with_prompt: bool = False
+    ) -> HSplit:
         from prompt_toolkit.layout.containers import ConditionalContainer
         from prompt_toolkit.widgets.base import Border
 
         border_style = "class:frame.border"
 
-        def border_window(char: str, *, width: int = 1, height: int = 1, stretch: bool = False) -> Window:
+        def border_window(
+            char: str, *, width: int = 1, height: int = 1, stretch: bool = False
+        ) -> Window:
             return Window(
                 char=char,
                 width=width if not stretch else None,
@@ -423,7 +428,9 @@ def prompt_user_with_border(completer, history):
 
         if with_prompt:
             from prompt_toolkit.layout.containers import Window as PlainWindow
-            from prompt_toolkit.layout.controls import FormattedTextControl as PlainTextControl
+            from prompt_toolkit.layout.controls import (
+                FormattedTextControl as PlainTextControl,
+            )
 
             prompt_window = PlainWindow(
                 content=PlainTextControl(lambda: prompt_symbol),

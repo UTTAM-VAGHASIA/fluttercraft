@@ -98,17 +98,13 @@ class FlutterCommand(Command):
 
         if result.returncode != 0:
             console.print(
-                format_text(
-                    "error", "✗ Flutter upgrade command failed!", bold=True
-                )
+                format_text("error", "✗ Flutter upgrade command failed!", bold=True)
             )
             return CommandResult(success=False)
 
         if is_verify_only:
             console.print(
-                format_text(
-                    "success", "✓ Flutter update check completed!", bold=True
-                )
+                format_text("success", "✓ Flutter update check completed!", bold=True)
             )
         else:
             console.print(
@@ -120,7 +116,9 @@ class FlutterCommand(Command):
         updated_info = check_flutter_version(silent=True)
         if updated_info != context.flutter_info:
             context.flutter_info = updated_info
-            console.print(format_text("secondary", "Flutter version information refreshed."))
+            console.print(
+                format_text("secondary", "Flutter version information refreshed.")
+            )
             update_system_info(
                 context.platform_info, context.flutter_info, context.fvm_info
             )

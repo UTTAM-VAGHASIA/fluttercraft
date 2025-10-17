@@ -132,7 +132,9 @@ def fvm_uninstall_command(platform_info, flutter_info, fvm_info):
             choco_info = check_chocolatey_installed()
 
             if not choco_info["installed"]:
-                print_warning("Chocolatey is not installed. Cannot use choco to uninstall FVM.")
+                print_warning(
+                    "Chocolatey is not installed. Cannot use choco to uninstall FVM."
+                )
                 print_warning("Please uninstall FVM manually.")
                 return fvm_info, output.get_output()
 
@@ -167,7 +169,9 @@ def fvm_uninstall_command(platform_info, flutter_info, fvm_info):
                 print_success("FVM uninstalled successfully!")
                 return updated_fvm_info, output.get_output()
             else:
-                print_error("Failed to uninstall FVM. Please try uninstalling it manually.")
+                print_error(
+                    "Failed to uninstall FVM. Please try uninstalling it manually."
+                )
                 print_warning("You can try: choco uninstall fvm -y")
                 return fvm_info, output.get_output()
 
