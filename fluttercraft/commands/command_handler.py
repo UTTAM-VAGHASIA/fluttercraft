@@ -417,9 +417,12 @@ class CommandHandler:
 
         # Check if it's a slash command
         if command.startswith("/"):
-            from fluttercraft.utils.beautiful_prompt import parse_slash_command
+            parts = command.split()
+            if not parts:
+                return True
 
-            cmd_name, args = parse_slash_command(command)
+            cmd_name = parts[0].lower()
+            args = parts[1:] if len(parts) > 1 else []
             return self.handle_slash_command(cmd_name, args)
 
         # Regular command

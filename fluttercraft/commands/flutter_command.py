@@ -12,7 +12,10 @@ from fluttercraft.commands.core.models import (
 )
 from fluttercraft.commands.flutter.version import check_flutter_version
 from fluttercraft.utils.terminal_utils import run_with_loading
-from fluttercraft.utils.themed_display import display_themed_help
+from fluttercraft.utils.themed_display import (
+    display_themed_help,
+    format_text,
+)
 from fluttercraft.utils.beautiful_display import update_system_info
 
 
@@ -33,7 +36,9 @@ class FlutterCommand(Command):
         if not args:
             return CommandResult(
                 success=False,
-                message="Usage: flutter <command>. Try 'flutter upgrade'.",
+                message=format_text(
+                    "warning", "Usage: flutter <command>. Try 'flutter upgrade'."
+                ),
             )
 
         subcommand = args[0].lower()
@@ -48,9 +53,12 @@ class FlutterCommand(Command):
 
         return CommandResult(
             success=False,
-            message=(
-                f"⚠ Flutter command '{subcommand}' is not yet implemented.\n"
-                "Currently supported: flutter upgrade"
+            message=format_text(
+                "warning",
+                (
+                    f"⚠ Flutter command '{subcommand}' is not yet implemented.\n"
+                    "Currently supported: flutter upgrade"
+                ),
             ),
         )
 
@@ -64,16 +72,19 @@ class FlutterCommand(Command):
 
         if additional_params:
             console.print(
-                "[bold yellow]Executing Flutter upgrade with parameters: "
-                + " ".join(additional_params)
-                + "[/]"
+                format_text(
+                    "warning",
+                    "Executing Flutter upgrade with parameters: "
+                    + " ".join(additional_params),
+                    bold=True,
+                )
             )
 
         cmd = ["flutter", "upgrade", *additional_params]
         status_message = (
-            "[bold yellow]Checking for Flutter updates...[/]"
+            format_text("warning", "Checking for Flutter updates...", bold=True)
             if is_verify_only
-            else "[bold yellow]Upgrading Flutter...[/]"
+            else format_text("warning", "Upgrading Flutter...", bold=True)
         )
 
         result = run_with_loading(
@@ -86,18 +97,30 @@ class FlutterCommand(Command):
         )
 
         if result.returncode != 0:
-            console.print("[bold red]✗ Flutter upgrade command failed![/]")
+            console.print(
+                format_text(
+                    "error", "✗ Flutter upgrade command failed!", bold=True
+                )
+            )
             return CommandResult(success=False)
 
         if is_verify_only:
-            console.print("[bold green]✓ Flutter update check completed![/]")
+            console.print(
+                format_text(
+                    "success", "✓ Flutter update check completed!", bold=True
+                )
+            )
         else:
-            console.print("[bold green]✓ Flutter upgrade completed successfully![/]")
+            console.print(
+                format_text(
+                    "success", "✓ Flutter upgrade completed successfully!", bold=True
+                )
+            )
 
         updated_info = check_flutter_version(silent=True)
         if updated_info != context.flutter_info:
             context.flutter_info = updated_info
-            console.print("[dim]Flutter version information refreshed.[/]")
+            console.print(format_text("secondary", "Flutter version information refreshed."))
             update_system_info(
                 context.platform_info, context.flutter_info, context.fvm_info
             )

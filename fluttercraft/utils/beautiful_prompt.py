@@ -2,18 +2,19 @@
 
 from typing import Iterable, TYPE_CHECKING
 
-from prompt_toolkit import PromptSession, Application
+from prompt_toolkit import Application
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.formatted_text import HTML, ANSI
+from prompt_toolkit.formatted_text import ANSI
 from prompt_toolkit.styles import Style
 from prompt_toolkit.layout import Layout, HSplit, Window, FormattedTextControl
-from prompt_toolkit.widgets import Frame, TextArea
 from rich.console import Console
 import os
 from pathlib import Path
+
+from fluttercraft.utils.themed_display import get_theme
 
 if TYPE_CHECKING:
     from fluttercraft.commands.core import CommandMetadata
@@ -53,7 +54,6 @@ FLUTTER_COMMANDS = {
 BASE_COMMANDS = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
 ALL_COMMANDS = dict(BASE_COMMANDS)
 
-
 # Completion management
 def update_command_completions(
     command_metadata: Iterable["CommandMetadata"],
@@ -72,23 +72,27 @@ def update_command_completions(
     ALL_COMMANDS = commands
 
 
-# Define custom style for the prompt
-custom_style = Style.from_dict(
-    {
-        "prompt": "#00d7ff bold",  # Cyan
-        "bottom-toolbar": "#ffffff bg:#333333",
-        "completion-menu": "bg:#333333 #ffffff",
-        "completion-menu.completion": "bg:#333333 #ffffff",
-        "completion-menu.completion.current": "bg:#00d7ff #000000",
-        "scrollbar.background": "bg:#333333",
-        "scrollbar.button": "bg:#666666",
-        "ascii-art": "#00d7ff bold",  # Cyan for ASCII art
-        "tips-header": "#ffffff bold",  # White bold for tips header
-        "tips": "#888888",  # Dim gray for tips
-        "system-info": "#888888",  # Dim gray for system info
-        "toolbar": "#888888",  # Dim gray for toolbar
-    }
-)
+def build_prompt_style() -> Style:
+    theme = get_theme()
+
+    return Style.from_dict(
+        {
+            "prompt": f"{theme.semantic.text_accent} bold",
+            "bottom-toolbar": f"{theme.semantic.text_primary} bg:{theme.semantic.background_primary}",
+            "completion-menu": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
+            "completion-menu.completion": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
+            "completion-menu.completion.current": f"bg:{theme.semantic.border_focused} {theme.semantic.background_primary}",
+            "completion-menu.meta": f"{theme.semantic.text_secondary}",
+            "scrollbar.background": f"bg:{theme.semantic.background_primary}",
+            "scrollbar.button": f"bg:{theme.semantic.border_focused}",
+            "ascii-art": f"{theme.semantic.text_accent} bold",
+            "tips-header": f"{theme.semantic.text_primary} bold",
+            "tips": theme.semantic.text_secondary,
+            "system-info": theme.semantic.text_secondary,
+            "toolbar": theme.semantic.text_secondary,
+            "frame": f"bg:{theme.semantic.background_primary} {theme.semantic.border_default}",
+        }
+    )
 
 
 class FlutterCraftCompleter(Completer):
@@ -209,6 +213,8 @@ def create_prompt_session():
         event.current_buffer.insert_text("\n")
 
     # Create session
+    custom_style = build_prompt_style()
+
     session = PromptSession(
         history=history,
         auto_suggest=AutoSuggestFromHistory(),
@@ -230,12 +236,6 @@ def create_prompt_session():
     return session
 
 
-def get_prompt_message():
-    """Get the formatted prompt message with Gemini-style border."""
-    # Create top border
-    return "> "
-
-
 def get_bottom_toolbar():
     """Get the bottom toolbar text with path and git info."""
     path = get_current_path()
@@ -247,38 +247,6 @@ def get_bottom_toolbar():
         location = path
 
     return HTML(f"<b>{location}</b>")
-
-
-def get_input_border_top():
-    """Get the top border of the input box."""
-    try:
-        import shutil
-
-        width = shutil.get_terminal_size().columns
-    except Exception:
-        width = 120
-
-    # Ensure minimum width
-    if width < 80:
-        width = 80
-
-    return "╭" + "─" * (width - 2) + "╮"
-
-
-def get_input_border_bottom():
-    """Get the bottom border of the input box."""
-    try:
-        import shutil
-
-        width = shutil.get_terminal_size().columns
-    except Exception:
-        width = 120
-
-    # Ensure minimum width
-    if width < 80:
-        width = 80
-
-    return "╰" + "─" * (width - 2) + "╯"
 
 
 def prompt_user_with_border(completer, history):
@@ -317,6 +285,8 @@ def prompt_user_with_border(completer, history):
         buffer=input_buffer,
         focusable=True,
     )
+
+    prompt_symbol = " > "
 
     # Create completion menu text control
     def get_completions_text():
@@ -422,33 +392,97 @@ def prompt_user_with_border(completer, history):
         return path
 
     toolbar_control = FormattedTextControl(
-        get_toolbar_text,
+        lambda: get_toolbar_text(),
         focusable=False,
     )
+
+    def build_rounded_frame(content: LayoutWindow, *, style: str, with_prompt: bool = False) -> HSplit:
+        from prompt_toolkit.layout.containers import ConditionalContainer
+        from prompt_toolkit.widgets.base import Border
+
+        border_style = "class:frame.border"
+
+        def border_window(char: str, *, width: int = 1, height: int = 1, stretch: bool = False) -> Window:
+            return Window(
+                char=char,
+                width=width if not stretch else None,
+                height=height,
+                style=border_style,
+            )
+
+        top = VSplit(
+            [
+                border_window("╭"),
+                border_window("─", height=1, stretch=True),
+                border_window("╮"),
+            ],
+            height=1,
+        )
+
+        middle_children = [border_window("│")]
+
+        if with_prompt:
+            from prompt_toolkit.layout.containers import Window as PlainWindow
+            from prompt_toolkit.layout.controls import FormattedTextControl as PlainTextControl
+
+            prompt_window = PlainWindow(
+                content=PlainTextControl(lambda: prompt_symbol),
+                width=len(prompt_symbol),
+                style="class:frame.prompt",
+                dont_extend_width=True,
+                align="left",
+            )
+            middle_children.append(prompt_window)
+
+        middle_children.append(content)
+        middle_children.append(border_window("│"))
+
+        middle = VSplit(
+            middle_children,
+            padding=0,
+        )
+
+        bottom = VSplit(
+            [
+                border_window("╰"),
+                border_window("─", height=1, stretch=True),
+                border_window("╯"),
+            ],
+            height=1,
+        )
+
+        return HSplit([top, middle, bottom], style=style)
 
     # Create layout (system info now in static header)
     root_container = HSplit(
         [
             # Input box with frame (fixed 1 line height)
-            Frame(
-                body=LayoutWindow(
+            build_rounded_frame(
+                LayoutWindow(
                     content=input_control,
                     height=1,  # Fixed 1 line height
                 ),
                 style="class:frame",
+                with_prompt=True,
             ),
             # Completion menu area (permanent, shows completions when available)
-            LayoutWindow(
-                content=completion_control,
-                height=Dimension(
-                    min=6, max=6
-                ),  # Fixed height for menu (5 items + 1 scroll indicator)
+            build_rounded_frame(
+                LayoutWindow(
+                    content=completion_control,
+                    height=Dimension(
+                        min=6, max=6
+                    ),  # Fixed height for menu (5 items + 1 scroll indicator)
+                    style="class:completion-menu",
+                ),
                 style="class:completion-menu",
             ),
             # Toolbar
-            LayoutWindow(
-                content=toolbar_control,
-                height=1,
+            build_rounded_frame(
+                LayoutWindow(
+                    content=toolbar_control,
+                    height=1,
+                    style="class:toolbar",
+                ),
                 style="class:toolbar",
             ),
         ]
@@ -522,6 +556,8 @@ def prompt_user_with_border(completer, history):
         input_buffer.insert_text("\n")
 
     # Create application (NOT full-screen - we want to preserve command output!)
+    custom_style = build_prompt_style()
+
     app = Application(
         layout=layout,
         key_bindings=kb,

@@ -107,29 +107,44 @@ def fvm_list_command():
                 # Clean up the line by removing ANSI escape codes
                 line = re.sub(r"\x1b\[[0-9;]*[mK]", "", line)
 
-                # Split by the pipe character and clean up
-                parts = [p.strip() for p in line.split("│") if p.strip()]
+                # Split by the pipe character and preserve empty cells to maintain alignment
+                raw_parts = [p.strip() for p in line.split("│")]
 
-                # Store headers if this is the first row
+                # Remove outer borders if present
+                if raw_parts and raw_parts[0] == "":
+                    raw_parts = raw_parts[1:]
+                if raw_parts and raw_parts[-1] == "":
+                    raw_parts = raw_parts[:-1]
+
+                parts = raw_parts
+
+                # Ensure we have the expected number of columns (at least version info)
+                if len(parts) < 3:
+                    continue
+
+                # Store headers if this is the first row containing column names
                 if not headers and any("Version" in p for p in parts):
                     headers = parts
                     continue
 
                 # Skip if we don't have enough parts or this is the header row
-                if len(parts) < 4 or any("Version" in p for p in parts):
+                if len(parts) < len(headers) or any("Version" in p for p in parts):
                     continue
 
                 # Create a dictionary for this version
                 version_info = {}
                 for i, header in enumerate(headers):
-                    if i < len(parts):
-                        key = header.lower().strip()
-                        value = parts[i].strip()
-                        # Check for global/local indicators (● symbol)
-                        if key == "global" or key == "local":
-                            version_info[key] = "●" in value or "✓" in value
-                        else:
-                            version_info[key] = value
+                    if i >= len(parts):
+                        continue
+
+                    key = header.lower().strip()
+                    value = parts[i].strip()
+
+                    # Check for global/local indicators (● symbol)
+                    if key in {"global", "local"}:
+                        version_info[key] = "●" in value or "✓" in value
+                    else:
+                        version_info[key] = value
 
                 # Add to our list if it's a valid entry
                 if "version" in version_info:
