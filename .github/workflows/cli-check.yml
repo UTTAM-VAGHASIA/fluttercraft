@@ -28,7 +28,7 @@ jobs:
         run: |
           pip install flake8
           # Use .flake8 config file for linting rules
-          flake8 fluttercraft
+          flake8 fluttercraft/
 
       - name: Run CLI help
         run: |
