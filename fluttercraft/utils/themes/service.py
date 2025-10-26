@@ -73,10 +73,7 @@ class ThemeDisplayService:
             f"[{theme.semantic.text_secondary}]2. Manage Flutter versions with FVM commands[/]"
         )
         self.console.print(
-            f"[{theme.semantic.text_secondary}]3. Run 'flutter upgrade' to update Flutter[/]"
-        )
-        self.console.print(
-            f"[{theme.semantic.text_secondary}]4. Type / to see available commands[/]\n"
+            f"[{theme.semantic.text_secondary}]3. Type / to see available commands[/]\n"
         )
 
         platform_name = platform_info.get("system", "Unknown")
@@ -89,7 +86,7 @@ class ThemeDisplayService:
                 latest = flutter_info.get("latest_version", "unknown")
                 flutter_display = (
                     f"{flutter_version} [{theme.semantic.status_warning}]"
-                    "(→ {latest} available)[/]"
+                    f"(→ {latest} available)[/]"
                 )
             else:
                 flutter_display = (

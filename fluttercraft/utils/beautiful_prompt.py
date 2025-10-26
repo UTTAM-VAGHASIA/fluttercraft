@@ -3,11 +3,12 @@
 from typing import Iterable, TYPE_CHECKING
 
 from prompt_toolkit import Application
+import prompt_toolkit
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.formatted_text import ANSI
+from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.styles import Style
 from prompt_toolkit.layout import Layout, HSplit, Window, FormattedTextControl
 from rich.console import Console
@@ -216,7 +217,7 @@ def create_prompt_session():
     # Create session
     custom_style = build_prompt_style()
 
-    session = PromptSession(
+    session = prompt_toolkit.PromptSession(
         history=history,
         auto_suggest=AutoSuggestFromHistory(),
         completer=completer,
