@@ -331,27 +331,7 @@ def prompt_user_with_border(completer, history):
         if not current_completions:
             selected_index[0] = 0
             scroll_offset[0] = 0
-            # Show hint when menu is hidden and there are no completions
-            if not menu_visible[0] and text:
-                from prompt_toolkit.formatted_text import FormattedText
-
-                return FormattedText(
-                    [
-                        (
-                            "class:completion-menu.meta",
-                            " 💡 Press Ctrl+Space for suggestions",
-                        )
-                    ]
-                )
             return ""
-
-        # Hide menu if menu_visible is False (and not a slash command)
-        if not menu_visible[0]:
-            from prompt_toolkit.formatted_text import FormattedText
-
-            return FormattedText(
-                [("class:completion-menu.meta", " 💡 Press Ctrl+Space for suggestions")]
-            )
 
         # Ensure selected index is valid
         if selected_index[0] >= len(current_completions):
@@ -496,6 +476,15 @@ def prompt_user_with_border(completer, history):
         return HSplit([top, middle, bottom], style=style)
 
     # Create layout (system info now in static header)
+    from prompt_toolkit.layout.containers import ConditionalContainer
+    from prompt_toolkit.filters import Condition
+
+    # Condition for showing the menu
+    @Condition
+    def should_show_menu():
+        """Show menu only when visible and has content."""
+        return menu_visible[0] and len(current_completions) > 0
+
     root_container = HSplit(
         [
             # Input box with frame (fixed 1 line height)
@@ -507,16 +496,19 @@ def prompt_user_with_border(completer, history):
                 style="class:frame",
                 with_prompt=True,
             ),
-            # Completion menu area (permanent, shows completions when available)
-            build_rounded_frame(
-                LayoutWindow(
-                    content=completion_control,
-                    height=Dimension(
-                        min=6, max=6
-                    ),  # Fixed height for menu (5 items + 1 scroll indicator)
+            # Completion menu area (conditional - only show when menu is visible)
+            ConditionalContainer(
+                build_rounded_frame(
+                    LayoutWindow(
+                        content=completion_control,
+                        height=Dimension(
+                            min=6, max=6
+                        ),  # Fixed height for menu (5 items + 1 scroll indicator)
+                        style="class:completion-menu",
+                    ),
                     style="class:completion-menu",
                 ),
-                style="class:completion-menu",
+                filter=should_show_menu,
             ),
             # Toolbar
             build_rounded_frame(
