@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 from typing import Callable, Optional
 
@@ -35,7 +36,28 @@ class CommandExecutor:
             )
 
         try:
-            return command.execute(context, args)
+            # Start timer
+            start_time = time.perf_counter()
+
+            # Execute command
+            result = command.execute(context, args)
+
+            # Calculate execution time
+            end_time = time.perf_counter()
+            execution_time = end_time - start_time
+
+            # Add execution time to result
+            # Create new result with execution_time if not already set
+            if result.execution_time is None:
+                result = CommandResult(
+                    success=result.success,
+                    message=result.message,
+                    payload=result.payload,
+                    should_continue=result.should_continue,
+                    execution_time=execution_time,
+                )
+
+            return result
         except Exception as exc:  # noqa: BLE001
             self.console.print(
                 f"\n[bold red]An error occurred while running '{command_token}': {exc}[/]"

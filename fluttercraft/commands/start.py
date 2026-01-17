@@ -99,6 +99,34 @@ def start_command():
             if result.message:
                 console.print(result.message)
 
+            # Display execution timing if available
+            if result.execution_time is not None:
+                # Format timing with appropriate color
+                timing = result.execution_time
+
+                # Color coding: green < 1s, yellow < 3s, red >= 3s
+                if timing < 1.0:
+                    color = "green"
+                    icon = "⚡"
+                elif timing < 3.0:
+                    color = "yellow"
+                    icon = "⏱️"
+                else:
+                    color = "red"
+                    icon = "🐌"
+
+                # Format timing display
+                if timing < 0.001:  # Less than 1ms
+                    timing_str = f"{timing * 1000:.2f}ms"
+                elif timing < 1.0:  # Less than 1s
+                    timing_str = f"{timing * 1000:.0f}ms"
+                else:  # 1s or more
+                    timing_str = f"{timing:.2f}s"
+
+                console.print(
+                    f"[dim]{icon} Executed in [{color}]{timing_str}[/{color}][/dim]"
+                )
+
             if not result.should_continue:
                 break
 

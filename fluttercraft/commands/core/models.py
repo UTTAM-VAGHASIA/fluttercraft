@@ -24,6 +24,7 @@ class CommandResult:
     message: Optional[str] = None
     payload: Optional[Dict[str, Any]] = None
     should_continue: bool = True
+    execution_time: Optional[float] = None  # Execution time in seconds
 
 
 @dataclass(slots=True)
