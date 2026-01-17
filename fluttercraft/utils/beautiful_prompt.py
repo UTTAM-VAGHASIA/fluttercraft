@@ -110,7 +110,7 @@ class FlutterCraftCompleter(Completer):
             for cmd, desc in SLASH_COMMANDS.items():
                 if cmd.startswith(text):
                     yield Completion(
-                        cmd[len(text):],  # Only complete the remaining part
+                        cmd[len(text) :],  # Only complete the remaining part
                         display=cmd,
                         display_meta=desc,
                     )
@@ -130,7 +130,7 @@ class FlutterCraftCompleter(Completer):
             for cmd, desc in ALL_COMMANDS.items():
                 if cmd.lower().startswith(text.lower()):
                     yield Completion(
-                        cmd[len(text):],  # Only complete the remaining part
+                        cmd[len(text) :],  # Only complete the remaining part
                         display=cmd,
                         display_meta=desc,
                     )
@@ -273,6 +273,9 @@ def prompt_user_with_border(completer, history):
     current_completions = []  # Store current completions
     VISIBLE_ITEMS = 5  # Number of items visible at once
 
+    # Hybrid visibility: menu hidden by default, shown with Ctrl+Space or for slash commands
+    menu_visible = [False]  # Use list to make it mutable in nested functions
+
     # Create buffer for input
     input_buffer = Buffer(
         completer=completer,
@@ -292,15 +295,26 @@ def prompt_user_with_border(completer, history):
 
     # Create completion menu text control
     def get_completions_text():
-        """Get formatted completions text with highlighting and scrolling."""
+        """Get formatted completions text with highlighting and scrolling.
+
+        Implements hybrid visibility:
+        - Auto-show for slash commands (/)
+        - Manual toggle with Ctrl+Space for other commands
+        - Hide when menu_visible is False
+        """
         nonlocal current_completions
         document = input_buffer.document
         text = document.text_before_cursor.lstrip()
+
+        # Auto-show menu for slash commands
+        if text.startswith("/"):
+            menu_visible[0] = True
 
         if not text:
             current_completions = []
             selected_index[0] = 0
             scroll_offset[0] = 0
+            menu_visible[0] = False  # Reset visibility when input is cleared
             return ""
 
         # Check if text exactly matches a command (hide menu if exact match)
@@ -317,7 +331,27 @@ def prompt_user_with_border(completer, history):
         if not current_completions:
             selected_index[0] = 0
             scroll_offset[0] = 0
+            # Show hint when menu is hidden and there are no completions
+            if not menu_visible[0] and text:
+                from prompt_toolkit.formatted_text import FormattedText
+
+                return FormattedText(
+                    [
+                        (
+                            "class:completion-menu.meta",
+                            " 💡 Press Ctrl+Space for suggestions",
+                        )
+                    ]
+                )
             return ""
+
+        # Hide menu if menu_visible is False (and not a slash command)
+        if not menu_visible[0]:
+            from prompt_toolkit.formatted_text import FormattedText
+
+            return FormattedText(
+                [("class:completion-menu.meta", " 💡 Press Ctrl+Space for suggestions")]
+            )
 
         # Ensure selected index is valid
         if selected_index[0] >= len(current_completions):
@@ -334,7 +368,7 @@ def prompt_user_with_border(completer, history):
 
         # Get visible slice of completions
         visible_completions = current_completions[
-            scroll_offset[0]: scroll_offset[0] + VISIBLE_ITEMS
+            scroll_offset[0] : scroll_offset[0] + VISIBLE_ITEMS
         ]
 
         # Format completions as FormattedText with highlighting
@@ -511,6 +545,19 @@ def prompt_user_with_border(completer, history):
         """Exit."""
         event.app.exit(result="/quit")
 
+    @kb.add("c-space")
+    def _(event):
+        """Toggle completion menu visibility."""
+        menu_visible[0] = not menu_visible[0]
+        event.app.invalidate()  # Redraw to show/hide menu
+
+    @kb.add("escape")
+    def _(event):
+        """Hide completion menu."""
+        if menu_visible[0]:
+            menu_visible[0] = False
+            event.app.invalidate()
+
     @kb.add("down")
     def _(event):
         """Navigate down in completion menu."""
@@ -541,8 +588,13 @@ def prompt_user_with_border(completer, history):
 
     @kb.add("enter")
     def _(event):
-        """Select completion if menu active, otherwise submit."""
-        if current_completions and selected_index[0] < len(current_completions):
+        """Select completion if menu visible and active, otherwise submit."""
+        # Only select completion if menu is visible and there are completions
+        if (
+            menu_visible[0]
+            and current_completions
+            and selected_index[0] < len(current_completions)
+        ):
             # Select the highlighted completion
             comp = current_completions[selected_index[0]]
             if hasattr(comp.display, "__iter__") and not isinstance(comp.display, str):
@@ -555,7 +607,7 @@ def prompt_user_with_border(completer, history):
             selected_index[0] = 0
             event.app.invalidate()
         else:
-            # No completions, submit the input
+            # No visible completions, submit the input
             event.app.exit(result=input_buffer.text)
 
     @kb.add("escape", "enter")
