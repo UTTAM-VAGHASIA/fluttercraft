@@ -32,45 +32,60 @@
 ## Phase 1: Foundation (Commits 1-5)
 
 ### Commit 1: Smart Completion Menu
-**Status:** ✅ Fixed (Awaiting User Re-Testing)  
+**Status:** ✅ COMPLETE  
 **Branch:** `feature/v0.1.3-signature-ui`  
 **Date:** 2026-01-17  
 **Commits:** 
-- `47d59ae` - Initial implementation
-- `887172e` - Fix: Make menu container conditional
+- `47d59ae` - Initial implementation (discarded)
+- `887172e` - Fix conditional container (discarded)
+- `00b21e6` - Documentation update (discarded)
+- `9f9ea96` - Final implementation with auto-show ✅
+
 **Files Modified:** `fluttercraft/utils/beautiful_prompt.py`  
+
 **Documentation Updates:**
 - [x] Update `.context/components/commands.md` (completion system section)
 - [x] Add to implementation tracking
 
-**Implementation Summary:**
-- ✅ Added `menu_visible` state flag for hybrid visibility mode
-- ✅ Added Ctrl+Space key binding to toggle menu visibility
-- ✅ Added Escape key binding to hide menu
-- ✅ Auto-show menu for slash commands (/)
-- ✅ Hide menu by default for other commands
-- ✅ Updated Enter key behavior to check menu visibility
-- ✅ **FIXED**: Made menu container conditional (no empty box rendering)
-- ✅ Syntax validated successfully
+**Final Implementation:**
+✅ **Auto-show completion menu** for ALL commands (not just slash commands)
+✅ **Ctrl+M toggle** to show/hide menu (M for Menu - works on Windows)
+✅ **Smart Enter key behavior**:
+  - Navigated to item → Selects completion
+  - At index 0 with exact match → Submits command
+  - After selection → Resets index to 0 (prevents stale index bug)
+✅ **Hides menu for**:
+  - Empty input
+  - Exact matches with no other completions
+  - When no completions available
+✅ **Toolbar hint**: Shows "💡 Ctrl+M to show menu" when user hides menu
+✅ **No empty boxes**: Menu container only renders when needed
 
-**Changes Made:**
-1. Lines 270-276: Added `menu_visible` state flag
-2. Lines 293-335: Modified `get_completions_text()` with hybrid visibility logic
-3. Lines 498-540: Added ConditionalContainer to hide menu completely when not needed
-4. Lines 541-557: Added Ctrl+Space and Escape key bindings
-5. Lines 586-603: Updated Enter key to check menu visibility
+**Key Changes:**
+1. Lines 270-277: Added `menu_visible` state flag
+2. Lines 296-401: Rewrote `get_completions_text()` with better exact match logic
+3. Lines 403-422: Updated toolbar with Ctrl+M hint
+4. Lines 483-510: Simplified `should_show_menu()` - auto-show by default
+5. Lines 558-563: Changed keybinding from Ctrl+Space to Ctrl+M
+6. Lines 598-621: Improved Enter key with index reset and better exact match detection
 
-**Bug Fixed:**
-- Issue: Empty menu container was always rendered after command execution
-- Fix: Wrapped menu in ConditionalContainer with filter checking visibility and completions
-- Result: Menu container only renders when visible AND has content
+**Bugs Fixed:**
+- ✅ Empty menu boxes after command execution
+- ✅ Ctrl+Space not working on Windows (switched to Ctrl+M)
+- ✅ Commands not submitting when exact match typed
+- ✅ Selection jumping to wrong item after filling completion
+- ✅ Menu showing when typing after exact match (e.g., "/help ")
 
-**Testing Notes:**
-- Syntax check passed ✓
-- Black formatting applied ✓
-- Flake8 compliant ✓
-- Import test passed ✓
-- Manual testing needed by user for full validation
+**Testing:**
+- ✅ Auto-show works for all commands
+- ✅ Ctrl+M toggles menu on/off
+- ✅ Navigation and selection works perfectly
+- ✅ Enter submits exact matches at index 0
+- ✅ Enter selects completion when navigated
+- ✅ No empty menu boxes
+- ✅ Toolbar hint appears when menu manually hidden
+
+**User Feedback:** "perfecto!! It's working as expected now."
 
 **Commit Message:**
 ```
@@ -293,24 +308,29 @@ Part of v0.1.3 signature UI/UX enhancement (Phase 1, Commit 1)
 
 ## Progress Tracking
 
-**Overall Progress:** 0% (0/22 commits)
+**Overall Progress:** 5% (1/22 commits)
 
 ### Phase Completion:
-- [ ] Phase 1: Foundation (0/5)
+- [ ] Phase 1: Foundation (1/5) - 20%
+  - [x] Commit 1: Smart Completion Menu ✅
+  - [ ] Commit 2: Persistent History
+  - [ ] Commit 3: Execution Timing
+  - [ ] Commit 4: Fuzzy Matching
+  - [ ] Commit 5: Enhanced Input
 - [ ] Phase 2: Animations & Settings (0/5)
 - [ ] Phase 3: Commands (0/5)
 - [ ] Phase 4: Cross-Platform & Polish (0/5)
 - [ ] Phase 5: Final Integration (0/2)
 
 ### Documentation Status:
-- [ ] Spec created ✅
-- [ ] Implementation tracking created ✅
-- [ ] Component docs updated (ongoing)
-- [ ] CHANGELOG.md updated (ongoing)
+- [x] Spec created ✅
+- [x] Implementation tracking created ✅
+- [x] Component docs updated (Phase 1, Commit 1)
+- [x] CHANGELOG.md updated (Phase 1, Commit 1)
 - [ ] README.md updated (pending)
 - [ ] Demo materials created (pending)
 
 ---
 
 **Last Updated:** 2026-01-17  
-**Next Action:** Start Phase 1, Commit 1
+**Next Action:** Phase 1, Commit 2 - Persistent Command History

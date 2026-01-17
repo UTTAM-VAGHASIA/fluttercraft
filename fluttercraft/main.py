@@ -3,7 +3,6 @@ from rich.console import Console
 
 from fluttercraft.commands.start import start_command
 from fluttercraft.commands.theme import theme_app
-from fluttercraft.utils.display_utils import display_welcome_art
 
 app = typer.Typer(help="FlutterCraft: Automate your Flutter app setup like a pro.")
 console = Console()
