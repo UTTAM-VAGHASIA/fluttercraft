@@ -5,7 +5,7 @@ from typing import Iterable, TYPE_CHECKING
 from prompt_toolkit import Application
 import prompt_toolkit
 from prompt_toolkit.completion import Completer, Completion
-from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.formatted_text import HTML
@@ -193,8 +193,12 @@ def create_prompt_session():
     # Create custom completer
     completer = FlutterCraftCompleter()
 
-    # Create history
-    history = InMemoryHistory()
+    # Create persistent file-based history
+    from pathlib import Path
+
+    history_file = Path.home() / ".fluttercraft" / "history"
+    history_file.parent.mkdir(parents=True, exist_ok=True)
+    history = FileHistory(str(history_file))
 
     # Create key bindings
     kb = KeyBindings()
@@ -283,6 +287,7 @@ def prompt_user_with_border(completer, history):
         history=history,
         auto_suggest=AutoSuggestFromHistory(),
         multiline=False,
+        enable_history_search=True,  # Enable Ctrl+H history search
     )
 
     # Create input control
@@ -412,10 +417,18 @@ def prompt_user_with_border(completer, history):
         else:
             location = path
 
-        # Add hint about Ctrl+M to toggle menu
-        # Only show hint if menu is currently hidden
+        # Add hints
+        hints = []
+
+        # Add hint about Ctrl+M to toggle menu (only if menu is hidden)
         if not menu_visible[0] and hasattr(menu_visible, "_user_toggled"):
-            location += " | 💡 Ctrl+M to show menu"
+            hints.append("💡 Ctrl+M to show menu")
+
+        # Add Up/Down arrow hint for history navigation
+        hints.append("⬆️⬇️ for history")
+
+        if hints:
+            location += " | " + " | ".join(hints)
 
         return location
 
@@ -588,17 +601,25 @@ def prompt_user_with_border(completer, history):
 
     @kb.add("down")
     def _(event):
-        """Navigate down in completion menu."""
+        """Navigate down in completion menu OR next history item."""
         if current_completions:
+            # Navigate completion menu
             selected_index[0] = (selected_index[0] + 1) % len(current_completions)
             event.app.invalidate()  # Redraw to show highlight
+        else:
+            # Navigate history (forward/newer)
+            input_buffer.history_forward()
 
     @kb.add("up")
     def _(event):
-        """Navigate up in completion menu."""
+        """Navigate up in completion menu OR previous history item."""
         if current_completions:
+            # Navigate completion menu
             selected_index[0] = (selected_index[0] - 1) % len(current_completions)
             event.app.invalidate()  # Redraw to show highlight
+        else:
+            # Navigate history (backward/older)
+            input_buffer.history_backward()
 
     @kb.add("tab")
     def _(event):

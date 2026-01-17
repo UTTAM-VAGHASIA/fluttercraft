@@ -5,7 +5,7 @@ import time
 from rich.console import Console
 from rich.spinner import Spinner
 from rich.live import Live
-from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.history import FileHistory
 
 from fluttercraft.utils.platform_utils import get_platform_info
 from fluttercraft.utils.beautiful_display import show_platform_not_supported
@@ -68,9 +68,13 @@ def start_command():
         platform_info, flutter_info, fvm_info, show_ascii=True
     )
 
-    # Create completer and history for bordered prompt
+    # Create completer and persistent file-based history
+    from pathlib import Path
+
     completer = FlutterCraftCompleter()
-    history = InMemoryHistory()
+    history_file = Path.home() / ".fluttercraft" / "history"
+    history_file.parent.mkdir(parents=True, exist_ok=True)
+    history = FileHistory(str(history_file))
 
     executor = build_command_system(console)
     update_command_completions(executor.registry.to_metadata())
