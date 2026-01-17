@@ -298,17 +298,13 @@ def prompt_user_with_border(completer, history):
         """Get formatted completions text with highlighting and scrolling.
 
         Implements hybrid visibility:
-        - Auto-show for slash commands (/)
+        - Auto-show for slash commands (/) - handled by should_show_menu()
         - Manual toggle with Ctrl+Space for other commands
         - Hide when menu_visible is False
         """
         nonlocal current_completions
         document = input_buffer.document
         text = document.text_before_cursor.lstrip()
-
-        # Auto-show menu for slash commands
-        if text.startswith("/"):
-            menu_visible[0] = True
 
         if not text:
             current_completions = []
@@ -317,20 +313,26 @@ def prompt_user_with_border(completer, history):
             menu_visible[0] = False  # Reset visibility when input is cleared
             return ""
 
-        # Check if text exactly matches a command (hide menu if exact match)
-        all_commands = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
-        if text in all_commands:
-            current_completions = []
-            selected_index[0] = 0
-            scroll_offset[0] = 0
-            return ""
-
+        # Get fresh completions from completer
         completions = list(completer.get_completions(document, None))
-        current_completions = completions  # Store ALL completions
+
+        # Check if text exactly matches a command
+        all_commands = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
+
+        # Only hide for exact match if menu was NOT manually toggled
+        if text in all_commands and not menu_visible[0]:
+            # Exact match and auto-show mode - check if there are other completions
+            if len(completions) <= 1:
+                # Only the exact match or no completions - hide menu
+                current_completions = []
+                return ""
+            # There are other completions beyond the exact match - show them
+
+        # Update current completions
+        current_completions = completions
 
         if not current_completions:
-            selected_index[0] = 0
-            scroll_offset[0] = 0
+            # No completions available
             return ""
 
         # Ensure selected index is valid
@@ -403,9 +405,19 @@ def prompt_user_with_border(completer, history):
     def get_toolbar_text():
         path = get_current_path()
         git_info = get_git_info()
+
+        # Build location string
         if git_info:
-            return f"{path} ({git_info})"
-        return path
+            location = f"{path} ({git_info})"
+        else:
+            location = path
+
+        # Add hint about Ctrl+M to toggle menu
+        # Only show hint if menu is currently hidden
+        if not menu_visible[0] and hasattr(menu_visible, "_user_toggled"):
+            location += " | 💡 Ctrl+M to show menu"
+
+        return location
 
     toolbar_control = FormattedTextControl(
         lambda: get_toolbar_text(),
@@ -482,8 +494,31 @@ def prompt_user_with_border(completer, history):
     # Condition for showing the menu
     @Condition
     def should_show_menu():
-        """Show menu only when visible and has content."""
-        return menu_visible[0] and len(current_completions) > 0
+        """Show menu automatically when typing, or when manually toggled."""
+        document = input_buffer.document
+        text = document.text_before_cursor.lstrip()
+
+        # Don't show menu if input is empty
+        if not text:
+            return False
+
+        # Check if there are completions available
+        test_completions = list(completer.get_completions(document, None))
+        if not test_completions:
+            return False  # No completions, hide menu
+
+        # Check if it's an exact command match with no other completions
+        all_commands = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
+        if text in all_commands and len(test_completions) <= 1:
+            return False  # Exact match only, hide menu
+
+        # Auto-show menu when there are completions (unless manually hidden)
+        # If user pressed Ctrl+M to hide, respect that
+        if menu_visible[0] is False and hasattr(menu_visible, "_user_toggled"):
+            return False  # User explicitly hid menu
+
+        # Show menu by default when there are completions
+        return True
 
     root_container = HSplit(
         [
@@ -537,10 +572,11 @@ def prompt_user_with_border(completer, history):
         """Exit."""
         event.app.exit(result="/quit")
 
-    @kb.add("c-space")
+    @kb.add("c-m")  # Ctrl+M for Menu toggle
     def _(event):
         """Toggle completion menu visibility."""
         menu_visible[0] = not menu_visible[0]
+        menu_visible._user_toggled = True  # Mark as user-toggled
         event.app.invalidate()  # Redraw to show/hide menu
 
     @kb.add("escape")
@@ -580,26 +616,34 @@ def prompt_user_with_border(completer, history):
 
     @kb.add("enter")
     def _(event):
-        """Select completion if menu visible and active, otherwise submit."""
-        # Only select completion if menu is visible and there are completions
-        if (
-            menu_visible[0]
-            and current_completions
-            and selected_index[0] < len(current_completions)
-        ):
-            # Select the highlighted completion
+        """Select completion if available, otherwise submit."""
+        # If there are completions available AND user has navigated (or there's only one)
+        # OR the menu is showing, prefer selection over submission
+        if current_completions and selected_index[0] < len(current_completions):
+            # Check if user has navigated away from index 0, or if menu is visible
+            document = input_buffer.document
+            text = document.text_before_cursor.lstrip()
+            all_commands = {**SLASH_COMMANDS, **FVM_COMMANDS, **FLUTTER_COMMANDS}
+
+            # If it's an exact match AND user is at index 0, submit it
+            if text in all_commands and selected_index[0] == 0:
+                event.app.exit(result=input_buffer.text)
+                return
+
+            # User has navigated or it's a partial match - select the completion
             comp = current_completions[selected_index[0]]
             if hasattr(comp.display, "__iter__") and not isinstance(comp.display, str):
-                text = "".join(t for s, t in comp.display)
+                full_text = "".join(t for s, t in comp.display)
             else:
-                text = str(comp.display) if comp.display else comp.text
-            input_buffer.text = text
-            input_buffer.cursor_position = len(text)
-            # Clear completions after selection
+                full_text = str(comp.display) if comp.display else comp.text
+            input_buffer.text = full_text
+            input_buffer.cursor_position = len(full_text)
+            # Reset selected_index to 0 after selection so new completions start fresh
             selected_index[0] = 0
+            # Force UI refresh to recalculate completions
             event.app.invalidate()
         else:
-            # No visible completions, submit the input
+            # No completions available, submit the input
             event.app.exit(result=input_buffer.text)
 
     @kb.add("escape", "enter")
