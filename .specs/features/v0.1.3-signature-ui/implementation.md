@@ -32,9 +32,12 @@
 ## Phase 1: Foundation (Commits 1-5)
 
 ### Commit 1: Smart Completion Menu
-**Status:** ✅ Complete (Awaiting User Testing)  
+**Status:** ✅ Fixed (Awaiting User Re-Testing)  
 **Branch:** `feature/v0.1.3-signature-ui`  
 **Date:** 2026-01-17  
+**Commits:** 
+- `47d59ae` - Initial implementation
+- `887172e` - Fix: Make menu container conditional
 **Files Modified:** `fluttercraft/utils/beautiful_prompt.py`  
 **Documentation Updates:**
 - [x] Update `.context/components/commands.md` (completion system section)
@@ -46,18 +49,27 @@
 - ✅ Added Escape key binding to hide menu
 - ✅ Auto-show menu for slash commands (/)
 - ✅ Hide menu by default for other commands
-- ✅ Added visual indicator: "💡 Press Ctrl+Space for suggestions"
 - ✅ Updated Enter key behavior to check menu visibility
+- ✅ **FIXED**: Made menu container conditional (no empty box rendering)
 - ✅ Syntax validated successfully
 
 **Changes Made:**
 1. Lines 270-276: Added `menu_visible` state flag
-2. Lines 293-349: Modified `get_completions_text()` with hybrid visibility logic
-3. Lines 541-557: Added Ctrl+Space and Escape key bindings
-4. Lines 586-603: Updated Enter key to check menu visibility
+2. Lines 293-335: Modified `get_completions_text()` with hybrid visibility logic
+3. Lines 498-540: Added ConditionalContainer to hide menu completely when not needed
+4. Lines 541-557: Added Ctrl+Space and Escape key bindings
+5. Lines 586-603: Updated Enter key to check menu visibility
+
+**Bug Fixed:**
+- Issue: Empty menu container was always rendered after command execution
+- Fix: Wrapped menu in ConditionalContainer with filter checking visibility and completions
+- Result: Menu container only renders when visible AND has content
 
 **Testing Notes:**
 - Syntax check passed ✓
+- Black formatting applied ✓
+- Flake8 compliant ✓
+- Import test passed ✓
 - Manual testing needed by user for full validation
 
 **Commit Message:**
