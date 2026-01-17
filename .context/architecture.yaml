@@ -1,0 +1,429 @@
+# FlutterCraft Architecture Specification (FINAL)
+# Version: 1.0.0
+# Last Updated: 2026-01-17
+
+metadata:
+  project: FlutterCraft
+  version: 0.1.3
+  python_version: ">=3.10"
+  architecture: "Clean Architecture with Command Registry Pattern"
+  
+core_principles:
+  - "Single Responsibility: Each component has one clear purpose"
+  - "Open/Closed: Open for extension, closed for modification"
+  - "Dependency Inversion: Depend on abstractions, not concretions"
+  - "Separation of Concerns: UI, Business Logic, Infrastructure separated"
+  - "Context Management: Every component has clear context boundaries"
+
+# ============================================================================
+# LAYER 1: Domain Layer (Business Logic)
+# ============================================================================
+domain:
+  description: "Core business logic and models, no external dependencies"
+  location: "fluttercraft/domain/"
+  
+  components:
+    models:
+      path: "domain/models/"
+      purpose: "Domain entities and value objects"
+      files:
+        - command.py         # Command domain model
+        - context.py         # Execution context model
+        - result.py          # Result value object
+        - theme.py           # Theme domain model
+      
+    services:
+      path: "domain/services/"
+      purpose: "Business logic and domain services"
+      files:
+        - command_service.py    # Command execution logic
+        - theme_service.py      # Theme management logic
+        - version_service.py    # Version checking logic
+
+# ============================================================================
+# LAYER 2: Application Layer (Use Cases)
+# ============================================================================
+application:
+  description: "Application use cases and orchestration"
+  location: "fluttercraft/application/"
+  
+  components:
+    commands:
+      path: "application/commands/"
+      purpose: "Command implementations (use cases)"
+      structure:
+        - flutter/           # Flutter-related commands
+        - fvm/              # FVM-related commands
+        - slash/            # Slash commands (/quit, /help, etc.)
+        - theme/            # Theme selection commands
+      
+    handlers:
+      path: "application/handlers/"
+      purpose: "Command handlers and orchestration"
+      files:
+        - command_executor.py   # Command execution pipeline
+        - command_registry.py   # Command registration
+        - command_router.py     # Command routing logic
+
+# ============================================================================
+# LAYER 3: Infrastructure Layer (External Dependencies)
+# ============================================================================
+infrastructure:
+  description: "External systems, I/O, and framework integration"
+  location: "fluttercraft/infrastructure/"
+  
+  components:
+    terminal:
+      path: "infrastructure/terminal/"
+      purpose: "Terminal I/O and command execution"
+      files:
+        - executor.py        # Subprocess command execution
+        - display.py         # Terminal display utilities
+        - prompt.py          # User input prompting
+      
+    storage:
+      path: "infrastructure/storage/"
+      purpose: "Configuration and theme persistence"
+      files:
+        - config_repository.py   # Config file management
+        - theme_repository.py    # Theme persistence
+      
+    platform:
+      path: "infrastructure/platform/"
+      purpose: "Platform-specific operations"
+      files:
+        - detector.py        # Platform detection
+        - git_utils.py       # Git operations
+        - system_utils.py    # System utilities
+
+# ============================================================================
+# LAYER 4: Presentation Layer (UI)
+# ============================================================================
+presentation:
+  description: "User interface and CLI framework integration"
+  location: "fluttercraft/presentation/"
+  
+  components:
+    cli:
+      path: "presentation/cli/"
+      purpose: "CLI application entry point"
+      files:
+        - app.py            # Typer application
+        - commands.py       # CLI command definitions
+        - start.py          # Interactive REPL
+      
+    ui:
+      path: "presentation/ui/"
+      purpose: "User interface components"
+      files:
+        - prompt_ui.py      # Advanced prompt UI
+        - header_ui.py      # Header display
+        - help_ui.py        # Help system UI
+      
+    themes:
+      path: "presentation/themes/"
+      purpose: "Visual theming system"
+      files:
+        - renderer.py       # Theme rendering engine
+        - ascii_art.py      # ASCII art selection
+        - gradients.py      # Gradient rendering
+        - theme_definitions.py  # Theme data
+
+# ============================================================================
+# LAYER 5: Core Layer (Shared Kernel)
+# ============================================================================
+core:
+  description: "Shared utilities and base classes"
+  location: "fluttercraft/core/"
+  
+  components:
+    base:
+      path: "core/base/"
+      purpose: "Abstract base classes and interfaces"
+      files:
+        - command.py        # Base Command ABC
+        - service.py        # Base Service ABC
+        - repository.py     # Base Repository ABC
+      
+    common:
+      path: "core/common/"
+      purpose: "Common utilities and helpers"
+      files:
+        - types.py          # Type definitions
+        - constants.py      # Application constants
+        - exceptions.py     # Custom exceptions
+        - validators.py     # Input validation
+
+# ============================================================================
+# DEPENDENCY RULES
+# ============================================================================
+dependency_rules:
+  allowed:
+    - "Domain ← None (no dependencies)"
+    - "Application ← Domain"
+    - "Infrastructure ← Domain, Application"
+    - "Presentation ← Domain, Application, Infrastructure"
+    - "Core ← None (shared by all)"
+  
+  forbidden:
+    - "Domain → Application (domain can't depend on app layer)"
+    - "Domain → Infrastructure (domain can't depend on infrastructure)"
+    - "Domain → Presentation (domain can't depend on presentation)"
+    - "Application → Infrastructure (app defines interfaces, infra implements)"
+    - "Application → Presentation (app doesn't know about UI)"
+
+# ============================================================================
+# ENTRY POINTS
+# ============================================================================
+entry_points:
+  main: "fluttercraft/presentation/cli/app.py"
+  module: "fluttercraft/__main__.py"
+  console_script: "fluttercraft"
+
+# ============================================================================
+# EXTERNAL DEPENDENCIES
+# ============================================================================
+dependencies:
+  required:
+    - name: "typer[all]"
+      purpose: "CLI framework"
+      layer: "presentation"
+    
+    - name: "rich"
+      purpose: "Terminal UI"
+      layer: "presentation"
+    
+    - name: "pyfiglet"
+      purpose: "ASCII art"
+      layer: "presentation"
+    
+    - name: "colorama"
+      purpose: "Cross-platform colors"
+      layer: "presentation"
+    
+    - name: "prompt_toolkit>=3.0.0"
+      purpose: "Advanced prompts"
+      layer: "presentation"
+    
+    - name: "pygments>=2.0.0"
+      purpose: "Syntax highlighting"
+      layer: "presentation"
+
+# ============================================================================
+# TESTING STRATEGY
+# ============================================================================
+testing:
+  structure:
+    unit:
+      location: "tests/unit/"
+      covers: "All layers independently"
+      framework: "pytest"
+    
+    integration:
+      location: "tests/integration/"
+      covers: "Layer interactions"
+      framework: "pytest"
+    
+    e2e:
+      location: "tests/e2e/"
+      covers: "Full CLI workflows"
+      framework: "pytest + subprocess"
+  
+  coverage:
+    minimum: 80
+    target: 90
+    critical_modules: 95  # domain, application layers
+
+# ============================================================================
+# VERSIONING
+# ============================================================================
+versioning:
+  scheme: "Semantic Versioning (SemVer)"
+  source_of_truth: "fluttercraft/__version__.py"
+  synchronized:
+    - "setup.py"
+    - "CHANGELOG.md"
+    - "docs/README.md"
+
+# ============================================================================
+# MIGRATION PLAN (From Current to FINAL)
+# ============================================================================
+migration:
+  phase_1:
+    name: "Cleanup and Consolidation"
+    tasks:
+      - "Remove duplicate theme selectors (keep interactive_selector.py)"
+      - "Remove legacy command_handler.py"
+      - "Consolidate display utilities"
+      - "Synchronize version numbers"
+      - "Move git/path utilities to platform_utils.py"
+  
+  phase_2:
+    name: "Layer Reorganization"
+    tasks:
+      - "Create new directory structure (domain, application, infrastructure, presentation, core)"
+      - "Move models to domain/models/"
+      - "Move command implementations to application/commands/"
+      - "Move terminal operations to infrastructure/terminal/"
+      - "Move CLI entry points to presentation/cli/"
+      - "Move theming to presentation/themes/"
+  
+  phase_3:
+    name: "Context System Setup"
+    tasks:
+      - "Create .context/ directory with component docs"
+      - "Create .specs/ directory with templates"
+      - "Set up dependency tracking"
+      - "Add development rules"
+  
+  phase_4:
+    name: "Testing and Validation"
+    tasks:
+      - "Create comprehensive test suite"
+      - "Verify CLI works with new structure"
+      - "Update all imports"
+      - "Run integration tests"
+      - "Update documentation"
+
+# ============================================================================
+# DEVELOPMENT WORKFLOWS
+# ============================================================================
+workflows:
+  feature_development:
+    steps:
+      1: "Create spec in .specs/features/<name>/"
+      2: "Load relevant context from .context/components/"
+      3: "Implement following clean architecture layers"
+      4: "Write tests (TDD encouraged)"
+      5: "Update component documentation"
+      6: "Update dependencies.yaml if needed"
+      7: "Submit PR with spec reference"
+  
+  bug_fixing:
+    steps:
+      1: "Create spec in .specs/fixes/<bug-id>/"
+      2: "Document root cause analysis"
+      3: "Load component context"
+      4: "Write failing test first"
+      5: "Implement fix"
+      6: "Verify all tests pass"
+      7: "Update documentation"
+      8: "Submit PR with fix spec"
+  
+  refactoring:
+    steps:
+      1: "Create spec in .specs/refactoring/<name>/"
+      2: "Document current state and desired state"
+      3: "Ensure 100% test coverage before starting"
+      4: "Refactor incrementally"
+      5: "Run tests after each change"
+      6: "Update architecture docs"
+      7: "Update component context"
+
+# ============================================================================
+# CONTEXT MANAGEMENT
+# ============================================================================
+context_management:
+  component_context:
+    location: ".context/components/"
+    format: "Markdown with YAML frontmatter"
+    required_sections:
+      - "Purpose"
+      - "Dependencies"
+      - "Public API"
+      - "Internal Structure"
+      - "Change History"
+  
+  dependency_tracking:
+    location: ".context/dependencies.yaml"
+    format: "YAML dependency graph"
+    auto_generated: true
+    update_triggers:
+      - "New import added"
+      - "Module moved"
+      - "New dependency added"
+  
+  session_tracking:
+    location: ".context/sessions/"
+    format: "Session ID directories"
+    contents:
+      - "context.md (session context)"
+      - "changes.md (changes made)"
+      - "decisions.md (decisions log)"
+
+# ============================================================================
+# AI AGENT COMPATIBILITY
+# ============================================================================
+ai_agent_support:
+  context_loading:
+    required_files:
+      - ".context/architecture.yaml (this file)"
+      - ".context/dependencies.yaml"
+      - ".context/components/<relevant>.md"
+    
+    optional_files:
+      - ".context/sessions/<session-id>/ (for continuity)"
+      - ".specs/<type>/<name>/ (for spec-driven development)"
+  
+  development_mode:
+    spec_driven:
+      enabled: true
+      template_location: ".specs/.templates/"
+      required_sections:
+        - "Objective"
+        - "Context"
+        - "Acceptance Criteria"
+        - "Implementation Plan"
+        - "Testing Strategy"
+    
+    strict_rules:
+      enabled: true
+      rule_location: ".context/rules/"
+      enforcement: "Pre-commit hooks + CI/CD"
+  
+  change_tracking:
+    enabled: true
+    format: "Git commits + session logs"
+    required_metadata:
+      - "Spec reference"
+      - "Components affected"
+      - "Tests added/updated"
+
+# ============================================================================
+# QUALITY GATES
+# ============================================================================
+quality_gates:
+  pre_commit:
+    - "Format with Black (88 char line length)"
+    - "Lint with flake8 (no errors)"
+    - "Type check with mypy (no errors)"
+    - "Run affected tests (all pass)"
+  
+  pre_push:
+    - "All tests pass"
+    - "Coverage >= 80%"
+    - "Documentation updated"
+    - "CHANGELOG.md updated"
+  
+  pr_review:
+    - "Spec provided and followed"
+    - "Component context updated"
+    - "Dependencies.yaml updated if needed"
+    - "CI/CD passes"
+    - "Code review approved"
+
+# ============================================================================
+# NOTES
+# ============================================================================
+notes: |
+  This architecture specification defines the FINAL target state for FlutterCraft.
+  
+  Migration from current state to FINAL architecture will happen in phases over
+  multiple releases (v0.1.3 → v0.2.0 → v0.3.0).
+  
+  The architecture follows Clean Architecture principles with dependency inversion,
+  ensuring that business logic (domain) is independent of frameworks and external
+  dependencies.
+  
+  All development must be spec-driven, with proper context management and strict
+  adherence to the defined rules and quality gates.

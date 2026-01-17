@@ -1,0 +1,475 @@
+# FlutterCraft Dependency Graph
+# Auto-generated: 2026-01-17
+# Version: 1.0.0
+
+# ============================================================================
+# MODULE DEPENDENCIES (Current State - Pre-Migration)
+# ============================================================================
+
+modules:
+  # -------------------------------------------------------------------------
+  # Core Infrastructure
+  # -------------------------------------------------------------------------
+  "fluttercraft.commands.core.base":
+    type: "abstract"
+    layer: "core"
+    depends_on: []
+    depended_by:
+      - "fluttercraft.commands.slash_commands"
+      - "fluttercraft.commands.fvm.fvm_command"
+      - "fluttercraft.commands.flutter.flutter_command"
+    exports:
+      - "Command (ABC)"
+  
+  "fluttercraft.commands.core.models":
+    type: "dataclass"
+    layer: "core"
+    depends_on: []
+    depended_by:
+      - "fluttercraft.commands.core.base"
+      - "fluttercraft.commands.core.executor"
+      - "fluttercraft.commands.core.registry"
+      - "fluttercraft.commands.bootstrap"
+    exports:
+      - "CommandContext"
+      - "CommandResult"
+      - "CommandMetadata"
+  
+  "fluttercraft.commands.core.registry":
+    type: "service"
+    layer: "core"
+    depends_on:
+      - "fluttercraft.commands.core.base"
+      - "fluttercraft.commands.core.models"
+    depended_by:
+      - "fluttercraft.commands.bootstrap"
+      - "fluttercraft.commands.core.executor"
+    exports:
+      - "CommandRegistry"
+  
+  "fluttercraft.commands.core.executor":
+    type: "service"
+    layer: "application"
+    depends_on:
+      - "fluttercraft.commands.core.registry"
+      - "fluttercraft.commands.core.models"
+      - "fluttercraft.utils.themed_display"
+    depended_by:
+      - "fluttercraft.commands.start"
+    exports:
+      - "CommandExecutor"
+  
+  # -------------------------------------------------------------------------
+  # Command Implementations
+  # -------------------------------------------------------------------------
+  "fluttercraft.commands.slash_commands":
+    type: "implementation"
+    layer: "application"
+    depends_on:
+      - "fluttercraft.commands.core.base"
+      - "fluttercraft.commands.core.models"
+      - "fluttercraft.utils.themed_display"
+      - "fluttercraft.commands.help.global_help"
+    depended_by:
+      - "fluttercraft.commands.bootstrap"
+    exports:
+      - "QuitCommand"
+      - "ClearCommand"
+      - "HelpCommand"
+      - "AboutCommand"
+      - "ThemeCommand"
+  
+  "fluttercraft.commands.fvm.fvm_command":
+    type: "implementation"
+    layer: "application"
+    depends_on:
+      - "fluttercraft.commands.core.base"
+      - "fluttercraft.commands.core.models"
+      - "fluttercraft.commands.fvm.install"
+      - "fluttercraft.commands.fvm.uninstall"
+      - "fluttercraft.commands.fvm.list"
+      - "fluttercraft.commands.fvm.releases"
+    depended_by:
+      - "fluttercraft.commands.bootstrap"
+    exports:
+      - "FVMCommand"
+  
+  "fluttercraft.commands.flutter.flutter_command":
+    type: "implementation"
+    layer: "application"
+    depends_on:
+      - "fluttercraft.commands.core.base"
+      - "fluttercraft.commands.core.models"
+      - "fluttercraft.utils.terminal_utils"
+    depended_by:
+      - "fluttercraft.commands.bootstrap"
+    exports:
+      - "FlutterCommand"
+  
+  # -------------------------------------------------------------------------
+  # Bootstrap and Orchestration
+  # -------------------------------------------------------------------------
+  "fluttercraft.commands.bootstrap":
+    type: "factory"
+    layer: "application"
+    depends_on:
+      - "fluttercraft.commands.core.registry"
+      - "fluttercraft.commands.core.executor"
+      - "fluttercraft.commands.slash_commands"
+      - "fluttercraft.commands.fvm.fvm_command"
+      - "fluttercraft.commands.flutter.flutter_command"
+    depended_by:
+      - "fluttercraft.commands.start"
+    exports:
+      - "build_command_system"
+  
+  "fluttercraft.commands.start":
+    type: "entrypoint"
+    layer: "presentation"
+    depends_on:
+      - "fluttercraft.commands.bootstrap"
+      - "fluttercraft.commands.core.executor"
+      - "fluttercraft.commands.core.models"
+      - "fluttercraft.utils.beautiful_prompt"
+      - "fluttercraft.utils.themed_display"
+      - "fluttercraft.utils.platform_utils"
+      - "fluttercraft.commands.flutter.version"
+      - "fluttercraft.commands.fvm.version"
+    depended_by:
+      - "fluttercraft.main"
+    exports:
+      - "start_command"
+  
+  # -------------------------------------------------------------------------
+  # Utilities - Terminal
+  # -------------------------------------------------------------------------
+  "fluttercraft.utils.terminal_utils":
+    type: "utility"
+    layer: "infrastructure"
+    depends_on:
+      - "rich"
+    depended_by:
+      - "fluttercraft.commands.flutter.flutter_command"
+      - "fluttercraft.commands.flutter.version"
+      - "fluttercraft.commands.fvm.install"
+      - "fluttercraft.commands.fvm.uninstall"
+      - "fluttercraft.commands.fvm.list"
+      - "fluttercraft.commands.fvm.releases"
+      - "fluttercraft.utils.system_utils"
+    exports:
+      - "run_with_loading"
+      - "run_flutter_command"
+  
+  # -------------------------------------------------------------------------
+  # Utilities - Display
+  # -------------------------------------------------------------------------
+  "fluttercraft.utils.themed_display":
+    type: "facade"
+    layer: "presentation"
+    depends_on:
+      - "fluttercraft.utils.themes.service"
+    depended_by:
+      - "fluttercraft.commands.start"
+      - "fluttercraft.commands.core.executor"
+      - "fluttercraft.commands.slash_commands"
+      - "fluttercraft.utils.beautiful_prompt"
+    exports:
+      - "display"
+  
+  "fluttercraft.utils.beautiful_prompt":
+    type: "ui"
+    layer: "presentation"
+    depends_on:
+      - "prompt_toolkit"
+      - "pygments"
+      - "fluttercraft.utils.themed_display"
+    depended_by:
+      - "fluttercraft.commands.start"
+    exports:
+      - "create_beautiful_prompt"
+  
+  # -------------------------------------------------------------------------
+  # Theming System
+  # -------------------------------------------------------------------------
+  "fluttercraft.utils.themes.service":
+    type: "service"
+    layer: "presentation"
+    depends_on:
+      - "fluttercraft.utils.themes.theme_manager"
+      - "fluttercraft.utils.themes.ascii_art"
+      - "fluttercraft.utils.themes.gradient"
+      - "rich"
+      - "pyfiglet"
+    depended_by:
+      - "fluttercraft.utils.themed_display"
+    exports:
+      - "ThemeDisplayService"
+  
+  "fluttercraft.utils.themes.theme_manager":
+    type: "repository"
+    layer: "infrastructure"
+    depends_on:
+      - "fluttercraft.utils.themes.professional_themes"
+    depended_by:
+      - "fluttercraft.utils.themes.service"
+    exports:
+      - "ThemeManager"
+  
+  # -------------------------------------------------------------------------
+  # Platform Utilities
+  # -------------------------------------------------------------------------
+  "fluttercraft.utils.platform_utils":
+    type: "utility"
+    layer: "infrastructure"
+    depends_on: []
+    depended_by:
+      - "fluttercraft.commands.start"
+    exports:
+      - "get_platform_info"
+      - "is_windows"
+      - "is_macos"
+      - "is_linux"
+  
+  "fluttercraft.utils.system_utils":
+    type: "utility"
+    layer: "infrastructure"
+    depends_on:
+      - "fluttercraft.utils.terminal_utils"
+    depended_by:
+      - "fluttercraft.commands.fvm.install"
+    exports:
+      - "check_chocolatey_installed"
+  
+  # -------------------------------------------------------------------------
+  # Entry Points
+  # -------------------------------------------------------------------------
+  "fluttercraft.main":
+    type: "entrypoint"
+    layer: "presentation"
+    depends_on:
+      - "typer"
+      - "rich"
+      - "fluttercraft.commands.start"
+      - "fluttercraft.commands.theme"
+      - "fluttercraft.utils.display_utils"
+    depended_by: []
+    exports:
+      - "app (Typer CLI)"
+  
+  "fluttercraft.__main__":
+    type: "entrypoint"
+    layer: "presentation"
+    depends_on:
+      - "fluttercraft.main"
+    depended_by: []
+    exports: []
+
+# ============================================================================
+# EXTERNAL DEPENDENCIES
+# ============================================================================
+
+external_dependencies:
+  typer:
+    version: "[all]"
+    used_by:
+      - "fluttercraft.main"
+      - "fluttercraft.commands.theme.theme_command"
+    purpose: "CLI framework"
+  
+  rich:
+    version: "latest"
+    used_by:
+      - "fluttercraft.main"
+      - "fluttercraft.utils.terminal_utils"
+      - "fluttercraft.utils.themes.service"
+      - "fluttercraft.commands.core.executor"
+    purpose: "Terminal UI and formatting"
+  
+  prompt_toolkit:
+    version: ">=3.0.0"
+    used_by:
+      - "fluttercraft.utils.beautiful_prompt"
+    purpose: "Advanced prompt with completions"
+  
+  pygments:
+    version: ">=2.0.0"
+    used_by:
+      - "fluttercraft.utils.beautiful_prompt"
+    purpose: "Syntax highlighting"
+  
+  pyfiglet:
+    version: "latest"
+    used_by:
+      - "fluttercraft.utils.themes.service"
+    purpose: "ASCII art generation"
+  
+  colorama:
+    version: "latest"
+    used_by:
+      - "fluttercraft.main (implicit)"
+    purpose: "Cross-platform color support"
+
+# ============================================================================
+# DEPENDENCY LAYERS (Clean Architecture)
+# ============================================================================
+
+layers:
+  core:
+    description: "Abstract base classes, models, shared kernel"
+    modules:
+      - "fluttercraft.commands.core.base"
+      - "fluttercraft.commands.core.models"
+      - "fluttercraft.commands.core.registry"
+    rules:
+      - "No dependencies on other layers"
+      - "Only exports abstractions"
+  
+  application:
+    description: "Business logic and use cases"
+    modules:
+      - "fluttercraft.commands.core.executor"
+      - "fluttercraft.commands.slash_commands"
+      - "fluttercraft.commands.fvm.fvm_command"
+      - "fluttercraft.commands.flutter.flutter_command"
+      - "fluttercraft.commands.bootstrap"
+    rules:
+      - "Depends on core layer only"
+      - "Defines interfaces for infrastructure"
+      - "No UI dependencies"
+  
+  infrastructure:
+    description: "External systems, I/O, platform-specific code"
+    modules:
+      - "fluttercraft.utils.terminal_utils"
+      - "fluttercraft.utils.platform_utils"
+      - "fluttercraft.utils.system_utils"
+      - "fluttercraft.utils.themes.theme_manager"
+    rules:
+      - "Implements application interfaces"
+      - "Depends on external libraries"
+      - "Platform-specific code isolated here"
+  
+  presentation:
+    description: "UI, CLI, theming"
+    modules:
+      - "fluttercraft.main"
+      - "fluttercraft.commands.start"
+      - "fluttercraft.utils.beautiful_prompt"
+      - "fluttercraft.utils.themed_display"
+      - "fluttercraft.utils.themes.service"
+    rules:
+      - "Top layer, can depend on all others"
+      - "No business logic"
+      - "UI concerns only"
+
+# ============================================================================
+# CIRCULAR DEPENDENCY CHECK
+# ============================================================================
+
+circular_dependencies:
+  detected: []
+  status: "CLEAN ✅"
+
+# ============================================================================
+# ORPHANED MODULES (No dependents)
+# ============================================================================
+
+orphaned_modules:
+  - name: "fluttercraft.commands.command_handler"
+    reason: "Legacy module, replaced by executor pattern"
+    action: "REMOVE in v0.1.3"
+  
+  - name: "fluttercraft.utils.display_utils"
+    reason: "Replaced by themed_display.py"
+    action: "REMOVE in v0.1.3"
+  
+  - name: "fluttercraft.utils.beautiful_display"
+    reason: "Partially replaced by themed_display and themes.service"
+    action: "MIGRATE then REMOVE in v0.1.3"
+
+# ============================================================================
+# DUPLICATE MODULES (Same functionality)
+# ============================================================================
+
+duplicates:
+  theme_selectors:
+    modules:
+      - "fluttercraft.commands.theme.interactive_selector"
+      - "fluttercraft.commands.theme.interactive_theme_selector"
+      - "fluttercraft.commands.theme.live_theme_selector"
+      - "fluttercraft.commands.theme.rich_theme_selector"
+    keep: "fluttercraft.commands.theme.interactive_selector"
+    action: "REMOVE others in v0.1.3"
+
+# ============================================================================
+# MODULE CHANGE IMPACT ANALYSIS
+# ============================================================================
+
+impact_analysis:
+  # If you change this module, these modules are affected:
+  
+  "fluttercraft.commands.core.models":
+    direct_impact:
+      - "fluttercraft.commands.core.base"
+      - "fluttercraft.commands.core.executor"
+      - "fluttercraft.commands.core.registry"
+    indirect_impact:
+      - "fluttercraft.commands.bootstrap"
+      - "fluttercraft.commands.slash_commands"
+      - "fluttercraft.commands.fvm.fvm_command"
+      - "fluttercraft.commands.flutter.flutter_command"
+      - "fluttercraft.commands.start"
+    severity: "HIGH - Core data structures"
+  
+  "fluttercraft.commands.core.base":
+    direct_impact:
+      - "fluttercraft.commands.slash_commands"
+      - "fluttercraft.commands.fvm.fvm_command"
+      - "fluttercraft.commands.flutter.flutter_command"
+    indirect_impact:
+      - "fluttercraft.commands.bootstrap"
+      - "fluttercraft.commands.start"
+    severity: "HIGH - All commands inherit from this"
+  
+  "fluttercraft.utils.themed_display":
+    direct_impact:
+      - "fluttercraft.commands.start"
+      - "fluttercraft.commands.core.executor"
+      - "fluttercraft.commands.slash_commands"
+      - "fluttercraft.utils.beautiful_prompt"
+    indirect_impact:
+      - "fluttercraft.main"
+    severity: "MEDIUM - Display layer only"
+  
+  "fluttercraft.utils.terminal_utils":
+    direct_impact:
+      - "fluttercraft.commands.flutter.flutter_command"
+      - "fluttercraft.commands.flutter.version"
+      - "fluttercraft.commands.fvm.*"
+      - "fluttercraft.utils.system_utils"
+    indirect_impact:
+      - "fluttercraft.commands.start"
+    severity: "HIGH - Critical for command execution"
+
+# ============================================================================
+# MAINTENANCE NOTES
+# ============================================================================
+
+maintenance:
+  update_frequency: "On every significant change"
+  auto_generation: "Planned for v0.2.0 (pre-commit hook)"
+  validation: "CI/CD checks for circular dependencies"
+  owner: "Architecture Team"
+
+# ============================================================================
+# VERSION HISTORY
+# ============================================================================
+
+version_history:
+  - version: "1.0.0"
+    date: "2026-01-17"
+    changes:
+      - "Initial dependency graph for FINAL architecture"
+      - "Documented current state (pre-migration)"
+      - "Identified orphaned and duplicate modules"
+      - "Added impact analysis for critical modules"
