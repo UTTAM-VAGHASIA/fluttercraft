@@ -26,7 +26,23 @@ This guide is for AI coding agents and developers working on FlutterCraft.
    - Go back to Step 2 (iterate until approved)
 4. **Wait for user approval** - User will say "looks good", "perfect", etc.
 
-### Step 3: Code Quality (ONLY AFTER APPROVAL)
+### Step 3: Documentation Update (ONLY AFTER APPROVAL)
+1. **Update CHANGELOG.md**:
+   - Add entry for the feature/fix under appropriate version
+   - Use Keep a Changelog format
+   - Include Added/Changed/Fixed sections as needed
+   - Reference the commit/feature clearly
+2. **Update relevant documentation**:
+   - `.specs/features/<feature>/implementation.md` - Mark tasks complete
+   - `.context/components/*.md` - If public APIs changed
+   - `.context/dependencies.yaml` - If dependencies added/changed
+   - `README.md` - If user-facing features added (major changes only)
+3. **Verify completeness**:
+   - All TODOs marked as completed
+   - Progress tracking updated
+   - No placeholder text left
+
+### Step 4: Code Quality (ONLY AFTER DOCUMENTATION)
 1. **Activate virtual environment**:
    ```bash
    source .venv/Scripts/activate  # macOS/Linux
@@ -43,10 +59,27 @@ This guide is for AI coding agents and developers working on FlutterCraft.
    ```
    (E203 errors are expected and ignored per .flake8 config)
 
-### Step 4: Commit (ONLY AFTER BLACK/FLAKE8)
-1. **Stage files**:
+### Step 4: Code Quality (ONLY AFTER DOCUMENTATION)
+1. **Activate virtual environment**:
    ```bash
-   git add <files>
+   source .venv/Scripts/activate  # macOS/Linux
+   .\.venv\Scripts\activate       # Windows (if using cmd)
+   source .venv/Scripts/activate  # Windows (if using bash)
+   ```
+2. **Run Black formatter**:
+   ```bash
+   black fluttercraft/
+   ```
+3. **Run Flake8 linter**:
+   ```bash
+   flake8 fluttercraft/
+   ```
+   (E203 errors are expected and ignored per .flake8 config)
+
+### Step 5: Commit (ONLY AFTER BLACK/FLAKE8)
+1. **Stage files** (including documentation):
+   ```bash
+   git add <files> CHANGELOG.md
    ```
 2. **Create comprehensive commit**:
    - Follow Conventional Commits format
@@ -58,7 +91,22 @@ This guide is for AI coding agents and developers working on FlutterCraft.
    git log --oneline -1
    ```
 
-### Step 5: Push (ONLY IF USER REQUESTS)
+### Step 5: Commit (ONLY AFTER BLACK/FLAKE8)
+1. **Stage files** (including documentation):
+   ```bash
+   git add <files> CHANGELOG.md
+   ```
+2. **Create comprehensive commit**:
+   - Follow Conventional Commits format
+   - Include detailed description of changes
+   - Reference spec and progress
+   - Add user feedback quote
+3. **Verify commit**:
+   ```bash
+   git log --oneline -1
+   ```
+
+### Step 6: Push (ONLY IF USER REQUESTS)
 - User will explicitly say "push it" or "push this commit"
 - **Never auto-push** without user request
 - Command: `git push origin <branch-name>`
@@ -69,15 +117,19 @@ This guide is for AI coding agents and developers working on FlutterCraft.
 
 ### NEVER Do These:
 - ❌ **DO NOT commit immediately** after implementation
-- ❌ **DO NOT run Black/Flake8** during iteration
+- ❌ **DO NOT run Black/Flake8** during iteration or before documentation
 - ❌ **DO NOT push** without explicit user request
 - ❌ **DO NOT skip user testing**
+- ❌ **DO NOT skip documentation updates**
 - ❌ **DO NOT batch multiple features** in one commit
+- ❌ **DO NOT forget to update CHANGELOG.md**
 
 ### ALWAYS Do These:
 - ✅ **ALWAYS activate .venv** before running Python commands
 - ✅ **ALWAYS use TodoWrite** to track implementation tasks
 - ✅ **ALWAYS wait for user approval** before formatting/committing
+- ✅ **ALWAYS update CHANGELOG.md** after user approval
+- ✅ **ALWAYS update relevant documentation** before formatting
 - ✅ **ALWAYS test syntax** with `python -m py_compile`
 - ✅ **ALWAYS provide clear test instructions** to user
 
@@ -104,9 +156,11 @@ source .venv/Scripts/activate && pip install <package>
 5. Agent: [Fixes issue Y]
 6. Agent: "Fixed issue Y. Test again?"
 7. User: "Perfect, it's working!"
-8. Agent: [Runs Black + Flake8, commits with details]
-9. User: "Push it"
-10. Agent: [Pushes to remote]
+8. Agent: [Updates CHANGELOG.md and relevant docs]
+9. Agent: "Documentation updated. Running Black/Flake8..."
+10. Agent: [Runs Black + Flake8, commits with details]
+11. User: "Push it"
+12. Agent: [Pushes to remote]
 ```
 
 ---
