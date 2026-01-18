@@ -2,6 +2,115 @@
 
 This guide is for AI coding agents and developers working on FlutterCraft.
 
+## 🔄 Standard Development Workflow (CRITICAL)
+
+**This is the mandatory workflow for all features/fixes. Follow it strictly:**
+
+### Step 1: Implementation
+1. **Read the spec** from `.specs/features/` or `.specs/fixes/`
+2. **Create TODO list** using TodoWrite tool to track tasks
+3. **Implement the feature/fix**
+   - Make code changes
+   - Update relevant files
+4. **Syntax check** with `python -m py_compile <file>`
+5. **Mark TODOs as completed** as you finish each task
+
+### Step 2: User Testing (DO NOT SKIP!)
+1. **Present implementation** to user with:
+   - Summary of changes
+   - Files modified
+   - Test instructions
+2. **User tests** the implementation
+3. **If issues found**:
+   - Fix the issues
+   - Go back to Step 2 (iterate until approved)
+4. **Wait for user approval** - User will say "looks good", "perfect", etc.
+
+### Step 3: Code Quality (ONLY AFTER APPROVAL)
+1. **Activate virtual environment**:
+   ```bash
+   source .venv/Scripts/activate  # macOS/Linux
+   .\.venv\Scripts\activate       # Windows (if using cmd)
+   source .venv/Scripts/activate  # Windows (if using bash)
+   ```
+2. **Run Black formatter**:
+   ```bash
+   black fluttercraft/
+   ```
+3. **Run Flake8 linter**:
+   ```bash
+   flake8 fluttercraft/
+   ```
+   (E203 errors are expected and ignored per .flake8 config)
+
+### Step 4: Commit (ONLY AFTER BLACK/FLAKE8)
+1. **Stage files**:
+   ```bash
+   git add <files>
+   ```
+2. **Create comprehensive commit**:
+   - Follow Conventional Commits format
+   - Include detailed description of changes
+   - Reference spec and progress
+   - Add user feedback quote
+3. **Verify commit**:
+   ```bash
+   git log --oneline -1
+   ```
+
+### Step 5: Push (ONLY IF USER REQUESTS)
+- User will explicitly say "push it" or "push this commit"
+- **Never auto-push** without user request
+- Command: `git push origin <branch-name>`
+
+---
+
+## ⚠️ Critical Rules
+
+### NEVER Do These:
+- ❌ **DO NOT commit immediately** after implementation
+- ❌ **DO NOT run Black/Flake8** during iteration
+- ❌ **DO NOT push** without explicit user request
+- ❌ **DO NOT skip user testing**
+- ❌ **DO NOT batch multiple features** in one commit
+
+### ALWAYS Do These:
+- ✅ **ALWAYS activate .venv** before running Python commands
+- ✅ **ALWAYS use TodoWrite** to track implementation tasks
+- ✅ **ALWAYS wait for user approval** before formatting/committing
+- ✅ **ALWAYS test syntax** with `python -m py_compile`
+- ✅ **ALWAYS provide clear test instructions** to user
+
+### Virtual Environment (CRITICAL):
+```bash
+# Activate BEFORE any Python command (pip, black, flake8, pytest, etc.)
+source .venv/Scripts/activate
+
+# Examples:
+source .venv/Scripts/activate && black fluttercraft/
+source .venv/Scripts/activate && flake8 fluttercraft/
+source .venv/Scripts/activate && pip install <package>
+```
+
+---
+
+## 📋 Example Session Flow
+
+```
+1. User: "Implement feature X"
+2. Agent: [Reads spec, creates TODOs, implements]
+3. Agent: "Implementation complete! Here's what I did... Test it by..."
+4. User: [Tests and finds issue Y]
+5. Agent: [Fixes issue Y]
+6. Agent: "Fixed issue Y. Test again?"
+7. User: "Perfect, it's working!"
+8. Agent: [Runs Black + Flake8, commits with details]
+9. User: "Push it"
+10. Agent: [Pushes to remote]
+```
+
+---
+
 ## Project Overview
 
 FlutterCraft is a Python CLI tool for automating Flutter development workflows. Built with Typer, Rich, and Prompt Toolkit, it provides an interactive command-line interface with beautiful theming, FVM integration, and Flutter command automation.
