@@ -16,6 +16,7 @@ import os
 from pathlib import Path
 
 from fluttercraft.utils.themed_display import get_theme
+from fluttercraft.utils.fuzzy_matcher import FuzzyMatcher
 
 if TYPE_CHECKING:
     from fluttercraft.commands.core import CommandMetadata
@@ -98,15 +99,22 @@ def build_prompt_style() -> Style:
 
 
 class FlutterCraftCompleter(Completer):
-    """Custom completer for FlutterCraft that shows command descriptions."""
+    """Custom completer for FlutterCraft with fuzzy matching support."""
+
+    def __init__(self):
+        """Initialize completer with fuzzy matcher."""
+        super().__init__()
+        # Fuzzy matcher with min_score=70 (stricter), max_results=10
+        self.fuzzy_matcher = FuzzyMatcher(min_score=70, max_results=10)
 
     def get_completions(self, document, complete_event):
-        """Get completions for the current input."""
+        """Get completions for the current input with fuzzy matching."""
         # Get the text on the current line before cursor
         text = document.current_line_before_cursor.lstrip()
 
-        # If text starts with /, show slash commands immediately
+        # If text starts with /, show slash commands (exact match first, then fuzzy)
         if text.startswith("/"):
+            # First, exact prefix matches
             for cmd, desc in SLASH_COMMANDS.items():
                 if cmd.startswith(text):
                     yield Completion(
@@ -114,26 +122,48 @@ class FlutterCraftCompleter(Completer):
                         display=cmd,
                         display_meta=desc,
                     )
-        # If text is just "/", show all slash commands
-        elif text == "/":
-            for cmd, desc in SLASH_COMMANDS.items():
-                yield Completion(
-                    cmd[1:],  # Skip the / since user already typed it
-                    display=cmd,
-                    display_meta=desc,
-                )
+
+            # Then, fuzzy matches if input is more than 2 characters (e.g., "/he" not "/f")
+            # This prevents poor fuzzy matches on very short input
+            if len(text) > 2:
+                fuzzy_matches = self.fuzzy_matcher.match_with_meta(text, SLASH_COMMANDS)
+                # Filter out already shown exact matches
+                exact_matches = [cmd for cmd in SLASH_COMMANDS if cmd.startswith(text)]
+                for cmd, score, desc in fuzzy_matches:
+                    if cmd not in exact_matches:
+                        yield Completion(
+                            cmd[len(text) :],
+                            display=cmd,
+                            display_meta=desc,  # Just description, no score
+                        )
+
         # If text is empty, don't show anything
         elif text == "":
             pass
-        # Otherwise show matching commands from all categories
+
+        # Otherwise show matching commands with fuzzy matching
         else:
+            # First, exact prefix matches
+            exact_shown = []
             for cmd, desc in ALL_COMMANDS.items():
                 if cmd.lower().startswith(text.lower()):
+                    exact_shown.append(cmd)
                     yield Completion(
                         cmd[len(text) :],  # Only complete the remaining part
                         display=cmd,
                         display_meta=desc,
                     )
+
+            # Then, fuzzy matches (only for queries with 2+ chars to avoid poor matches)
+            if len(text) >= 2:
+                fuzzy_matches = self.fuzzy_matcher.match_with_meta(text, ALL_COMMANDS)
+                for cmd, score, desc in fuzzy_matches:
+                    if cmd not in exact_shown:
+                        yield Completion(
+                            cmd[len(text) :],
+                            display=cmd,
+                            display_meta=desc,  # Just description, no score
+                        )
 
 
 def get_git_info():

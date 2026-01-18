@@ -17,6 +17,7 @@ setup(
         "rich",
         "prompt_toolkit>=3.0.0",
         "pygments>=2.0.0",
+        "rapidfuzz>=3.0.0",  # Fuzzy matching for completions
     ],
     entry_points="""
         [console_scripts]
