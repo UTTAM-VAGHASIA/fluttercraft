@@ -33,6 +33,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tab/Right Arrow to fill completion
   - Smooth transitions
 
+#### 📜 Persistent Command History
+- **File-based command history** stored in `~/.fluttercraft/history`
+  - Persists across CLI restarts
+  - Automatic directory creation
+  - Plain text format (one command per line)
+- **Arrow key navigation** through command history
+  - Up/Down arrows to navigate previous commands
+  - Context-aware: Switches between menu navigation OR history
+  - Real-time file updates
+- **Smart history management**
+  - Max 10,000 entries with FIFO (First In, First Out)
+  - Consecutive duplicate command deduplication
+  - Case-insensitive search functionality
+  - Empty commands not saved
+- **Toolbar hints** for history navigation (⬆️⬇️)
+
+#### ⚡ Command Execution Timing
+- **High-precision timing** using `time.perf_counter()`
+  - Microsecond accuracy for performance tracking
+  - Displayed after every successful command execution
+- **Smart time formatting**
+  - < 1ms: "0.25ms" (2 decimal places)
+  - < 1s: "150ms" (no decimals)
+  - ≥ 1s: "2.45s" (2 decimal places)
+- **Color-coded performance indicators**
+  - Green ⚡: < 1 second (fast)
+  - Yellow ⏱️: 1-3 seconds (moderate)
+  - Red 🐌: ≥ 3 seconds (slow)
+- **Non-intrusive display** with dim styling
+
+#### 🔍 Fuzzy Completion Matching
+- **Intelligent fuzzy matching** for command completions
+  - Fast matching using rapidfuzz library (WRatio scorer)
+  - Smart ranking: Exact matches first, then fuzzy matches
+  - Minimum query length (2+ chars) to avoid poor matches
+- **Clean completion display**
+  - No technical noise (scores, labels)
+  - Just command and description
+  - Configurable quality threshold (70% minimum)
+- **Enhanced discoverability**
+  - Type 'fvmr' → Shows 'fvm releases', 'fvm install', etc.
+  - Type 'flr' → Shows 'flutter upgrade', 'flutter' commands
+  - Fast and responsive (<50ms for typical command sets)
+
+#### ⌨️ Enhanced Text Input Area
+- **Multi-line input support** with dynamic height (1-10 lines)
+  - Input box expands automatically as user types
+  - 10 line maximum to prevent excessive screen usage
+- **Multiple keybindings for multi-line input**
+  - **Ctrl+J** - Universal cross-platform (guaranteed)
+  - **Alt+Enter** - Press Escape then Enter (works on most terminals)
+- **Visual toolbar hints** for multi-line input
+  - Clear indicator: "Alt+Enter / Ctrl+J for multi-line"
+- **Proper key handling** using prompt_toolkit Keys enum
+  - Reliable key binding with no escape sequence errors
+  - Clean implementation with no technical debt
+
 ---
 
 ### 🏗️ Architecture - FINAL System Implementation

@@ -7,6 +7,7 @@ import prompt_toolkit
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.keys import Keys
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.styles import Style
@@ -316,7 +317,7 @@ def prompt_user_with_border(completer, history):
         complete_while_typing=False,  # Don't auto-complete while typing
         history=history,
         auto_suggest=AutoSuggestFromHistory(),
-        multiline=False,
+        multiline=True,  # Enable multi-line input (Ctrl+J for new line)
         enable_history_search=True,  # Enable Ctrl+H history search
     )
 
@@ -457,6 +458,9 @@ def prompt_user_with_border(completer, history):
         # Add Up/Down arrow hint for history navigation
         hints.append("⬆️⬇️ for history")
 
+        # Add Alt+Enter and Ctrl+J hints for multi-line input
+        hints.append("Alt+Enter / Ctrl+J for multi-line")
+
         if hints:
             location += " | " + " | ".join(hints)
 
@@ -565,11 +569,13 @@ def prompt_user_with_border(completer, history):
 
     root_container = HSplit(
         [
-            # Input box with frame (fixed 1 line height)
+            # Input box with frame (dynamic height for multi-line support)
             build_rounded_frame(
                 LayoutWindow(
                     content=input_control,
-                    height=1,  # Fixed 1 line height
+                    height=Dimension(
+                        min=1, max=10
+                    ),  # Dynamic height: 1-10 lines for multi-line input
                 ),
                 style="class:frame",
                 with_prompt=True,
@@ -697,9 +703,10 @@ def prompt_user_with_border(completer, history):
             # No completions available, submit the input
             event.app.exit(result=input_buffer.text)
 
-    @kb.add("escape", "enter")
+    @kb.add(Keys.ControlJ)  # Ctrl+J for multi-line input
+    @kb.add(Keys.Escape, Keys.Enter)  # Alt+Enter (ESC then Enter) for multi-line input
     def _(event):
-        """New line."""
+        """Insert new line for multi-line input."""
         input_buffer.insert_text("\n")
 
     # Create application (NOT full-screen - we want to preserve command output!)
