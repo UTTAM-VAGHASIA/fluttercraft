@@ -12,8 +12,9 @@ The core driver for animations. It handles the render loop, timing, and frame up
 
 **Key Methods:**
 - `animate(renderable_factory, duration, easing, transient)`: generic animation loop.
+- `slide_in(renderable, direction="left", duration=0.3, start_offset=20)`: Slide elements into view from a direction.
+- `wipe_in(text, duration=0.5, vertical=True)`: Reveal text line-by-line (vertical) or char-by-char (horizontal).
 - `fade_in(text, duration)`: (Planned) Fade in text.
-- `slide_in(renderable, direction, duration)`: (Planned) Slide elements into view.
 
 ### Effects
 
@@ -29,6 +30,7 @@ Contains standard easing functions and effect definitions.
 
 ## Usage
 
+### Generic Animation
 ```python
 from fluttercraft.utils.animations.engine import AnimationEngine
 from fluttercraft.utils.animations import effects
@@ -39,6 +41,18 @@ def render_frame(progress):
 
 engine = AnimationEngine()
 engine.animate(render_frame, duration=1.0, easing=effects.ease_out_cubic)
+```
+
+### Slide In
+```python
+# Slide in a panel from the left
+engine.slide_in(my_panel, direction="left", duration=0.3)
+```
+
+### Wipe In (Text Reveal)
+```python
+# Reveal text line by line
+engine.wipe_in(my_large_text, duration=0.5, vertical=True)
 ```
 
 ## Design Principles

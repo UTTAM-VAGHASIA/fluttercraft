@@ -13,6 +13,8 @@ from .ascii_art import select_ascii_art
 from .gradient import apply_gradient_to_ascii
 from .theme import Theme
 from .theme_manager import ThemeManager, get_theme_manager
+from fluttercraft.utils.animations.engine import AnimationEngine
+from fluttercraft.utils.animations import effects
 
 FLUTTERCRAFT_ASCII_GRADIENT = [
     "#F97316",  # vibrant sunset orange
@@ -35,6 +37,39 @@ class ThemeDisplayService:
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
+    def animate_welcome_header(
+        self,
+        platform_info: dict,
+        flutter_info: dict,
+        fvm_info: dict,
+        show_ascii: bool = True,
+    ) -> None:
+        """
+        Animate the welcome header (Logo wipe-in + Info slide-in).
+        """
+        self.clear_screen()
+        engine = AnimationEngine(console=self.console, fps=60)
+        
+        if show_ascii:
+            ascii_art = self.render_ascii_art()
+            # Fast wipe-in for ASCII (300ms)
+            engine.wipe_in(ascii_art, duration=0.3, vertical=True)
+            self.console.print(ascii_art)
+            self.console.print()
+
+        content = self.get_welcome_header_content(platform_info, flutter_info, fvm_info)
+        
+        # Animate each line sliding in
+        for line in content:
+            # Very fast slide for each line (150ms)
+            engine.slide_in(
+                line, 
+                direction="left", 
+                duration=0.15, 
+                start_offset=10
+            )
+            self.console.print(line)
+
     def render_ascii_art(self, prefer_block: bool = False) -> Text:
         ascii_art = select_ascii_art(self._get_terminal_width(), prefer_block)
         theme = self.theme_manager.get_current_theme()
@@ -47,34 +82,21 @@ class ThemeDisplayService:
 
         return Text(ascii_art, style=f"bold {theme.accent_cyan}")
 
-    def show_welcome_header(
+    def get_welcome_header_content(
         self,
         platform_info: dict,
         flutter_info: dict,
         fvm_info: dict,
-        show_ascii: bool = True,
-    ) -> None:
+    ) -> list[Text]:
+        """Get the welcome header content as a list of Text objects for animation."""
         theme = self.theme_manager.get_current_theme()
-
-        if show_ascii:
-            self.clear_screen()
-            ascii_art = self.render_ascii_art()
-            self.console.print(ascii_art)
-            self.console.print()
+        content = []
 
         # Tips section
-        self.console.print(
-            f"[bold {theme.semantic.text_accent}]Tips for getting started:[/]"
-        )
-        self.console.print(
-            f"[{theme.semantic.text_secondary}]1. Use slash commands like /help, /clear, /quit[/]"
-        )
-        self.console.print(
-            f"[{theme.semantic.text_secondary}]2. Manage Flutter versions with FVM commands[/]"
-        )
-        self.console.print(
-            f"[{theme.semantic.text_secondary}]3. Type / to see available commands[/]\n"
-        )
+        content.append(Text("Tips for getting started:", style=f"bold {theme.semantic.text_accent}"))
+        content.append(Text("1. Use slash commands like /help, /clear, /quit", style=theme.semantic.text_secondary))
+        content.append(Text("2. Manage Flutter versions with FVM commands", style=theme.semantic.text_secondary))
+        content.append(Text("3. Type / to see available commands\n", style=theme.semantic.text_secondary))
 
         platform_name = platform_info.get("system", "Unknown")
         python_version = platform_info.get("python_version", "Unknown")
@@ -84,23 +106,45 @@ class ThemeDisplayService:
         if flutter_version:
             if flutter_info.get("update_available"):
                 latest = flutter_info.get("latest_version", "unknown")
-                flutter_display = (
-                    f"{flutter_version} [{theme.semantic.status_warning}]"
-                    f"(→ {latest} available)[/]"
-                )
+                flutter_display = f"{flutter_version} (→ {latest} available)"
+                flutter_style = theme.semantic.status_warning
             else:
-                flutter_display = (
-                    f"{flutter_version} [{theme.semantic.status_success}]✓[/]"
-                )
+                flutter_display = f"{flutter_version} ✓"
+                flutter_style = theme.semantic.status_success
         else:
             flutter_display = "None"
+            flutter_style = theme.semantic.text_secondary
 
-        self.console.print(
-            f"[{theme.semantic.text_secondary}]Platform: {platform_name} | "
-            f"Python: {python_version} | "
-            f"Flutter: {flutter_display} | "
-            f"FVM: {fvm_version}[/]\n"
-        )
+        # Construct info line with mixed styles
+        info_text = Text()
+        info_text.append("Platform: ", style=theme.semantic.text_secondary)
+        info_text.append(f"{platform_name} | ", style=theme.semantic.text_secondary)
+        info_text.append("Python: ", style=theme.semantic.text_secondary)
+        info_text.append(f"{python_version} | ", style=theme.semantic.text_secondary)
+        info_text.append("Flutter: ", style=theme.semantic.text_secondary)
+        info_text.append(flutter_display, style=flutter_style)
+        info_text.append(" | FVM: ", style=theme.semantic.text_secondary)
+        info_text.append(f"{fvm_version}\n", style=theme.semantic.text_secondary)
+        
+        content.append(info_text)
+        return content
+
+    def show_welcome_header(
+        self,
+        platform_info: dict,
+        flutter_info: dict,
+        fvm_info: dict,
+        show_ascii: bool = True,
+    ) -> None:
+        if show_ascii:
+            self.clear_screen()
+            ascii_art = self.render_ascii_art()
+            self.console.print(ascii_art)
+            self.console.print()
+
+        content = self.get_welcome_header_content(platform_info, flutter_info, fvm_info)
+        for line in content:
+            self.console.print(line)
 
     def show_about(self) -> None:
         import sys

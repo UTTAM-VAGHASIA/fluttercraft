@@ -11,6 +11,7 @@ from fluttercraft.utils.platform_utils import get_platform_info
 from fluttercraft.utils.beautiful_display import show_platform_not_supported
 from fluttercraft.utils.themed_display import (
     display_themed_welcome_header,
+    display_animated_welcome_header,
     create_themed_ascii_art,
     clear_screen,
 )
@@ -38,7 +39,7 @@ def start_command():
     current_platform = platform.system()
 
     # If macOS or Linux, show coming soon message
-    if current_platform in ["Darwin", "Linux"]:
+    if current_platform in ["Darwin"]:
         show_platform_not_supported(current_platform)
         return
 
@@ -64,7 +65,7 @@ def start_command():
 
     # Clear screen and display themed static header
     clear_screen()
-    display_themed_welcome_header(
+    display_animated_welcome_header(
         platform_info, flutter_info, fvm_info, show_ascii=True
     )
 

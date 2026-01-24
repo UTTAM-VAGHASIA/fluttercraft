@@ -31,6 +31,27 @@ def display_themed_welcome_header(
     )
 
 
+def display_animated_welcome_header(
+    platform_info, flutter_info, fvm_info, show_ascii: bool = True
+) -> None:
+    _get_service().animate_welcome_header(
+        platform_info=platform_info,
+        flutter_info=flutter_info,
+        fvm_info=fvm_info,
+        show_ascii=show_ascii,
+    )
+
+
+def get_welcome_header_content(
+    platform_info, flutter_info, fvm_info
+) -> list[Text]:
+    return _get_service().get_welcome_header_content(
+        platform_info=platform_info,
+        flutter_info=flutter_info,
+        fvm_info=fvm_info,
+    )
+
+
 def display_themed_about() -> None:
     _get_service().show_about()
 
