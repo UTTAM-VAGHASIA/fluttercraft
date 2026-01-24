@@ -25,10 +25,17 @@ class SettingsCommand(Command):
         super().__init__(metadata)
 
     def execute(self, context: CommandContext, args: List[str]) -> CommandResult:
-        ui = SettingsUI(context.console)
-        ui.show()
-        
-        return CommandResult(
-            success=True,
-            message="Configuration saved."
-        )
+        context.console.print("[dim]Opening settings panel...[/dim]")
+        try:
+            ui = SettingsUI(context.console)
+            ui.show()
+            
+            return CommandResult(
+                success=True,
+                message="Configuration saved."
+            )
+        except Exception as e:
+            import traceback
+            context.console.print(f"[bold red]Failed to open settings: {e}[/]")
+            context.console.print(traceback.format_exc())
+            return CommandResult(success=False)

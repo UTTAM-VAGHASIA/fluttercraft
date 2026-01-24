@@ -367,6 +367,9 @@ def run_with_progress(
     t2.start()
 
     with progress:
+        # Give the progress bar a moment to initialize and render at least one frame
+        time.sleep(0.1)
+        
         while process.poll() is None:
             time.sleep(0.1)
 
