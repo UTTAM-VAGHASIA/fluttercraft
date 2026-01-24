@@ -132,7 +132,7 @@ class FlutterCraftApp(App):
             yield Static("FlutterCraft CLI", id="app-title")
             
         with Container(id="output-container"):
-            yield Log(id="output-log", markup=True)
+            yield Log(id="output-log")
             
         with Container(id="input-area"):
             yield Input(placeholder="> Enter command...", id="input")
@@ -166,6 +166,22 @@ class FlutterCraftApp(App):
                 log.write(f"[bold red]Error: {e}[/]")
         
         event.input.value = ""
+
+    def action_toggle_theme(self) -> None:
+        """Cycle through available themes."""
+        themes = list(self.theme_manager.list_themes().keys())
+        current = self.theme_manager.get_current_theme().name
+        
+        try:
+            current_index = themes.index(current)
+            next_index = (current_index + 1) % len(themes)
+        except ValueError:
+            next_index = 0
+            
+        next_theme = themes[next_index]
+        self.theme_manager.set_theme(next_theme)
+        self.update_theme_vars()
+        self.query_one(Log).write(f"[info]Theme changed to: {next_theme}[/]")
 
 def main():
     app = FlutterCraftApp()
