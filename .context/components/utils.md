@@ -81,6 +81,20 @@ user_input = create_beautiful_prompt(
 )
 ```
 
+### Animations
+```python
+from fluttercraft.utils.animations.engine import AnimationEngine
+from fluttercraft.utils.animations import effects
+
+# Run an animation
+engine = AnimationEngine()
+engine.animate(
+    renderable_factory=lambda t: Text(f"Progress: {t:.2f}"),
+    duration=1.0,
+    easing=effects.ease_out_cubic
+)
+```
+
 ## Architecture
 
 ```
@@ -90,7 +104,10 @@ utils/
 ├── system_utils.py         # System checks (Chocolatey, etc.)
 ├── beautiful_prompt.py     # Advanced prompt with completions
 ├── beautiful_display.py    # Display utilities (legacy, to be refactored)
-└── themed_display.py       # Facade to theme service
+├── themed_display.py       # Facade to theme service
+└── animations/             # Animation system
+    ├── engine.py           # Animation driver
+    └── effects.py          # Easing functions
 ```
 
 ## Dependencies

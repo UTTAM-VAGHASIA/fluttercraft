@@ -323,11 +323,33 @@ Part of v0.1.3 signature UI/UX enhancement (Phase 1, Commit 1)
 ## Phase 2: Animations & Settings (Commits 6-10)
 
 ### Commit 6: Animation Engine Foundation
-**Status:** ⏳ Pending  
-**Files to Create:** `utils/animations/engine.py`, `utils/animations/effects.py`  
+**Status:** ✅ COMPLETE  
+**Branch:** `feature/v0.1.3-signature-ui`  
+**Date:** 2026-01-24  
+**Files Created:** `utils/animations/engine.py`, `utils/animations/effects.py`  
 **Documentation Updates:**
-- [ ] Create `.context/components/animations.md` (NEW)
-- [ ] Update `.context/components/utils.md`
+- [x] Create `.context/components/animations.md` (NEW)
+- [x] Update `.context/components/utils.md`
+
+**Final Implementation:**
+✅ **Animation Engine** using `rich.live`
+✅ **Standard Easing Functions** (Linear, Quad, Cubic)
+✅ **Effects module** for reusable transitions
+✅ **Type-safe API** with RenderableType support
+
+**Key Changes:**
+1. **New File:** `utils/animations/engine.py`
+   - `AnimationEngine` class
+   - `animate()` method for generic property animation
+   - Placeholder methods for `fade_in`, `slide_in`, `pulse`
+2. **New File:** `utils/animations/effects.py`
+   - Easing functions: `linear`, `ease_in_quad`, `ease_out_cubic`, etc.
+   - `pulse_effect` calculation
+
+**Technical Details:**
+- Uses `time.perf_counter()` for high-precision timing
+- Target FPS: 30 (configurable)
+- Transient updates by default (clears after animation)
 
 ---
 
