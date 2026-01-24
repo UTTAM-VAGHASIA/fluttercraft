@@ -1,9 +1,0 @@
-$background: #282a36;
-$surface: #44475a;
-$primary: #bd93f9;
-$secondary: #6272a4;
-$text: #f8f8f2;
-$accent: #8be9fd;
-$success: #50fa7b;
-$error: #ff5555;
-$warning: #f1fa8c;
