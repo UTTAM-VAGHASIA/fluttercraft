@@ -17,9 +17,9 @@ from fluttercraft.utils.animations.engine import AnimationEngine
 from fluttercraft.utils.animations import effects
 
 FLUTTERCRAFT_ASCII_GRADIENT = [
-    "#22D3EE",  # bright cyan
-    "#E879F9",  # soft magenta
-    "#A78BFA",  # soft violet
+    "#FF6B35",  # Warm orange
+    "#FF4081",  # Hot pink
+    "#7C4DFF",  # Electric purple
 ]
 
 

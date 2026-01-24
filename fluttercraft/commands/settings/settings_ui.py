@@ -97,25 +97,33 @@ class SettingsUI:
 
     def _edit_appearance(self) -> None:
         """Edit appearance settings."""
+        from fluttercraft.utils.themes.theme_manager import get_theme_manager
+        
+        theme_manager = get_theme_manager()
+        
         while True:
             clear_screen()
             self.console.print("[bold cyan]Appearance Settings[/]\n")
             
+            current_theme = theme_manager.get_current_theme()
             animations = self.config.get("animations.enabled")
             reduced_motion = self.config.get("animations.reduced_motion")
             
-            self.console.print(f"1. Enable Animations: [green]{animations}[/]")
-            self.console.print(f"2. Reduced Motion: [green]{reduced_motion}[/]")
+            self.console.print(f"1. Current Theme: [green]{current_theme.name}[/]")
+            self.console.print(f"2. Enable Animations: [green]{animations}[/]")
+            self.console.print(f"3. Reduced Motion: [green]{reduced_motion}[/]")
             self.console.print("\n[dim]b. Back[/]")
             
-            choice = Prompt.ask("Select option", choices=["1", "2", "b"], default="b")
+            choice = Prompt.ask("Select option", choices=["1", "2", "3", "b"], default="b")
             
             if choice == "b":
                 break
             elif choice == "1":
+                self._select_theme(theme_manager)
+            elif choice == "2":
                 val = Confirm.ask("Enable animations?", default=animations)
                 self.config.set("animations.enabled", val)
-            elif choice == "2":
+            elif choice == "3":
                 val = Confirm.ask("Reduce motion?", default=reduced_motion)
                 self.config.set("animations.reduced_motion", val)
 
@@ -171,3 +179,47 @@ class SettingsUI:
             elif choice == "3":
                 val = Confirm.ask("Enable compact mode?", default=compact)
                 self.config.set("ui.compact_mode", val)
+
+    def _select_theme(self, theme_manager) -> None:
+        """Show theme selection menu."""
+        clear_screen()
+        self.console.print("[bold cyan]Select Theme[/]\n")
+        
+        themes = theme_manager.list_themes()
+        current = theme_manager.get_current_theme().name
+        
+        # Group by type
+        # Using simple heuristic for now since Theme objects are inside the dict values
+        dark_themes = {}
+        light_themes = {}
+        
+        for name, theme in themes.items():
+            # Check theme type if available, otherwise heuristic
+            if hasattr(theme, 'type') and str(theme.type) == "ThemeType.LIGHT":
+                light_themes[name] = theme.description
+            elif "light" in name:
+                light_themes[name] = theme.description
+            else:
+                dark_themes[name] = theme.description
+        
+        self.console.print("[bold]Dark Themes:[/]")
+        for name, desc in dark_themes.items():
+            marker = "→ " if name == current else "  "
+            self.console.print(f"{marker}[cyan]{name}[/] - {desc}")
+        
+        self.console.print("\n[bold]Light Themes:[/]")
+        for name, desc in light_themes.items():
+            marker = "→ " if name == current else "  "
+            self.console.print(f"{marker}[cyan]{name}[/] - {desc}")
+        
+        self.console.print("\n[dim]Enter theme name or 'b' to go back[/]")
+        
+        choice = Prompt.ask("Theme name", default="b")
+        
+        if choice != "b" and choice in themes:
+            if theme_manager.set_theme(choice):
+                self.theme = theme_manager.get_current_theme()
+                self.console.print(f"[green]✓ Theme changed to {choice}[/]")
+                # Update config manually if needed, but theme manager handles persistence
+            else:
+                self.console.print("[red]Failed to set theme[/]")
