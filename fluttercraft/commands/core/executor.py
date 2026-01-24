@@ -24,7 +24,6 @@ class CommandExecutor:
         self._engine = AnimationEngine(console=self.console)
 
     def dispatch(self, raw_command: str, context: CommandContext) -> CommandResult:
-        self.console.print(f"[dim]DEBUG: Dispatching '{raw_command}'[/dim]")
         normalized = raw_command.strip()
         if not normalized:
             return CommandResult(success=True)

@@ -79,44 +79,31 @@ def update_command_completions(
 
 def build_prompt_style() -> Style:
     theme = get_theme()
-    bg = theme.background
 
     # Fallback if semantic colors aren't fully populated in old themes
     accent_purple = getattr(theme, "accent_purple", "#C586C0")
     accent_cyan = getattr(theme, "accent_cyan", "#4EC9B0")
-    
+    foreground = getattr(theme, "foreground", "#E0E0E0")
+
     return Style.from_dict(
         {
-            # Minimalist OpenCode Style
-            # No forced backgrounds, just clean text colors
-            
             "prompt": f"{accent_cyan} bold",
-            "bottom-toolbar": f"{theme.semantic.text_primary}",
-            
-            # Input text
-            "input": f"{theme.semantic.text_primary}",
-            
-            # Completion Menu
-            "completion-menu": f"bg:default {theme.semantic.text_primary}",
-            "completion-menu.completion": f"bg:default {theme.semantic.text_primary}",
-            "completion-menu.completion.current": f"reverse", # Simple reverse highlight
+            "bottom-toolbar": f"{theme.semantic.text_primary} bg:{theme.semantic.background_primary}",
+            "completion-menu": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
+            "completion-menu.completion": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
+            # Highlight with purple accent
+            "completion-menu.completion.current": f"bg:{accent_purple} {theme.background} bold",
             "completion-menu.meta": f"{theme.semantic.text_secondary}",
-            
-            # Scrollbar
-            "scrollbar.background": "bg:default",
+            "scrollbar.background": f"bg:{theme.semantic.background_primary}",
             "scrollbar.button": f"bg:{theme.semantic.border_focused}",
-            
-            # Tips & Info
             "ascii-art": f"{theme.semantic.text_accent} bold",
-            "tips-header": f"{accent_cyan} bold",
-            "tips": f"{theme.semantic.text_secondary}",
-            "system-info": f"{theme.semantic.text_secondary}",
-            
-            # Toolbar
-            "toolbar": f"{theme.semantic.text_secondary}",
-            
-            # Separator Line
-            "separator": f"{theme.gray}",
+            "tips-header": f"{theme.semantic.text_primary} bold",
+            "tips": theme.semantic.text_secondary,
+            "system-info": theme.semantic.text_secondary,
+            "toolbar": theme.semantic.text_secondary,
+            # Purple border
+            "frame.border": f"{accent_purple}",
+            "frame.prompt": f"{accent_cyan} bold",
         }
     )
 
@@ -349,7 +336,7 @@ def prompt_user_with_border(completer, history):
         focusable=True,
     )
 
-    prompt_symbol = "> "
+    prompt_symbol = " > "
 
     # Create completion menu text control
     def get_completions_text():
@@ -507,12 +494,75 @@ def prompt_user_with_border(completer, history):
         if hints:
             location += " | " + " | ".join(hints)
 
-        return location # Return plain text, let style="class:toolbar" handle color
+        return location
 
     toolbar_control = FormattedTextControl(
         lambda: get_toolbar_text(),
         focusable=False,
     )
+
+    def build_rounded_frame(
+        content: LayoutWindow, *, style: str, with_prompt: bool = False
+    ) -> HSplit:
+        from prompt_toolkit.layout.containers import ConditionalContainer
+        from prompt_toolkit.widgets.base import Border
+
+        border_style = "class:frame.border"
+
+        def border_window(
+            char: str, *, width: int = 1, height: int = 1, stretch: bool = False
+        ) -> Window:
+            return Window(
+                char=char,
+                width=width if not stretch else None,
+                height=height,
+                style=border_style,
+            )
+
+        top = VSplit(
+            [
+                border_window("╭"),
+                border_window("─", height=1, stretch=True),
+                border_window("╮"),
+            ],
+            height=1,
+        )
+
+        middle_children = [border_window("│")]
+
+        if with_prompt:
+            from prompt_toolkit.layout.containers import Window as PlainWindow
+            from prompt_toolkit.layout.controls import (
+                FormattedTextControl as PlainTextControl,
+            )
+
+            prompt_window = PlainWindow(
+                content=PlainTextControl(lambda: prompt_symbol),
+                width=len(prompt_symbol),
+                style="class:frame.prompt",
+                dont_extend_width=True,
+                align="left",
+            )
+            middle_children.append(prompt_window)
+
+        middle_children.append(content)
+        middle_children.append(border_window("│"))
+
+        middle = VSplit(
+            middle_children,
+            padding=0,
+        )
+
+        bottom = VSplit(
+            [
+                border_window("╰"),
+                border_window("─", height=1, stretch=True),
+                border_window("╯"),
+            ],
+            height=1,
+        )
+
+        return HSplit([top, middle, bottom], style=style)
 
     # Create layout (system info now in static header)
     from prompt_toolkit.layout.containers import ConditionalContainer
@@ -547,47 +597,40 @@ def prompt_user_with_border(completer, history):
         # Show menu by default when there are completions
         return True
 
-    from prompt_toolkit.layout.controls import FormattedTextControl as PlainTextControl
-    
-    # Prompt symbol control
-    prompt_window = Window(
-        content=PlainTextControl(lambda: prompt_symbol),
-        width=len(prompt_symbol),
-        style="class:prompt",
-        dont_extend_width=True,
-    )
-
-    # Input row: Prompt + Input Box
-    input_row = VSplit([
-        prompt_window,
-        LayoutWindow(
-            content=input_control,
-            height=Dimension(min=1, max=10),
-        )
-    ])
-
     root_container = HSplit(
         [
-            # Input Area (Prompt + Text) - Clean, no border
-            input_row,
-            
-            # Completion menu area (conditional) - Clean, no border
-            ConditionalContainer(
+            # Input box with frame (dynamic height for multi-line support)
+            build_rounded_frame(
                 LayoutWindow(
-                    content=completion_control,
-                    height=Dimension(min=1, max=6),
+                    content=input_control,
+                    height=Dimension(
+                        min=1, max=10
+                    ),  # Dynamic height: 1-10 lines for multi-line input
+                ),
+                style="class:frame",
+                with_prompt=True,
+            ),
+            # Completion menu area (conditional - only show when menu is visible)
+            ConditionalContainer(
+                build_rounded_frame(
+                    LayoutWindow(
+                        content=completion_control,
+                        height=Dimension(
+                            min=6, max=6
+                        ),  # Fixed height for menu (5 items + 1 scroll indicator)
+                        style="class:completion-menu",
+                    ),
                     style="class:completion-menu",
                 ),
                 filter=should_show_menu,
             ),
-            
-            # Minimal Separator Line
-            Window(char='─', height=1, style='class:separator'),
-            
-            # Toolbar - Clean, no border
-            LayoutWindow(
-                content=toolbar_control,
-                height=1,
+            # Toolbar
+            build_rounded_frame(
+                LayoutWindow(
+                    content=toolbar_control,
+                    height=1,
+                    style="class:toolbar",
+                ),
                 style="class:toolbar",
             ),
         ]

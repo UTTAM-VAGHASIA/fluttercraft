@@ -14,8 +14,6 @@ from fluttercraft.utils.themed_display import (
     display_animated_welcome_header,
     create_themed_ascii_art,
     clear_screen,
-    get_welcome_header_content,
-    get_theme,
 )
 from fluttercraft.utils.beautiful_prompt import (
     prompt_user_with_border,
@@ -26,12 +24,8 @@ from fluttercraft.commands.flutter_commands import check_flutter_version
 from fluttercraft.commands.fvm_commands import check_fvm_version
 from fluttercraft.commands.core import CommandContext
 from fluttercraft.commands.bootstrap import build_command_system
-from fluttercraft.utils.themed_console import create_themed_console
-from fluttercraft.utils.screen_layout import FlutterCraftScreen
-from fluttercraft.utils.themes.theme_manager import get_theme_manager
 
-# Use themed console factory
-console = create_themed_console()
+console = Console()
 
 
 def start_command():
@@ -45,15 +39,14 @@ def start_command():
     current_platform = platform.system()
 
     # If macOS or Linux, show coming soon message
-    # Removed Linux check as we are testing on Linux
     if current_platform in ["Darwin"]:
         show_platform_not_supported(current_platform)
         return
 
-    # Initialize theme manager and screen layout
-    theme_manager = get_theme_manager()
-    theme = theme_manager.get_current_theme()
-    screen = FlutterCraftScreen(theme)
+    # Show themed ASCII art
+    ascii_art = create_themed_ascii_art()
+    console.print(ascii_art)
+    console.print()
 
     # Show loading spinner
     spinner = Spinner("dots", text="[cyan]Loading system information...[/]")
@@ -70,16 +63,11 @@ def start_command():
         fvm_info = check_fvm_version(silent=True)
         time.sleep(0.3)  # Small delay to show spinner
 
-    # Prepare header content
-    ascii_art = create_themed_ascii_art()
-    header_lines = get_welcome_header_content(platform_info, flutter_info, fvm_info)
-    
-    # Combine header lines into a single Renderable
-    from rich.console import Group
-    info_renderable = Group(*header_lines)
-    
-    # Update screen header
-    screen.update_header(ascii_art, info_renderable)
+    # Clear screen and display themed static header
+    clear_screen()
+    display_animated_welcome_header(
+        platform_info, flutter_info, fvm_info, show_ascii=True
+    )
 
     # Create completer and persistent file-based history
     from pathlib import Path
@@ -104,24 +92,9 @@ def start_command():
     from rich.text import Text
     engine = AnimationEngine(console=console)
 
-    # Main REPL loop with Full-Screen Live Layout
-    # The prompt_user_with_border function ALREADY creates a "full screen feel" via its layout.
-    # The goal "Full Window Theming" means the BACKGROUND should be colored.
-    # This is now handled by create_themed_console() which sets style="on {bg}".
-    
-    # Clear screen and display themed static header
-    clear_screen()
-    
-    display_animated_welcome_header(
-        platform_info, flutter_info, fvm_info, show_ascii=True
-    )
-
     # Main REPL loop
     while True:
         try:
-            # Ensure background color is reset/maintained
-            # prompt_user_with_border uses prompt_toolkit styling which we already customized.
-            
             # Get user input with beautiful bordered prompt
             command = prompt_user_with_border(completer, history)
 

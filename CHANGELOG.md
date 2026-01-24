@@ -41,6 +41,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Universal Exception Handling**: Integrated animation engine into the command executor to animate unexpected Python exceptions
 - **Markup Support**: Animations support Rich markup and stylized text
 
+#### ⏳ Modern Progress Indicators
+- **Themed Progress Bars**: Replaced generic spinners with beautiful, theme-aware progress bars
+  - Uses project accent colors (Cyan default)
+  - Indeterminate state support ("pulsing" bars)
+  - Clean "transient" behavior (disappears on completion)
+- **Unified Experience**: Consistent progress UI across all long-running operations
+  - **FVM Install**: "Installing FVM..." with visual feedback
+  - **Flutter Upgrade**: "Upgrading Flutter SDK..." with status tracking
+- **Simplified API**: New `run_with_progress` utility for developers
+
 ### Fixed
 
 - **Linux Platform Support**: Removed unnecessary platform exclusion for Linux, allowing full CLI access on Ubuntu/Debian/Fedora

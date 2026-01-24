@@ -24,14 +24,9 @@ class SettingsCommand(Command):
         super().__init__(metadata)
 
     def execute(self, context: CommandContext, args: List[str]) -> CommandResult:
-        context.console.print("[bold yellow]DEBUG: Executing Settings Command[/]")
-        context.console.print("[dim]Opening settings panel...[/dim]")
         try:
-            context.console.print("[dim]Importing SettingsUI...[/dim]")
             from fluttercraft.commands.settings.settings_ui import SettingsUI
-            context.console.print("[dim]Instantiating SettingsUI...[/dim]")
             ui = SettingsUI(context.console)
-            context.console.print("[dim]Calling ui.show()...[/dim]")
             ui.show()
             
             return CommandResult(
@@ -39,7 +34,5 @@ class SettingsCommand(Command):
                 message="Configuration saved."
             )
         except Exception as e:
-            import traceback
             context.console.print(f"[bold red]Failed to open settings: {e}[/]")
-            context.console.print(traceback.format_exc())
             return CommandResult(success=False)
