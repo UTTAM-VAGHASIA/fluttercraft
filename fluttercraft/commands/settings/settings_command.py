@@ -9,7 +9,6 @@ from fluttercraft.commands.core.models import (
     CommandMetadata,
     CommandResult,
 )
-from fluttercraft.commands.settings.settings_ui import SettingsUI
 
 class SettingsCommand(Command):
     """Open the interactive settings panel."""
@@ -28,7 +27,11 @@ class SettingsCommand(Command):
         context.console.print("[bold yellow]DEBUG: Executing Settings Command[/]")
         context.console.print("[dim]Opening settings panel...[/dim]")
         try:
+            context.console.print("[dim]Importing SettingsUI...[/dim]")
+            from fluttercraft.commands.settings.settings_ui import SettingsUI
+            context.console.print("[dim]Instantiating SettingsUI...[/dim]")
             ui = SettingsUI(context.console)
+            context.console.print("[dim]Calling ui.show()...[/dim]")
             ui.show()
             
             return CommandResult(
