@@ -354,18 +354,49 @@ Part of v0.1.3 signature UI/UX enhancement (Phase 1, Commit 1)
 ---
 
 ### Commit 7: Sleek Startup Animation
-**Status:** ⏳ Pending  
-**Files to Modify:** `commands/start.py`, `utils/themed_display.py`  
+**Status:** ✅ COMPLETE  
+**Branch:** `feature/v0.1.3-signature-ui`  
+**Date:** 2026-01-24  
+**Commit:** `719cf1f` - Logo wipe-in and info slide-in animation ✅
+
+**Files Modified:** `commands/start.py`, `utils/themed_display.py`, `utils/themes/service.py`, `utils/animations/engine.py`  
+
 **Documentation Updates:**
-- [ ] Update `.context/components/animations.md`
+- [x] Update `.context/components/animations.md`
+
+**Final Implementation:**
+✅ **Animation Engine Enhancements**: Implemented `slide_in` (padding-based) and `wipe_in` (text-masking/typewriter reveal).
+✅ **Animated Welcome Header**: Logo wipes in from top to bottom; system info lines slide in from left.
+✅ **Sleek Timing**: Fast transitions (300ms logo, 150ms lines) for professional feel.
+✅ **Linux Support**: Enabled Linux testing in `start.py`.
+
+**Testing:**
+- ✅ Animations are fluid and fast on Linux.
+- ✅ No blocking/delay beyond the visual transition.
+- ✅ Clear screen before animation ensures clean state.
 
 ---
 
 ### Commit 8: Command Feedback Animations
-**Status:** ⏳ Pending  
-**Files to Modify:** `commands/core/executor.py`, `commands/start.py`  
+**Status:** ✅ COMPLETE  
+**Branch:** `feature/v0.1.3-signature-ui`  
+**Date:** 2026-01-24  
+**Commit:** `1f4689c` - Shake for errors and slide-up for success ✅
+
+**Files Modified:** `commands/start.py`, `commands/core/executor.py`, `utils/animations/engine.py`  
+
 **Documentation Updates:**
-- [ ] Update `.context/components/animations.md`
+- [x] Update `.context/components/animations.md`
+
+**Final Implementation:**
+✅ **Error Feedback**: Added `shake` animation (horizontal jitter) for unknown commands or exceptions.
+✅ **Success Feedback**: Added `slide_in` from bottom (1 pixel offset, 200ms) for successful command messages.
+✅ **Executor Integration**: Unexpected exceptions now trigger a shake animation before printing the error.
+
+**Testing:**
+- ✅ `/help` slides up elegantly.
+- ✅ `/invalid` shakes to indicate error.
+- ✅ Animation is non-blocking and extremely fast.
 
 ---
 
@@ -509,7 +540,7 @@ Part of v0.1.3 signature UI/UX enhancement (Phase 1, Commit 1)
 
 ## Progress Tracking
 
-**Overall Progress:** 23% (5/22 commits)
+**Overall Progress:** 36% (8/22 commits)
 
 ### Phase Completion:
 - [x] Phase 1: Foundation (5/5) - 100% ✅ COMPLETE
@@ -518,7 +549,12 @@ Part of v0.1.3 signature UI/UX enhancement (Phase 1, Commit 1)
   - [x] Commit 3: Execution Timing ✅
   - [x] Commit 4: Fuzzy Matching ✅
   - [x] Commit 5: Enhanced Input ✅
-- [ ] Phase 2: Animations & Settings (0/5)
+- [ ] Phase 2: Animations & Settings (3/5)
+  - [x] Commit 6: Animation Engine Foundation ✅
+  - [x] Commit 7: Sleek Startup Animation ✅
+  - [x] Commit 8: Command Feedback Animations ✅
+  - [ ] Commit 9: Progress Indicators
+  - [ ] Commit 10: Settings Panel
 - [ ] Phase 3: Commands (0/5)
 - [ ] Phase 4: Cross-Platform & Polish (0/5)
 - [ ] Phase 5: Final Integration (0/2)

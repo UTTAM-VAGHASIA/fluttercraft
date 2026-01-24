@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.3] - 2026-01-17 (In Progress)
 
+### 🎨 UI/UX Enhancement - Phase 2: Animations & Settings
+
+**Sleek animation system** and startup transitions to match modern professional CLIs!
+
+### Added
+
+#### 🎭 Animation Engine Foundation
+- **New Animation Engine** using `rich.live`
+  - High-performance render loop (configurable FPS)
+  - Time-based frame updates using `time.perf_counter()`
+  - Generic `animate` method for custom property transitions
+- **Standard Easing Functions**
+  - Linear, Quadratic (In/Out/InOut), Cubic (In/Out/InOut)
+  - Smooth pulse effect for periodic transitions
+- **Advanced Transition Effects**
+  - **Slide In**: Elements glide into view from any direction (left, right, top, bottom) with offset control
+  - **Wipe In**: Sophisticated reveal effect (typewriter reveal for text and ASCII art)
+- **Animation Documentation**: New `.context/components/animations.md` guide for developers
+
+#### 🎬 Sleek Startup Experience
+- **Animated Welcome Header**
+  - **Logo Wipe-in**: Colorful ASCII art logo reveals from top to bottom (300ms)
+  - **Info Slide-in**: System information lines glide in from the left (150ms per line)
+- **Zero-Wait Feel**: Animations are optimized for speed (< 1s total) to ensure no productivity impact
+- **Dynamic Content**: Animated header maintains all real-time version checks (Flutter, FVM, Python)
+- **Seamless Transition**: Screen clears instantly before animation for a professional "app-like" startup
+
+#### ⚡ Command Feedback Animations
+- **Context-Aware Animations** for command results
+  - **Success Slide-up**: Successful commands trigger a subtle 200ms upward slide to feel "activated"
+  - **Error Shake**: Invalid commands or errors trigger a 200ms horizontal shake to provide visual negative feedback
+- **Universal Exception Handling**: Integrated animation engine into the command executor to animate unexpected Python exceptions
+- **Markup Support**: Animations support Rich markup and stylized text
+
+### Fixed
+
+- **Linux Platform Support**: Removed unnecessary platform exclusion for Linux, allowing full CLI access on Ubuntu/Debian/Fedora
+
+---
+
 ### 🎨 UI/UX Enhancement - Phase 1: Foundation
 
 **Signature UI/UX overhaul** with smart completions, persistent history, animations, and cross-platform polish!

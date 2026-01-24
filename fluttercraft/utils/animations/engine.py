@@ -133,6 +133,32 @@ class AnimationEngine:
             transient=True
         )
 
+    def shake(
+        self,
+        renderable: RenderableType,
+        duration: float = 0.3,
+        intensity: int = 1
+    ) -> None:
+        """
+        Shake an element horizontally (for errors).
+        """
+        from rich.padding import Padding
+        import random
+        
+        def factory(progress: float) -> RenderableType:
+            if progress >= 1.0:
+                return renderable
+            # Diminishing intensity
+            current_intensity = max(1, int(intensity * (1.0 - progress)))
+            offset = random.randint(-current_intensity, current_intensity)
+            if offset > 0:
+                return Padding(renderable, (0, 0, 0, offset))
+            elif offset < 0:
+                return Padding(renderable, (0, -offset, 0, 0))
+            return renderable
+
+        self.animate(factory, duration, easing=effects.linear, transient=True)
+
     def wipe_in(
         self,
         text: Text,

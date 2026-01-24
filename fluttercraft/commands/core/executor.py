@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 from rich.console import Console
@@ -9,6 +9,7 @@ from rich.console import Console
 from .base import Command
 from .models import CommandContext, CommandResult
 from .registry import CommandRegistry
+from fluttercraft.utils.animations.engine import AnimationEngine
 
 
 @dataclass(slots=True)
@@ -17,6 +18,10 @@ class CommandExecutor:
 
     registry: CommandRegistry
     console: Console
+    _engine: AnimationEngine = field(init=False)
+
+    def __post_init__(self):
+        self._engine = AnimationEngine(console=self.console)
 
     def dispatch(self, raw_command: str, context: CommandContext) -> CommandResult:
         normalized = raw_command.strip()
@@ -59,9 +64,10 @@ class CommandExecutor:
 
             return result
         except Exception as exc:  # noqa: BLE001
-            self.console.print(
-                f"\n[bold red]An error occurred while running '{command_token}': {exc}[/]"
-            )
+            error_msg = f"\n[bold red]An error occurred while running '{command_token}': {exc}[/]"
+            # Subtle shake for error
+            self._engine.shake(error_msg, duration=0.25, intensity=1)
+            self.console.print(error_msg)
             return CommandResult(success=False, should_continue=True)
 
     def _resolve_command(self, token: str) -> Optional[Command]:

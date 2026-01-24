@@ -88,6 +88,10 @@ def start_command():
         prompt_history=history,
     )
 
+    from fluttercraft.utils.animations.engine import AnimationEngine
+    from rich.text import Text
+    engine = AnimationEngine(console=console)
+
     # Main REPL loop
     while True:
         try:
@@ -98,6 +102,23 @@ def start_command():
             result = executor.dispatch(command, context)
 
             if result.message:
+                # Convert message string to Rich Text for animation if it's not already
+                msg_renderable = result.message
+                if isinstance(msg_renderable, str):
+                    # Check if it has Rich tags
+                    if "[" in msg_renderable and "]" in msg_renderable:
+                        from rich.text import Text
+                        msg_renderable = Text.from_markup(msg_renderable)
+                
+                # Animate feedback
+                if result.success:
+                    # Sleek success: slight slide up from bottom (200ms)
+                    engine.slide_in(msg_renderable, direction="bottom", duration=0.2, start_offset=1)
+                else:
+                    # Subtle error: shake (200ms)
+                    engine.shake(msg_renderable, duration=0.2, intensity=1)
+                
+                # Print the final static version
                 console.print(result.message)
 
             # Display execution timing if available
