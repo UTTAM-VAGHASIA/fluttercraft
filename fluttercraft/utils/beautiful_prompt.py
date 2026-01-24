@@ -80,13 +80,19 @@ def update_command_completions(
 def build_prompt_style() -> Style:
     theme = get_theme()
 
+    # Fallback if semantic colors aren't fully populated in old themes
+    accent_purple = getattr(theme, "accent_purple", "#C586C0")
+    accent_cyan = getattr(theme, "accent_cyan", "#4EC9B0")
+    foreground = getattr(theme, "foreground", "#E0E0E0")
+
     return Style.from_dict(
         {
-            "prompt": f"{theme.semantic.text_accent} bold",
+            "prompt": f"{accent_cyan} bold",
             "bottom-toolbar": f"{theme.semantic.text_primary} bg:{theme.semantic.background_primary}",
             "completion-menu": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
             "completion-menu.completion": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
-            "completion-menu.completion.current": f"bg:{theme.semantic.border_focused} {theme.semantic.background_primary}",
+            # Highlight with purple accent
+            "completion-menu.completion.current": f"bg:{accent_purple} {theme.background} bold",
             "completion-menu.meta": f"{theme.semantic.text_secondary}",
             "scrollbar.background": f"bg:{theme.semantic.background_primary}",
             "scrollbar.button": f"bg:{theme.semantic.border_focused}",
@@ -95,7 +101,9 @@ def build_prompt_style() -> Style:
             "tips": theme.semantic.text_secondary,
             "system-info": theme.semantic.text_secondary,
             "toolbar": theme.semantic.text_secondary,
-            "frame": f"bg:{theme.semantic.background_primary} {theme.semantic.border_default}",
+            # Purple border
+            "frame.border": f"{accent_purple}",
+            "frame.prompt": f"{accent_cyan} bold",
         }
     )
 
@@ -412,13 +420,34 @@ def prompt_user_with_border(completer, history):
                 meta_str = str(comp.display_meta) if comp.display_meta else ""
 
             # Create formatted line with highlighting
-            line = f" {display_str:<25} {meta_str}"
+            # Add visual distinction for command types
+            icon = " "
+            style = ""
+            if display_str.startswith("/"):
+                icon = "/"  # Slash command
+                style = "class:completion-menu.completion" # Default
+            elif "flutter" in display_str.lower():
+                icon = "F"
+            elif "fvm" in display_str.lower():
+                icon = "V"
 
+            selection_char = " "
+            if actual_index == selected_index[0]:
+                selection_char = "▶"  # Selection indicator
+
+            # Format: Indicator | Icon | Command ... | Description (Right Aligned)
+            # We can't easily right align in FormattedTextControl without calculating widths manually
+            # But we can pad the command.
+            
+            cmd_display = f"{selection_char} {display_str:<25}"
+            
             # Highlight selected item
             if actual_index == selected_index[0]:
-                lines.append(("class:completion-menu.completion.current", line))
+                lines.append(("class:completion-menu.completion.current", cmd_display))
+                lines.append(("class:completion-menu.completion.current", f"  {meta_str}"))
             else:
-                lines.append(("", line))
+                lines.append(("", cmd_display))
+                lines.append(("class:completion-menu.meta", f"  {meta_str}"))
 
             if i < len(visible_completions) - 1:
                 lines.append(("", "\n"))

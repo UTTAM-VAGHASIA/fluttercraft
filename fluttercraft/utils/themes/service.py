@@ -17,9 +17,9 @@ from fluttercraft.utils.animations.engine import AnimationEngine
 from fluttercraft.utils.animations import effects
 
 FLUTTERCRAFT_ASCII_GRADIENT = [
-    "#F97316",  # vibrant sunset orange
-    "#F43F5E",  # rosy magenta
-    "#7C3AED",  # deep electric violet
+    "#22D3EE",  # bright cyan
+    "#E879F9",  # soft magenta
+    "#A78BFA",  # soft violet
 ]
 
 
@@ -92,11 +92,11 @@ class ThemeDisplayService:
         theme = self.theme_manager.get_current_theme()
         content = []
 
-        # Tips section
-        content.append(Text("Tips for getting started:", style=f"bold {theme.semantic.text_accent}"))
-        content.append(Text("1. Use slash commands like /help, /clear, /quit", style=theme.semantic.text_secondary))
-        content.append(Text("2. Manage Flutter versions with FVM commands", style=theme.semantic.text_secondary))
-        content.append(Text("3. Type / to see available commands\n", style=theme.semantic.text_secondary))
+        # Tips section with icons
+        content.append(Text("\nGetting Started:", style=f"bold {theme.semantic.text_accent}"))
+        content.append(Text("  💡 Use slash commands like /help, /clear, /quit", style=theme.semantic.text_secondary))
+        content.append(Text("  📦 Manage Flutter versions with FVM commands", style=theme.semantic.text_secondary))
+        content.append(Text("  ⌨️  Type / to see available commands\n", style=theme.semantic.text_secondary))
 
         platform_name = platform_info.get("system", "Unknown")
         python_version = platform_info.get("python_version", "Unknown")
