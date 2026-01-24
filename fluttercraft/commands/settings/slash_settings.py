@@ -29,4 +29,5 @@ class SettingsSlashCommand(Command):
         self._impl = SettingsCommand()
 
     def execute(self, context: CommandContext, args: List[str]) -> CommandResult:
+        context.console.print("[dim]DEBUG: SettingsSlashCommand.execute[/dim]")
         return self._impl.execute(context, args)
