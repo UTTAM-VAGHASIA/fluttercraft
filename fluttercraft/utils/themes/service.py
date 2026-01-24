@@ -93,7 +93,8 @@ class ThemeDisplayService:
         content = []
 
         # Tips section with icons
-        content.append(Text("\nGetting Started:", style=f"bold {theme.semantic.text_accent}"))
+        # Use theme accent color (cyan) for header, consistent with input box
+        content.append(Text("\nGetting Started:", style=f"bold {theme.accent_cyan}"))
         content.append(Text("  💡 Use slash commands like /help, /clear, /quit", style=theme.semantic.text_secondary))
         content.append(Text("  📦 Manage Flutter versions with FVM commands", style=theme.semantic.text_secondary))
         content.append(Text("  ⌨️  Type / to see available commands\n", style=theme.semantic.text_secondary))
