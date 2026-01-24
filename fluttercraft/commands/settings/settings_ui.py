@@ -17,13 +17,14 @@ class SettingsUI:
     
     def __init__(self, console: Console):
         self.console = console
+        self.console.print("[dim]Initializing SettingsUI...[/dim]")
         self.config = get_config_manager()
         self.theme = get_theme()
 
     def show(self) -> None:
         """Display the settings menu loop."""
         while True:
-            clear_screen()
+            # clear_screen()  # Disabled for debugging
             self._render_menu()
             
             choice = Prompt.ask(

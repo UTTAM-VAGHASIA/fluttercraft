@@ -25,6 +25,7 @@ class SettingsCommand(Command):
         super().__init__(metadata)
 
     def execute(self, context: CommandContext, args: List[str]) -> CommandResult:
+        context.console.print("[bold yellow]DEBUG: Executing Settings Command[/]")
         context.console.print("[dim]Opening settings panel...[/dim]")
         try:
             ui = SettingsUI(context.console)
