@@ -27,7 +27,7 @@ class FlutterCraftTUI(App):
     #main-container {
         height: 1fr;
         border: solid $border;
-        background: $panel_bg;
+        background: $panel-bg;
         margin: 1;
         padding: 1;
     }
@@ -52,7 +52,7 @@ class FlutterCraftTUI(App):
     }
 
     Log {
-        background: $panel_bg;
+        background: $panel-bg;
         color: $foreground;
         border: none;
     }
@@ -68,11 +68,12 @@ class FlutterCraftTUI(App):
         self.design.theme = "dark" # Use base dark theme
         
         # Apply theme colors variables
-        self.styles.set_variable("background", theme.background)
-        self.styles.set_variable("foreground", theme.foreground)
-        self.styles.set_variable("surface", theme.surface)
-        self.styles.set_variable("border", theme.border)
-        self.styles.set_variable("panel_bg", theme.panel_bg)
+        # Note: CSS variables in Textual generally use hyphens
+        self.app.styles.set_variable("background", theme.background)
+        self.app.styles.set_variable("foreground", theme.foreground)
+        self.app.styles.set_variable("surface", theme.surface)
+        self.app.styles.set_variable("border", theme.border)
+        self.app.styles.set_variable("panel-bg", theme.panel_bg)
         
         self.query_one(Log).write("Welcome to FlutterCraft CLI (Codex Style)")
 
