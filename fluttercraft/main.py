@@ -14,10 +14,7 @@ app.add_typer(theme_app, name="theme")
 @app.command()
 def start():
     """Start the FlutterCraft interactive CLI."""
-    # Launch the new Codex-style TUI
-    from fluttercraft.tui.app import FlutterCraftTUI
-    app = FlutterCraftTUI()
-    app.run()
+    start_command()
 
 
 @app.callback()
