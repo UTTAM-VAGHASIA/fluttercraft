@@ -31,6 +31,7 @@ SLASH_COMMANDS = {
     "/help": "Show comprehensive help information",
     "/about": "Show information about FlutterCraft CLI",
     "/theme": "Launch interactive theme selector",
+    "/settings": "Open configuration panel",
 }
 
 # Define FVM commands with descriptions

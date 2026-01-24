@@ -18,6 +18,7 @@ class SettingsSlashCommand(Command):
     """
 
     def __init__(self) -> None:
+        print("[DEBUG] Initializing SettingsSlashCommand")
         metadata = CommandMetadata(
             name="/settings",
             help_text="Open configuration panel",
