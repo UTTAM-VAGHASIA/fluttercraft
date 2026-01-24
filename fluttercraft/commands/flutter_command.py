@@ -11,7 +11,7 @@ from fluttercraft.commands.core.models import (
     CommandResult,
 )
 from fluttercraft.commands.flutter.version import check_flutter_version
-from fluttercraft.utils.terminal_utils import run_with_loading
+from fluttercraft.utils.terminal_utils import run_with_loading, run_with_progress
 from fluttercraft.utils.themed_display import (
     display_themed_help,
     format_text,
@@ -81,19 +81,16 @@ class FlutterCommand(Command):
             )
 
         cmd = ["flutter", "upgrade", *additional_params]
-        status_message = (
-            format_text("warning", "Checking for Flutter updates...", bold=True)
+        description = (
+            "Checking for Flutter updates..."
             if is_verify_only
-            else format_text("warning", "Upgrading Flutter...", bold=True)
+            else "Upgrading Flutter SDK..."
         )
 
-        result = run_with_loading(
+        result = run_with_progress(
             cmd,
-            status_message=status_message,
-            should_display_command=True,
-            clear_on_success=False,
-            show_output_on_failure=True,
-            show_status_message=True,
+            description=description,
+            transient=True,
         )
 
         if result.returncode != 0:

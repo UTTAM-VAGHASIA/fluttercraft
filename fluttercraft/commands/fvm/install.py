@@ -4,7 +4,7 @@ import os
 from rich.console import Console
 from rich.prompt import Prompt
 
-from fluttercraft.utils.terminal_utils import run_with_loading, OutputCapture
+from fluttercraft.utils.terminal_utils import run_with_loading, run_with_progress, OutputCapture
 from fluttercraft.utils.system_utils import check_chocolatey_installed
 from fluttercraft.utils.themes.service import ThemeDisplayService
 from fluttercraft.commands.fvm.version import check_fvm_version
@@ -91,13 +91,10 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
                 # Use PowerShell's Start-Process with -Verb RunAs to request elevation
                 admin_cmd = f"powershell -Command \"Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command {choco_install_cmd}' -Verb RunAs -Wait\""
 
-                result = run_with_loading(
+                result = run_with_progress(
                     admin_cmd,
-                    status_message=display.format_text(
-                        "warning", "Installing Chocolatey package manager...", bold=True
-                    ),
-                    clear_on_success=True,
-                    show_output_on_failure=True,
+                    description="Installing Chocolatey package manager...",
+                    transient=True,
                 )
 
                 # Check if installation was successful
@@ -133,13 +130,10 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
             # Use PowerShell's Start-Process with -Verb RunAs to request elevation
             admin_cmd = "powershell -Command \"Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command choco install fvm -y' -Verb RunAs -Wait\""
 
-            result = run_with_loading(
+            result = run_with_progress(
                 admin_cmd,
-                status_message=display.format_text(
-                    "warning", "Installing FVM via Chocolatey...", bold=True
-                ),
-                clear_on_success=True,
-                show_output_on_failure=True,
+                description="Installing FVM via Chocolatey...",
+                transient=True,
             )
 
             # Verify installation
@@ -172,13 +166,10 @@ def fvm_install_command(platform_info, flutter_info, fvm_info):
 
             curl_cmd = "curl -fsSL https://fvm.app/install.sh | bash"
 
-            result = run_with_loading(
+            result = run_with_progress(
                 curl_cmd,
-                status_message=display.format_text(
-                    "warning", "Installing FVM via curl...", bold=True
-                ),
-                clear_on_success=True,
-                show_output_on_failure=True,
+                description="Installing FVM via curl...",
+                transient=True,
             )
 
             if result.returncode != 0:

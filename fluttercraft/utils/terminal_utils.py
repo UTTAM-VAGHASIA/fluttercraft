@@ -8,6 +8,7 @@ import threading
 import time
 import shutil
 from queue import Queue, Empty
+from .progress import create_progress
 
 console = Console()
 
@@ -317,3 +318,76 @@ class OutputCapture:
     def get_output(self):
         """Return the captured output as a string."""
         return "\n".join(self.output)
+
+
+def run_with_progress(
+    cmd, description="Processing...", shell=True, transient=True
+):
+    """
+    Run a command with a sleek progress bar.
+    Optimized for commands where real-time output is less important than the progress state.
+
+    Args:
+        cmd: Command to run.
+        description: Text to show next to progress bar.
+        shell: Whether to use shell.
+        transient: Whether to hide the bar after completion.
+    """
+    from .progress import create_progress
+
+    progress = create_progress(console=console, transient=transient)
+    task_id = progress.add_task(description, total=None)  # Indeterminate
+
+    stdout_content = []
+    stderr_content = []
+
+    # Start the process
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=shell,
+        text=True,
+        errors="replace",
+    )
+
+    def read_stdout():
+        for line in iter(process.stdout.readline, ""):
+            stdout_content.append(line.rstrip())
+        process.stdout.close()
+
+    def read_stderr():
+        for line in iter(process.stderr.readline, ""):
+            stderr_content.append(line.rstrip())
+        process.stderr.close()
+
+    t1 = threading.Thread(target=read_stdout, daemon=True)
+    t2 = threading.Thread(target=read_stderr, daemon=True)
+    t1.start()
+    t2.start()
+
+    with progress:
+        while process.poll() is None:
+            time.sleep(0.1)
+
+        # Ensure threads finish
+        t1.join(timeout=1.0)
+        t2.join(timeout=1.0)
+
+        # Complete task
+        progress.update(
+            task_id,
+            completed=100,
+            total=100,
+            description=f"[bold green]✓[/] {description}",
+        )
+
+    class CompletedProcessLike:
+        def __init__(self, returncode, stdout, stderr):
+            self.returncode = returncode
+            self.stdout = stdout
+            self.stderr = stderr
+
+    return CompletedProcessLike(
+        process.returncode, "\n".join(stdout_content), "\n".join(stderr_content)
+    )
