@@ -79,6 +79,7 @@ def update_command_completions(
 
 def build_prompt_style() -> Style:
     theme = get_theme()
+    bg = theme.background
 
     # Fallback if semantic colors aren't fully populated in old themes
     accent_purple = getattr(theme, "accent_purple", "#C586C0")
@@ -87,23 +88,31 @@ def build_prompt_style() -> Style:
 
     return Style.from_dict(
         {
-            "prompt": f"{accent_cyan} bold",
-            "bottom-toolbar": f"{theme.semantic.text_primary} bg:{theme.semantic.background_primary}",
-            "completion-menu": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
-            "completion-menu.completion": f"bg:{theme.semantic.background_primary} {theme.semantic.text_primary}",
+            # Force ALL elements to use theme background
+            "": f"bg:{bg}",  # Default style for everything
+            "prompt": f"{accent_cyan} bold bg:{bg}",
+            "input": f"{theme.semantic.text_primary} bg:{bg}",
+            
+            "bottom-toolbar": f"{theme.semantic.text_primary} bg:{bg}", # Was bg:default
+            "completion-menu": f"bg:{bg} {theme.semantic.text_primary}",
+            "completion-menu.completion": f"bg:{bg} {theme.semantic.text_primary}",
             # Highlight with purple accent
-            "completion-menu.completion.current": f"bg:{accent_purple} {theme.background} bold",
-            "completion-menu.meta": f"{theme.semantic.text_secondary}",
-            "scrollbar.background": f"bg:{theme.semantic.background_primary}",
+            "completion-menu.completion.current": f"bg:{accent_purple} {bg} bold",
+            "completion-menu.meta": f"{theme.semantic.text_secondary} bg:{bg}",
+            "scrollbar.background": f"bg:{bg}",
             "scrollbar.button": f"bg:{theme.semantic.border_focused}",
-            "ascii-art": f"{theme.semantic.text_accent} bold",
-            "tips-header": f"{theme.semantic.text_primary} bold",
-            "tips": theme.semantic.text_secondary,
-            "system-info": theme.semantic.text_secondary,
-            "toolbar": theme.semantic.text_secondary,
-            # Purple border
-            "frame.border": f"{accent_purple}",
-            "frame.prompt": f"{accent_cyan} bold",
+            "ascii-art": f"{theme.semantic.text_accent} bold bg:{bg}",
+            "tips-header": f"{accent_cyan} bold bg:{bg}",
+            "tips": f"{theme.semantic.text_secondary} bg:{bg}",
+            "system-info": f"{theme.semantic.text_secondary} bg:{bg}",
+            
+            # Toolbar styles - Remove background color to blend in
+            "toolbar": f"{theme.semantic.text_secondary} bg:{bg}",
+            
+            # Consistent cyan border
+            "frame": f"{accent_cyan} bg:{bg}",
+            "frame.border": f"{accent_cyan} bg:{bg}",
+            "frame.prompt": f"{accent_cyan} bold bg:{bg}",
         }
     )
 
@@ -494,11 +503,12 @@ def prompt_user_with_border(completer, history):
         if hints:
             location += " | " + " | ".join(hints)
 
-        return location
+        return location # Return plain text, let style="class:toolbar" handle color
 
     toolbar_control = FormattedTextControl(
-        lambda: get_toolbar_text(),
+        get_toolbar_text,
         focusable=False,
+        style="class:toolbar", # Ensure style is applied
     )
 
     def build_rounded_frame(
@@ -506,8 +516,10 @@ def prompt_user_with_border(completer, history):
     ) -> HSplit:
         from prompt_toolkit.layout.containers import ConditionalContainer
         from prompt_toolkit.widgets.base import Border
-
-        border_style = "class:frame.border"
+        
+        theme = get_theme()
+        accent_cyan = getattr(theme, "accent_cyan", "#4EC9B0")
+        border_style = f"class:frame.border {accent_cyan}"
 
         def border_window(
             char: str, *, width: int = 1, height: int = 1, stretch: bool = False

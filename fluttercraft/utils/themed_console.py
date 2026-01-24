@@ -22,6 +22,7 @@ def create_themed_console() -> Console:
     
     return Console(
         theme=rich_theme,
+        style=f"on {theme.background}",  # KEY: Background color for everything
         force_terminal=True,
         color_system="truecolor",  # 24-bit color support
     )
