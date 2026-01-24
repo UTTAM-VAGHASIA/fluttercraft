@@ -146,6 +146,30 @@ SHADES_OF_PURPLE = Theme(
     accent_orange="#FF9D00",
 )
 
+OPENCODE = Theme(
+    name="opencode",
+    type=ThemeType.DARK,
+    description="OpenCode Professional - High-contrast minimalist theme",
+    # Deep dark background for zen feel
+    background="#0A0A0F",
+    foreground="#E8E8E8",
+    # High-contrast ANSI-inspired colors
+    accent_blue="#5FAFFF",      # Bright blue
+    accent_purple="#AF87FF",    # Soft purple
+    accent_cyan="#5FDFDF",      # Bright cyan
+    accent_green="#5FD75F",     # Bright green
+    accent_yellow="#DFAF5F",    # Muted gold
+    accent_red="#FF5F5F",       # Bright red
+    # Minimalist grays
+    gray="#4A4A5A",
+    comment="#6A6A7A",
+    # Diff colors
+    diff_added="#5FD75F",
+    diff_removed="#FF5F5F",
+    # Gradient for ASCII art (subtle)
+    gradient_colors=["#5FAFFF", "#AF87FF", "#5FDFDF"],
+)
+
 
 # ============================================================================
 # LIGHT THEMES
@@ -279,6 +303,7 @@ PROFESSIONAL_THEMES = {
     "dracula": DRACULA,
     "github_dark": GITHUB_DARK,
     "shades_of_purple": SHADES_OF_PURPLE,
+    "opencode": OPENCODE,
     # Light themes
     "ansi_light": ANSI_LIGHT,
     "ayu_light": AYU_LIGHT,
@@ -289,4 +314,4 @@ PROFESSIONAL_THEMES = {
 }
 
 # Default theme
-DEFAULT_THEME = DEFAULT_DARK
+DEFAULT_THEME = OPENCODE
