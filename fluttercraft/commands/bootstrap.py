@@ -10,6 +10,7 @@ from .slash_commands import (
     QuitSlashCommand,
     ThemeSlashCommand,
 )
+from .settings.slash_settings import SettingsSlashCommand
 from .fvm_command import FVMCommand
 from .flutter_command import FlutterCommand
 
@@ -25,6 +26,7 @@ def build_command_system(console: Console) -> CommandExecutor:
     registry.register(HelpSlashCommand())
     registry.register(AboutSlashCommand())
     registry.register(ThemeSlashCommand())
+    registry.register(SettingsSlashCommand())
 
     # Core command families
     registry.register(FVMCommand())
