@@ -11,23 +11,23 @@ class FlutterCraftTUI(App):
 
     CSS = """
     Screen {
-        background: $background;
-        color: $foreground;
+        background: #1e1e1e;
+        color: #d4d4d4;
     }
 
     #header {
         dock: top;
         height: 3;
-        background: $surface;
-        border-bottom: solid $border;
+        background: #252526;
+        border-bottom: solid #3c3c3c;
         padding: 0 1;
         content-align: center middle;
     }
 
     #main-container {
         height: 1fr;
-        border: solid $border;
-        background: $panel-bg;
+        border: solid #3c3c3c;
+        background: #1e1e1e;
         margin: 1;
         padding: 1;
     }
@@ -35,16 +35,16 @@ class FlutterCraftTUI(App):
     #input-container {
         dock: bottom;
         height: 3;
-        border-top: solid $border;
-        background: $surface;
+        border-top: solid #3c3c3c;
+        background: #252526;
         padding: 0 1;
     }
 
     Input {
         width: 100%;
-        background: $surface;
+        background: #252526;
         border: none;
-        color: $foreground;
+        color: #d4d4d4;
     }
     
     Input:focus {
@@ -52,8 +52,8 @@ class FlutterCraftTUI(App):
     }
 
     Log {
-        background: $panel-bg;
-        color: $foreground;
+        background: #1e1e1e;
+        color: #d4d4d4;
         border: none;
     }
     """
@@ -65,15 +65,41 @@ class FlutterCraftTUI(App):
 
     def on_mount(self) -> None:
         theme = get_current_theme()
-        self.design.theme = "dark" # Use base dark theme
         
-        # Apply theme colors variables
-        # Note: CSS variables in Textual generally use hyphens
-        self.app.styles.set_variable("background", theme.background)
-        self.app.styles.set_variable("foreground", theme.foreground)
-        self.app.styles.set_variable("surface", theme.surface)
-        self.app.styles.set_variable("border", theme.border)
-        self.app.styles.set_variable("panel-bg", theme.panel_bg)
+        # Apply theme colors directly to widgets to avoid CSS variable issues
+        try:
+            # Screen
+            self.screen.styles.background = theme.background
+            self.screen.styles.color = theme.foreground
+            
+            # Header
+            header = self.query_one("#header")
+            header.styles.background = theme.surface
+            header.styles.border_bottom = ("solid", theme.border)
+            
+            # Main Container
+            main = self.query_one("#main-container")
+            main.styles.border = ("solid", theme.border)
+            main.styles.background = theme.panel_bg
+            
+            # Input Container
+            inp_cont = self.query_one("#input-container")
+            inp_cont.styles.border_top = ("solid", theme.border)
+            inp_cont.styles.background = theme.surface
+            
+            # Input Widget
+            inp = self.query_one(Input)
+            inp.styles.background = theme.surface
+            inp.styles.color = theme.foreground
+            
+            # Log Widget
+            log = self.query_one(Log)
+            log.styles.background = theme.panel_bg
+            log.styles.color = theme.foreground
+            
+        except Exception as e:
+            # Fallback or log error if widgets aren't found yet (shouldn't happen in on_mount)
+            pass
         
         self.query_one(Log).write("Welcome to FlutterCraft CLI (Codex Style)")
 
