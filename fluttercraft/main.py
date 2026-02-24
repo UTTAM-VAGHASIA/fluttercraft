@@ -1,22 +1,16 @@
-import typer
-from rich.console import Console
+from __future__ import annotations
 
-from fluttercraft.commands.start import start_command
-from fluttercraft.commands.theme import theme_app
-from fluttercraft.utils.display_utils import display_welcome_art
+import typer
+
+from fluttercraft.app import FlutterCraftApp
 
 app = typer.Typer(help="FlutterCraft: Automate your Flutter app setup like a pro.")
-console = Console()
-
-# Add theme command
-app.add_typer(theme_app, name="theme")
 
 
 @app.command()
 def start():
-    """Start the FlutterCraft interactive CLI."""
-    # Don't display old welcome art - start_command handles it
-    start_command()
+    """Start the FlutterCraft interactive TUI."""
+    FlutterCraftApp().run()
 
 
 @app.callback()

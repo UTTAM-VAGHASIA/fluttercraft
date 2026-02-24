@@ -1,0 +1,74 @@
+/* FlutterCraft v0.2.0 — Base Textual CSS
+   Hardcoded Tokyo Night palette — full theme variables in Step 1.13.
+*/
+
+/* ── Screen ──────────────────────────────────────────────────── */
+Screen {
+    layout: vertical;
+    background: #1a1b26;
+}
+
+/* ── Header bar ──────────────────────────────────────────────── */
+#header-bar {
+    height: 1;
+    background: #1f2335;
+    color: #a9b1d6;
+    border-bottom: solid #3b4261;
+    content-align: left middle;
+    padding: 0 2;
+}
+
+/* ── Main area ───────────────────────────────────────────────── */
+#main-area {
+    height: 1fr;
+    padding: 1 1 0 1;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+#sidebar {
+    width: 26;
+    background: #1f2335;
+    border: round #3b4261;
+    border-title-color: #7aa2f7;
+    border-title-align: left;
+    margin-right: 1;
+    padding: 0 1;
+    color: #a9b1d6;
+}
+
+/* ── Content area ────────────────────────────────────────────── */
+#content-area {
+    width: 1fr;
+    layout: vertical;
+}
+
+#content-panel {
+    height: 1fr;
+    background: #1f2335;
+    border: round #3b4261;
+    border-title-color: #7aa2f7;
+    border-title-align: left;
+    content-align: center middle;
+    padding: 1 3;
+    margin-bottom: 1;
+}
+
+#output-panel {
+    height: 5;
+    background: #16161e;
+    border: round #3b4261;
+    border-title-color: #9ece6a;
+    border-title-align: left;
+    content-align: left middle;
+    padding: 0 1;
+}
+
+/* ── Footer bar ──────────────────────────────────────────────── */
+#footer-bar {
+    height: 1;
+    background: #7aa2f7;
+    color: #1a1b26;
+    content-align: left middle;
+    text-style: bold;
+    padding: 0 2;
+}
