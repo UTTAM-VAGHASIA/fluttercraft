@@ -5,6 +5,7 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Static
 
+from fluttercraft.widgets.footer import FlutterCraftFooter
 from fluttercraft.widgets.header import FlutterCraftHeader
 
 _SIDEBAR = """\
@@ -44,13 +45,7 @@ class DashboardScreen(Screen):
             with Vertical(id="content-area"):
                 yield Static(_WELCOME, id="content-panel")
                 yield Static(_OUTPUT, id="output-panel")
-        yield Static(
-            "  [bold #1a1b26]^Q[/] Quit"
-            "    [bold #1a1b26]^P[/] Palette"
-            "    [bold #1a1b26]^T[/] Theme"
-            "    [bold #1a1b26]?[/] Help",
-            id="footer-bar",
-        )
+        yield FlutterCraftFooter()
 
     def on_mount(self) -> None:
         self.query_one("#sidebar", Static).border_title = "Plugins"

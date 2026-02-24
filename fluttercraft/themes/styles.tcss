@@ -53,12 +53,4 @@ Screen {
     padding: 0 1;
 }
 
-/* ── Footer bar ──────────────────────────────────────────────── */
-#footer-bar {
-    height: 1;
-    background: #7aa2f7;
-    color: #1a1b26;
-    content-align: left middle;
-    text-style: bold;
-    padding: 0 2;
-}
+/* Footer uses FlutterCraftFooter.DEFAULT_CSS */
