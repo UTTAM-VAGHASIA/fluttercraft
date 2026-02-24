@@ -1,18 +1,34 @@
 [flake8]
+max-line-length = 88
+
+extend-ignore =
+    # --- Handled by Black (formatter) ---
+    E203,   # whitespace before ':' — Black-compatible style
+    W503,   # line break before binary operator — Black default
+    E501,   # line too long — Black enforces max-line-length
+    E302,   # expected 2 blank lines — Black handles
+    W291,   # trailing whitespace — Black handles
+    W292,   # no newline at end of file — Black handles
+    W293,   # whitespace before blank line — Black handles
+    # --- Style noise (not bugs) ---
+    E401,   # multiple imports on one line — allow in rare cases
+    E711,   # comparison to None with == (sometimes needed with SQLAlchemy etc.)
+
+per-file-ignores =
+    # Re-exports in __init__ files are intentional
+    __init__.py:F401
+
 exclude =
-    .venv/*,
-    venv/*,
-    env/*,
+    .venv,
+    venv,
+    env,
     __pycache__,
     .git,
     .pytest_cache,
     build,
     dist,
     *.egg-info,
-    .venv,
-    venv,
-    env
-max-line-length = 88
-extend-ignore = E203, W503, F821
-per-file-ignores =
-    __init__.py:F401
+    .context,
+    .specs,
+    docs,
+    scripts
