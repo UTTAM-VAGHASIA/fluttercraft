@@ -5,6 +5,8 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Static
 
+from fluttercraft.widgets.header import FlutterCraftHeader
+
 _SIDEBAR = """\
 
   [bold #7aa2f7]1[/]  [#bb9af7]◈[/]  FVM Manager
@@ -36,12 +38,7 @@ class DashboardScreen(Screen):
     """Main FlutterCraft dashboard — sidebar + content + output."""
 
     def compose(self) -> ComposeResult:
-        yield Static(
-            "[bold #7aa2f7] ⚡ FlutterCraft[/]"
-            "   [dim #3b4261]│[/]"
-            "   [dim #565f89]v0.2.0  ·  feature/v0.2.0-tui[/]",
-            id="header-bar",
-        )
+        yield FlutterCraftHeader()
         with Horizontal(id="main-area"):
             yield Static(_SIDEBAR, id="sidebar")
             with Vertical(id="content-area"):

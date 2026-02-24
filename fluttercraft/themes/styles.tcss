@@ -8,16 +8,6 @@ Screen {
     background: #1a1b26;
 }
 
-/* ── Header bar ──────────────────────────────────────────────── */
-#header-bar {
-    height: 1;
-    background: #1f2335;
-    color: #a9b1d6;
-    border-bottom: solid #3b4261;
-    content-align: left middle;
-    padding: 0 2;
-}
-
 /* ── Main area ───────────────────────────────────────────────── */
 #main-area {
     height: 1fr;
