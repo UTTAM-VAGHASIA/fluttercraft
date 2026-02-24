@@ -35,7 +35,9 @@ DEFAULT_CONFIG: dict[str, Any] = {
     },
 }
 
-CONFIG_DIR = Path.home() / ".fluttercraft"
+from fluttercraft.core.compat import get_config_dir
+
+CONFIG_DIR = get_config_dir()
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
 

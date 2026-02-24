@@ -20,7 +20,9 @@ DEFAULT_PROJECT_STATE: dict[str, Any] = {
     "selected_files": [],
 }
 
-STATE_FILE = Path.home() / ".fluttercraft" / "state.json"
+from fluttercraft.core.compat import get_config_dir
+
+STATE_FILE = get_config_dir() / "state.json"
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
