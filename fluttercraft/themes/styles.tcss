@@ -14,17 +14,7 @@ Screen {
     padding: 1 1 0 1;
 }
 
-/* ── Sidebar ─────────────────────────────────────────────────── */
-#sidebar {
-    width: 26;
-    background: #1f2335;
-    border: round #3b4261;
-    border-title-color: #7aa2f7;
-    border-title-align: left;
-    margin-right: 1;
-    padding: 0 1;
-    color: #a9b1d6;
-}
+/* SidebarPanel owns its own CSS via DEFAULT_CSS */
 
 /* ── Content area ────────────────────────────────────────────── */
 #content-area {
@@ -43,14 +33,11 @@ Screen {
     margin-bottom: 1;
 }
 
-#output-panel {
-    height: 5;
-    background: #16161e;
-    border: round #3b4261;
-    border-title-color: #9ece6a;
-    border-title-align: left;
-    content-align: left middle;
-    padding: 0 1;
+/* OutputPanel owns its own CSS via DEFAULT_CSS */
+
+/* ── Command input ────────────────────────────────────────────── */
+#command-input {
+    margin: 0 1 0 1;
 }
 
 /* Footer uses FlutterCraftFooter.DEFAULT_CSS */
