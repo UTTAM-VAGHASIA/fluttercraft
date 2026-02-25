@@ -1,21 +1,24 @@
-"""FlutterCraft CLI commands package."""
+"""FlutterCraft command system.
 
-from fluttercraft.commands.start import start_command
-from fluttercraft.commands.flutter import check_flutter_version
-from fluttercraft.commands.fvm import (
-    check_fvm_version,
-    fvm_install_command,
-    fvm_uninstall_command,
-    fvm_releases_command,
-    fvm_list_command,
+Provides the core command registry, executor, and base classes used by
+plugins in Phase 2+. The v0.1.x CLI commands have been removed.
+"""
+from __future__ import annotations
+
+from fluttercraft.commands.core import (
+    Command,
+    CommandContext,
+    CommandExecutor,
+    CommandMetadata,
+    CommandRegistry,
+    CommandResult,
 )
-from fluttercraft.commands.help import (
-    show_global_help,
-    show_fvm_help,
-    show_fvm_install_help,
-    show_fvm_uninstall_help,
-    show_fvm_releases_help,
-    show_fvm_list_help,
-    show_clear_help,
-    handle_help_command,
-)
+
+__all__ = [
+    "Command",
+    "CommandContext",
+    "CommandExecutor",
+    "CommandMetadata",
+    "CommandRegistry",
+    "CommandResult",
+]

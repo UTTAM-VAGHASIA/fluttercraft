@@ -42,7 +42,7 @@ class ResizeHandle(Widget):
     ResizeHandle:hover {
         background: #7aa2f7;
     }
-    ResizeHandle.-dragging {
+    ResizeHandle.dragging {
         background: #7aa2f7;
     }
     """
@@ -70,7 +70,7 @@ class ResizeHandle(Widget):
         self._dragging = True
         self._last_x = event.screen_x
         self.capture_mouse()
-        self.add_class("-dragging")
+        self.add_class("dragging")
 
     def on_mouse_move(self, event: events.MouseMove) -> None:
         if not self._dragging:
@@ -87,11 +87,11 @@ class ResizeHandle(Widget):
         event.stop()
         self._dragging = False
         self.release_mouse()
-        self.remove_class("-dragging")
+        self.remove_class("dragging")
 
     def on_leave(self, event: events.Leave) -> None:
         """Safety net: stop drag if the cursor leaves the widget unexpectedly."""
         if self._dragging:
             self._dragging = False
             self.release_mouse()
-            self.remove_class("-dragging")
+            self.remove_class("dragging")

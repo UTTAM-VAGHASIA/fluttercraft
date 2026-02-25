@@ -114,6 +114,46 @@ class FuzzyMatcher:
 # ── Command input widget ──────────────────────────────────────────────────────
 
 
+class _CraftInput(Input):
+    """Custom Input that delegates Up/Down/Tab/Escape to the parent CommandInput."""
+
+    BINDINGS = [
+        Binding("up", "history_up", "Previous command", show=False, priority=True),
+        Binding("down", "history_down", "Next command", show=False, priority=True),
+        Binding("tab", "autocomplete", "Autocomplete", show=False, priority=True),
+        Binding("escape", "clear_input", "Clear", show=False, priority=True),
+    ]
+
+    def action_history_up(self) -> None:
+        parent = self.parent
+        if isinstance(parent, CommandInput):
+            cmd = parent._history.navigate_up()
+            if cmd is not None:
+                self.value = cmd
+                self.cursor_position = len(cmd)
+
+    def action_history_down(self) -> None:
+        parent = self.parent
+        if isinstance(parent, CommandInput):
+            cmd = parent._history.navigate_down()
+            self.value = cmd if cmd is not None else ""
+            self.cursor_position = len(self.value)
+
+    def action_autocomplete(self) -> None:
+        parent = self.parent
+        if isinstance(parent, CommandInput) and parent._suggestions:
+            self.value = parent._suggestions[0]
+            self.cursor_position = len(self.value)
+            parent._hide_autocomplete()
+
+    def action_clear_input(self) -> None:
+        parent = self.parent
+        if isinstance(parent, CommandInput):
+            self.value = ""
+            parent._hide_autocomplete()
+            parent._history.reset_navigation()
+
+
 class CommandInput(Widget):
     """Text input with history navigation and fuzzy autocomplete.
 
@@ -127,20 +167,20 @@ class CommandInput(Widget):
     parent screen/app to forward commands to the plugin system (Phase 2).
     """
 
+    can_focus_children = True
+
     DEFAULT_CSS = """
     CommandInput {
         height: auto;
         background: #1a1b26;
-        border-top: solid #3b4261;
     }
     #cmd-input-field {
         background: #1a1b26;
-        border: none;
         color: #a9b1d6;
         padding: 0 2;
     }
     #cmd-input-field:focus {
-        border: none;
+        background-tint: transparent;
     }
     #cmd-autocomplete {
         height: auto;
@@ -157,18 +197,7 @@ class CommandInput(Widget):
     #cmd-autocomplete > ListItem:hover {
         background: #24283b;
     }
-    #cmd-autocomplete > ListItem.--highlight {
-        background: #3b4261;
-        color: #c0caf5;
-    }
     """
-
-    BINDINGS = [
-        Binding("up", "history_up", "Previous command", show=False),
-        Binding("down", "history_down", "Next command", show=False),
-        Binding("tab", "autocomplete", "Autocomplete", show=False),
-        Binding("escape", "clear_input", "Clear", show=False),
-    ]
 
     class Submitted(Message):
         """Posted when the user submits a command."""
@@ -179,7 +208,7 @@ class CommandInput(Widget):
 
     def __init__(
         self,
-        placeholder: str = "▶  Enter command…",
+        placeholder: str = "Enter command...",
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -190,10 +219,14 @@ class CommandInput(Widget):
 
     def compose(self) -> ComposeResult:
         yield ListView(id="cmd-autocomplete")
-        yield Input(placeholder=self._placeholder, id="cmd-input-field")
+        yield _CraftInput(
+            placeholder=self._placeholder,
+            id="cmd-input-field",
+            compact=True,
+        )
 
     def on_mount(self) -> None:
-        self.query_one("#cmd-input-field", Input).focus()
+        self.query_one("#cmd-input-field", _CraftInput).focus()
 
     # ── Event handlers ────────────────────────────────────────────────────────
 
@@ -211,7 +244,7 @@ class CommandInput(Widget):
             self._history.add(value)
             self._history.reset_navigation()
             self.post_message(self.Submitted(value))
-        self._set_input("")
+        event.input.value = ""
         self._hide_autocomplete()
 
     def on_list_view_selected(self, event: ListView.Selected) -> None:
@@ -219,30 +252,11 @@ class CommandInput(Widget):
         event.stop()
         idx = event.index
         if idx is not None and 0 <= idx < len(self._suggestions):
-            self._set_input(self._suggestions[idx])
+            inp = self.query_one("#cmd-input-field", _CraftInput)
+            inp.value = self._suggestions[idx]
+            inp.cursor_position = len(inp.value)
             self._hide_autocomplete()
-            self.focus_input()
-
-    # ── Key actions ───────────────────────────────────────────────────────────
-
-    def action_history_up(self) -> None:
-        cmd = self._history.navigate_up()
-        if cmd is not None:
-            self._set_input(cmd)
-
-    def action_history_down(self) -> None:
-        cmd = self._history.navigate_down()
-        self._set_input(cmd if cmd is not None else "")
-
-    def action_autocomplete(self) -> None:
-        if self._suggestions:
-            self._set_input(self._suggestions[0])
-            self._hide_autocomplete()
-
-    def action_clear_input(self) -> None:
-        self._set_input("")
-        self._hide_autocomplete()
-        self._history.reset_navigation()
+            inp.focus()
 
     # ── Public API ────────────────────────────────────────────────────────────
 
@@ -253,17 +267,11 @@ class CommandInput(Widget):
     def focus_input(self) -> None:
         """Move keyboard focus to the text field."""
         try:
-            self.query_one("#cmd-input-field", Input).focus()
+            self.query_one("#cmd-input-field", _CraftInput).focus()
         except Exception:
             pass
 
     # ── Internal ──────────────────────────────────────────────────────────────
-
-    def _set_input(self, value: str) -> None:
-        try:
-            self.query_one("#cmd-input-field", Input).value = value
-        except Exception:
-            pass
 
     def _update_autocomplete(self) -> None:
         try:

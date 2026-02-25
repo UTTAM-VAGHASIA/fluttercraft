@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from textual import events
 from textual.app import ComposeResult
+from textual.binding import Binding
 from textual.message import Message
 from textual.reactive import reactive
 from textual.widget import Widget
@@ -114,6 +115,13 @@ class SidebarPanel(Widget):
     }
     """
 
+    can_focus = True
+
+    BINDINGS = [
+        Binding("up", "select_prev", "Previous plugin", show=False),
+        Binding("down", "select_next", "Next plugin", show=False),
+    ]
+
     selected: reactive[int] = reactive(0)  # 0 = nothing selected; 1-7 otherwise
 
     # ── Messages ──────────────────────────────────────────────────────────────
@@ -163,7 +171,10 @@ class SidebarPanel(Widget):
         """Re-render all entries whenever selection changes."""
         for entry in self._plugins:
             is_selected = entry.number == value
-            label = self.query_one(f"#plugin-entry-{entry.number}", Label)
+            try:
+                label = self.query_one(f"#plugin-entry-{entry.number}", Label)
+            except Exception:
+                continue  # Widget not yet composed
             label.update(_format_entry(entry, selected=is_selected))
             label.set_class(is_selected, "selected")
 
@@ -190,6 +201,16 @@ class SidebarPanel(Widget):
         n = len(self._plugins)
         prv = ((self.selected - 2) % n) + 1
         self.select(prv)
+
+    # ── Binding actions ────────────────────────────────────────────────────────
+
+    def action_select_next(self) -> None:
+        """Down arrow — move selection down."""
+        self.select_next()
+
+    def action_select_prev(self) -> None:
+        """Up arrow — move selection up."""
+        self.select_prev()
 
     @property
     def active_plugin_id(self) -> str | None:

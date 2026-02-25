@@ -37,13 +37,13 @@ class DashboardScreen(Screen):
     """Main FlutterCraft dashboard — sidebar + resize handle + content + output."""
 
     BINDINGS = [
-        Binding("1", "select_plugin(1)", "FVM Manager",     show=False),
-        Binding("2", "select_plugin(2)", "Flutter",          show=False),
-        Binding("3", "select_plugin(3)", "Git Control",      show=False),
-        Binding("4", "select_plugin(4)", "Project Creator",  show=False),
-        Binding("5", "select_plugin(5)", "File Browser",     show=False),
-        Binding("6", "select_plugin(6)", "Workspace",        show=False),
-        Binding("7", "select_plugin(7)", "CLI Adapters",     show=False),
+        Binding("1", "select_plugin(1)", "FVM Manager",     show=False, priority=False),
+        Binding("2", "select_plugin(2)", "Flutter",          show=False, priority=False),
+        Binding("3", "select_plugin(3)", "Git Control",      show=False, priority=False),
+        Binding("4", "select_plugin(4)", "Project Creator",  show=False, priority=False),
+        Binding("5", "select_plugin(5)", "File Browser",     show=False, priority=False),
+        Binding("6", "select_plugin(6)", "Workspace",        show=False, priority=False),
+        Binding("7", "select_plugin(7)", "CLI Adapters",     show=False, priority=False),
         Binding("ctrl+right", "grow_sidebar",   "Grow sidebar",   show=False),
         Binding("ctrl+left",  "shrink_sidebar", "Shrink sidebar", show=False),
     ]
@@ -70,6 +70,33 @@ class DashboardScreen(Screen):
 
     def action_select_plugin(self, number: int) -> None:
         self.query_one(SidebarPanel).select(number)
+
+    def on_sidebar_panel_plugin_selected(
+        self, event: SidebarPanel.PluginSelected
+    ) -> None:
+        """Handle sidebar plugin click — update content panel and footer."""
+        content = self.query_one("#content-panel", Static)
+        content.update(
+            f"[bold #7aa2f7]{event.plugin_id.title()}[/] plugin selected\n\n"
+            f"[dim #565f89]Plugin UI will be loaded here in Phase 2[/]"
+        )
+        content.border_title = event.plugin_id.title()
+
+        # Update footer context
+        footer = self.query_one(FlutterCraftFooter)
+        footer.set_context(event.plugin_id)
+
+        # Write to output panel
+        output = self.query_one(OutputPanel)
+        output.write_info(f"Switched to {event.plugin_id}")
+
+    # ── Command input ──────────────────────────────────────────────────────────
+
+    def on_command_input_submitted(self, event: CommandInput.Submitted) -> None:
+        """Handle command submission — display in output panel."""
+        output = self.query_one(OutputPanel)
+        output.write_cmd(event.value)
+        output.write(f"Command registry not yet wired (Phase 2)", "dim")
 
     # ── Sidebar resize ────────────────────────────────────────────────────────
 

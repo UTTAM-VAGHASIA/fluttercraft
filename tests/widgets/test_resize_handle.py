@@ -95,7 +95,7 @@ async def test_resize_handle_mounts():
 async def test_resize_handle_no_dragging_class_initially():
     async with _make_handle_app().run_test() as pilot:
         handle = pilot.app.query_one(ResizeHandle)
-        assert not handle.has_class("-dragging")
+        assert not handle.has_class("dragging")
 
 
 @pytest.mark.asyncio
@@ -118,7 +118,7 @@ async def test_resize_handle_resized_message_posted_on_drag():
         # Manually simulate drag sequence
         handle._dragging = True
         handle._last_x = 10
-        handle.add_class("-dragging")
+        handle.add_class("dragging")
         # Fire a move of +3 columns
         handle._last_x = 10
         handle.post_message(ResizeHandle.Resized(3))
@@ -139,10 +139,10 @@ async def test_resize_handle_dragging_class_cleared_on_mouse_up():
         handle = pilot.app.query_one(ResizeHandle)
         # Simulate drag state
         handle._dragging = True
-        handle.add_class("-dragging")
+        handle.add_class("dragging")
         # Simulate mouse up via on_leave safety path
         handle.on_leave.__func__(handle, None)  # type: ignore[attr-defined]
-        assert not handle.has_class("-dragging")
+        assert not handle.has_class("dragging")
         assert handle._dragging is False
 
 

@@ -27,6 +27,19 @@ class FlutterCraftApp(App):
     def on_mount(self) -> None:
         self.push_screen(DashboardScreen())
 
+    # ── Command palette ────────────────────────────────────────────────────────
+
+    def action_command_palette(self) -> None:
+        """Ctrl+P — open the command palette (stub until Phase 2)."""
+        try:
+            from fluttercraft.widgets.output_panel import OutputPanel
+
+            screen = self.query_one(DashboardScreen)
+            output = screen.query_one(OutputPanel)
+            output.write_info("Command palette coming in Phase 2")
+        except Exception:
+            pass
+
     # ── Theme ─────────────────────────────────────────────────────────────────
 
     def action_cycle_theme(self) -> None:
@@ -86,7 +99,10 @@ class FlutterCraftApp(App):
             output.write_info(f"Theme: {theme.name}")
 
         except Exception:
-            pass  # App may not be fully mounted yet
+            # Silently ignore during initial mount; widgets may not exist yet.
+            # After mount, errors here indicate a real bug — but we never crash.
+            if self.is_running:
+                self.log.warning("Theme application failed — widgets may not be mounted")
 
     @property
     def theme_manager(self) -> ThemeManager:

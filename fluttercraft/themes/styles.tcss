@@ -37,6 +37,7 @@ Screen {
 
 /* ── Command input ────────────────────────────────────────────── */
 #command-input {
+    height: auto;
     margin: 0 1 0 1;
 }
 
