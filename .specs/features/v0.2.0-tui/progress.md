@@ -1,8 +1,8 @@
 # FlutterCraft v0.2.0 — Progress Tracker
 
-> **Last Updated:** 2026-02-23
-> **Overall Progress:** 0/10 Phases (0%)
-> **Current Phase:** Not started
+> **Last Updated:** 2026-02-26
+> **Overall Progress:** 3/10 Phases (30%)
+> **Current Phase:** Phase 4 — Flutter Command Runner Plugin
 > **Branch:** `feature/v0.2.0-tui`
 
 ---
@@ -11,10 +11,10 @@
 
 | Phase | Name | Status | Steps Done | Pushed |
 |-------|------|--------|------------|--------|
-| 1 | TUI Shell & Core Infrastructure | NOT STARTED | 0/14 | No |
-| 2 | Plugin Architecture & Core Systems | NOT STARTED | 0/8 | No |
-| 3 | FVM Manager Plugin | NOT STARTED | 0/8 | No |
-| 4 | Flutter Command Runner Plugin | NOT STARTED | 0/11 | No |
+| 1 | TUI Shell & Core Infrastructure | COMPLETE | 14/14 | No |
+| 2 | Plugin Architecture & Core Systems | COMPLETE | 8/8 | No |
+| 3 | FVM Manager Plugin | COMPLETE | 8/8 | No |
+| 4 | Flutter Command Runner Plugin | COMPLETE | 11/11 | No |
 | 5 | Git Control Plugin | NOT STARTED | 0/10 | No |
 | 6 | Project Creator + Templates + Icons | NOT STARTED | 0/9 | No |
 | 7 | File Browser Plugin | NOT STARTED | 0/7 | No |
@@ -28,56 +28,56 @@
 
 ### Phase 1 — TUI Shell & Core Infrastructure
 
-- [ ] 1.1 Textual App skeleton
-- [ ] 1.2 Event bus
-- [ ] 1.3 Config manager
-- [ ] 1.4 State persistence
-- [ ] 1.5 Platform utils
-- [ ] 1.6 Header widget
-- [ ] 1.7 Footer widget
-- [ ] 1.8 Command input widget
-- [ ] 1.9 Output panel widget
-- [ ] 1.10 Sidebar widget
-- [ ] 1.11 Draggable panes
-- [ ] 1.12 Mouse support
-- [ ] 1.13 Theme integration
-- [ ] 1.14 Cross-platform
+- [x] 1.1 Textual App skeleton
+- [x] 1.2 Event bus
+- [x] 1.3 Config manager
+- [x] 1.4 State persistence
+- [x] 1.5 Platform utils
+- [x] 1.6 Header widget
+- [x] 1.7 Footer widget
+- [x] 1.8 Command input widget
+- [x] 1.9 Output panel widget
+- [x] 1.10 Sidebar widget
+- [x] 1.11 Draggable panes
+- [x] 1.12 Mouse support
+- [x] 1.13 Theme integration
+- [x] 1.14 Cross-platform
 
 ### Phase 2 — Plugin Architecture & Core Systems
 
-- [ ] 2.1 Plugin interface
-- [ ] 2.2 Plugin registry
-- [ ] 2.3 Plugin context
-- [ ] 2.4 Declarative modal system
-- [ ] 2.5 Command palette
-- [ ] 2.6 Keybinding registry
-- [ ] 2.7 Feature flags
-- [ ] 2.8 Notification system
+- [x] 2.1 Plugin interface
+- [x] 2.2 Plugin registry
+- [x] 2.3 Plugin context
+- [x] 2.4 Declarative modal system
+- [x] 2.5 Command palette
+- [x] 2.6 Keybinding registry
+- [x] 2.7 Feature flags
+- [x] 2.8 Notification system
 
 ### Phase 3 — FVM Manager Plugin
 
-- [ ] 3.1 Plugin shell
-- [ ] 3.2 Install/Uninstall FVM
-- [ ] 3.3 Releases browser
-- [ ] 3.4 Version install
-- [ ] 3.5 Version switching
-- [ ] 3.6 Version removal
-- [ ] 3.7 FVM doctor
-- [ ] 3.8 FVM config
+- [x] 3.1 Plugin shell
+- [x] 3.2 Install/Uninstall FVM
+- [x] 3.3 Releases browser
+- [x] 3.4 Version install
+- [x] 3.5 Version switching
+- [x] 3.6 Version removal
+- [x] 3.7 FVM doctor
+- [x] 3.8 FVM config
 
 ### Phase 4 — Flutter Command Runner Plugin
 
-- [ ] 4.1 Plugin shell
-- [ ] 4.2 flutter doctor
-- [ ] 4.3 flutter upgrade
-- [ ] 4.4 flutter devices
-- [ ] 4.5 flutter run
-- [ ] 4.6 flutter build
-- [ ] 4.7 flutter test
-- [ ] 4.8 flutter analyze
-- [ ] 4.9 flutter pub
-- [ ] 4.10 flutter clean
-- [ ] 4.11 flutter create
+- [x] 4.1 Plugin shell
+- [x] 4.2 flutter doctor
+- [x] 4.3 flutter upgrade
+- [x] 4.4 flutter devices
+- [x] 4.5 flutter run
+- [x] 4.6 flutter build
+- [x] 4.7 flutter test
+- [x] 4.8 flutter analyze
+- [x] 4.9 flutter pub
+- [x] 4.10 flutter clean
+- [x] 4.11 flutter create
 
 ### Phase 5 — Git Control Plugin
 
