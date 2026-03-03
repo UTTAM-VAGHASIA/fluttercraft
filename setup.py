@@ -15,7 +15,7 @@ setup(
         "pyfiglet",
         "colorama",
         "rich",
-        "textual>=0.85.0",
+        "textual>=0.85.0,<1.0.0",
         "rapidfuzz>=3.0.0",
         "watchdog>=3.0.0",
     ],

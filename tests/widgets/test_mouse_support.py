@@ -152,7 +152,7 @@ async def test_autocomplete_list_view_selected_sets_input():
         assert len(items) > 0
 
         # Fire Selected with index=0 — handler uses the index to look up _suggestions
-        lv.post_message(ListView.Selected(lv, items[0], 0))
+        lv.post_message(ListView.Selected(lv, items[0]))
         await pilot.pause()
 
         inp = pilot.app.query_one("#cmd-input-field", Input)
@@ -172,7 +172,7 @@ async def test_autocomplete_click_hides_list():
 
         lv = pilot.app.query_one("#cmd-autocomplete", ListView)
         items = [c for c in lv.children if isinstance(c, ListItem)]
-        lv.post_message(ListView.Selected(lv, items[0], 0))
+        lv.post_message(ListView.Selected(lv, items[0]))
         await pilot.pause()
 
         assert not lv.display
@@ -191,7 +191,7 @@ async def test_autocomplete_click_focuses_input():
 
         lv = pilot.app.query_one("#cmd-autocomplete", ListView)
         items = [c for c in lv.children if isinstance(c, ListItem)]
-        lv.post_message(ListView.Selected(lv, items[0], 0))
+        lv.post_message(ListView.Selected(lv, items[0]))
         await pilot.pause()
 
         inp = pilot.app.query_one("#cmd-input-field", Input)

@@ -81,10 +81,13 @@ class FlutterCraftHeader(Widget):
     @work(thread=True)
     def _detect_versions(self) -> None:
         """Blocking toolchain detection — runs in a thread pool worker."""
-        tools = detect_toolchain()
-        flutter_ver = tools["flutter"].version if tools["flutter"].available else "not found"
-        fvm_ver = tools["fvm"].version if tools["fvm"].available else "not found"
-        self.app.call_from_thread(self._apply_versions, flutter_ver, fvm_ver)
+        try:
+            tools = detect_toolchain()
+            flutter_ver = tools["flutter"].version if tools["flutter"].available else "not found"
+            fvm_ver = tools["fvm"].version if tools["fvm"].available else "not found"
+            self.app.call_from_thread(self._apply_versions, flutter_ver, fvm_ver)
+        except Exception:
+            pass  # Never let a background detection crash the app
 
     def _apply_versions(self, flutter_ver: str, fvm_ver: str) -> None:
         """Apply detected versions on the main thread."""
