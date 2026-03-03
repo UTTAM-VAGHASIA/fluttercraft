@@ -121,6 +121,17 @@ class Plugin(ABC):
         """
         return []
 
+    def handle_command(self, text: str) -> bool:
+        """Handle a text command typed in the command input.
+
+        Called by the dashboard when the user submits a command that is not a
+        built-in slash command. Return ``True`` if the command was handled,
+        ``False`` to let the dashboard show an "unknown command" message.
+
+        Override in plugins that accept text commands (e.g. ``flutter doctor``).
+        """
+        return False
+
     # ── Focus ─────────────────────────────────────────────────────────────────
 
     @property

@@ -58,7 +58,7 @@ class OutputPanel(Widget):
 
     DEFAULT_CSS = """
     OutputPanel {
-        height: 5;
+        height: 8;
         background: #16161e;
         border: round #3b4261;
         border-title-color: #9ece6a;

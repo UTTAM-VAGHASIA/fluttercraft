@@ -149,9 +149,17 @@ class _CraftInput(Input):
     def action_clear_input(self) -> None:
         parent = self.parent
         if isinstance(parent, CommandInput):
-            self.value = ""
-            parent._hide_autocomplete()
-            parent._history.reset_navigation()
+            if self.value:
+                # First Escape: clear text and autocomplete
+                self.value = ""
+                parent._hide_autocomplete()
+                parent._history.reset_navigation()
+            else:
+                # Second Escape (input already empty): go home
+                try:
+                    self.app.screen.action_go_home()
+                except Exception:
+                    pass
 
 
 class CommandInput(Widget):
@@ -177,10 +185,12 @@ class CommandInput(Widget):
     #cmd-input-field {
         background: #1a1b26;
         color: #a9b1d6;
+        border: none;
+        height: 1;
         padding: 0 2;
     }
     #cmd-input-field:focus {
-        background-tint: transparent;
+        border: none;
     }
     #cmd-autocomplete {
         height: auto;
@@ -219,11 +229,7 @@ class CommandInput(Widget):
 
     def compose(self) -> ComposeResult:
         yield ListView(id="cmd-autocomplete")
-        yield _CraftInput(
-            placeholder=self._placeholder,
-            id="cmd-input-field",
-            compact=True,
-        )
+        yield _CraftInput(placeholder=self._placeholder, id="cmd-input-field")
 
     def on_mount(self) -> None:
         self.query_one("#cmd-input-field", _CraftInput).focus()
@@ -250,8 +256,13 @@ class CommandInput(Widget):
     def on_list_view_selected(self, event: ListView.Selected) -> None:
         """Accept an autocomplete suggestion when the user clicks it."""
         event.stop()
-        idx = event.index
-        if idx is not None and 0 <= idx < len(self._suggestions):
+        # Find which suggestion was selected by matching the item's label text
+        lv = self.query_one("#cmd-autocomplete", ListView)
+        try:
+            idx = list(lv.children).index(event.item)
+        except ValueError:
+            return
+        if 0 <= idx < len(self._suggestions):
             inp = self.query_one("#cmd-input-field", _CraftInput)
             inp.value = self._suggestions[idx]
             inp.cursor_position = len(inp.value)

@@ -1,8 +1,8 @@
 # FlutterCraft v0.2.0 — Progress Tracker
 
-> **Last Updated:** 2026-02-26
-> **Overall Progress:** 3/10 Phases (30%)
-> **Current Phase:** Phase 4 — Flutter Command Runner Plugin
+> **Last Updated:** 2026-03-03
+> **Overall Progress:** 4/10 Phases (40%)
+> **Current Phase:** Phase 5 — Git Control Plugin
 > **Branch:** `feature/v0.2.0-tui`
 
 ---
@@ -78,6 +78,13 @@
 - [x] 4.9 flutter pub
 - [x] 4.10 flutter clean
 - [x] 4.11 flutter create
+
+### Cross-Phase Enhancements (done during Phase 3–4)
+
+- [x] Command registry wiring — slash commands (/help, /clear, /theme, /quit), plugin routing via `handle_command`
+- [x] Output panel resizable — mouse drag (OutputResizeHandle) + Ctrl+Up/Down keyboard shortcuts
+- [x] Live theme preview — theme picker (Ctrl+T) applies theme on every Up/Down, restores original on Escape
+- [x] Navigation — Escape to go home (double-Escape from input), digit shortcuts 0–7 from command input
 
 ### Phase 5 — Git Control Plugin
 
