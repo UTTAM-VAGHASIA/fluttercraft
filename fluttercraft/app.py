@@ -14,6 +14,8 @@ from fluttercraft.plugins.flutter_commands import FlutterCommandsPlugin
 from fluttercraft.plugins.fvm_manager import FvmManagerPlugin
 from fluttercraft.plugins.git_control import GitControlPlugin
 from fluttercraft.plugins.project_creator import ProjectCreatorPlugin
+from fluttercraft.plugins.workspace import WorkspacePlugin
+from fluttercraft.plugins.cli_adapter import CLIAdapterPlugin
 from fluttercraft.screens.dashboard import DashboardScreen
 from fluttercraft.themes.theme_manager import ThemeDefinition, ThemeManager
 from fluttercraft.widgets.notifications import Notifier
@@ -46,6 +48,8 @@ class FlutterCraftApp(App):
         self._plugin_registry.register(GitControlPlugin())
         self._plugin_registry.register(ProjectCreatorPlugin())
         self._plugin_registry.register(FileBrowserPlugin())
+        self._plugin_registry.register(WorkspacePlugin())
+        self._plugin_registry.register(CLIAdapterPlugin())
         self.notifier = Notifier(self)
 
         # Register built-in global keybindings

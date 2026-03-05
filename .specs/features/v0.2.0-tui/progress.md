@@ -1,8 +1,8 @@
 # FlutterCraft v0.2.0 — Progress Tracker
 
-> **Last Updated:** 2026-03-03
-> **Overall Progress:** 6/10 Phases (60%)
-> **Current Phase:** Phase 7 — File Browser Plugin
+> **Last Updated:** 2026-03-05
+> **Overall Progress:** 9/10 Phases (90%)
+> **Current Phase:** Phase 10 — Polish & Release
 > **Branch:** `feature/v0.2.0-tui`
 
 ---
@@ -17,9 +17,9 @@
 | 4 | Flutter Command Runner Plugin | COMPLETE | 11/11 | No |
 | 5 | Git Control Plugin | COMPLETE | 10/10 | No |
 | 6 | Project Creator + Templates + Icons | COMPLETE | 9/9 | No |
-| 7 | File Browser Plugin | NOT STARTED | 0/7 | No |
-| 8 | Workspace Manager Plugin | NOT STARTED | 0/7 | No |
-| 9 | CLI Adapter Plugin | NOT STARTED | 0/12 | No |
+| 7 | File Browser Plugin | COMPLETE | 7/7 | No |
+| 8 | Workspace Manager Plugin | COMPLETE | 7/7 | No |
+| 9 | CLI Adapter Plugin | COMPLETE | 12/12 | No |
 | 10 | Polish & Release v0.2.0 | NOT STARTED | 0/9 | No |
 
 ---
@@ -113,38 +113,38 @@
 
 ### Phase 7 — File Browser Plugin
 
-- [ ] 7.1 Tree view
-- [ ] 7.2 File preview
-- [ ] 7.3 Quick open
-- [ ] 7.4 File operations
-- [ ] 7.5 Open in editor
-- [ ] 7.6 Git integration
-- [ ] 7.7 Filter/search
+- [x] 7.1 Tree view
+- [x] 7.2 File preview
+- [x] 7.3 Quick open
+- [x] 7.4 File operations
+- [x] 7.5 Open in editor
+- [x] 7.6 Git integration
+- [x] 7.7 Filter/search
 
 ### Phase 8 — Workspace Manager Plugin
 
-- [ ] 8.1 Project list
-- [ ] 8.2 Project switching
-- [ ] 8.3 Project discovery
-- [ ] 8.4 Per-project state
-- [ ] 8.5 Per-project theme
-- [ ] 8.6 Recent projects
-- [ ] 8.7 Project health
+- [x] 8.1 Project list
+- [x] 8.2 Project switching
+- [x] 8.3 Project discovery
+- [x] 8.4 Per-project state
+- [x] 8.5 Per-project theme
+- [x] 8.6 Recent projects
+- [x] 8.7 Project health
 
 ### Phase 9 — CLI Adapter Plugin
 
-- [ ] 9.1 Adapter interface
-- [ ] 9.2 Auto-detection
-- [ ] 9.3 Claude Code adapter
-- [ ] 9.4 Gemini CLI adapter
-- [ ] 9.5 OpenCode adapter
-- [ ] 9.6 CLI panel
-- [ ] 9.7 Session management
-- [ ] 9.8 Session persistence
-- [ ] 9.9 Session history
-- [ ] 9.10 Conversation viewer
-- [ ] 9.11 Context auto-passing
-- [ ] 9.12 Embedded terminal
+- [x] 9.1 Adapter interface
+- [x] 9.2 Auto-detection
+- [x] 9.3 Claude Code adapter
+- [x] 9.4 Gemini CLI adapter
+- [x] 9.5 OpenCode adapter
+- [x] 9.6 CLI panel
+- [x] 9.7 Session management
+- [x] 9.8 Session persistence
+- [x] 9.9 Session history
+- [x] 9.10 Conversation viewer
+- [x] 9.11 Context auto-passing
+- [x] 9.12 Embedded terminal
 
 ### Phase 10 — Polish & Release
 
