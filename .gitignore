@@ -196,3 +196,21 @@ cython_debug/
 
 fluttercraft.prd.md
 docs/publish-to-pypi.md
+
+# Debug / scratch test files
+test_bare.py
+test_debug.py
+test_debug2.py
+test_debug3.py
+test_debug4.py
+
+# Sample Flutter projects created during development/testing
+my_test_app/
+*_test_app/
+
+# Pasted screenshots / images (not part of source)
+Pasted image.png
+"Pasted image.png"
+
+# FlutterCraft runtime data (user-specific)
+~/.fluttercraft/

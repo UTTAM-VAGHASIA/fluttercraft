@@ -17,6 +17,7 @@ from fluttercraft.plugins.project_creator import ProjectCreatorPlugin
 from fluttercraft.plugins.workspace import WorkspacePlugin
 from fluttercraft.plugins.cli_adapter import CLIAdapterPlugin
 from fluttercraft.screens.dashboard import DashboardScreen
+from fluttercraft.screens.splash import SplashScreen
 from fluttercraft.themes.theme_manager import ThemeDefinition, ThemeManager
 from fluttercraft.widgets.notifications import Notifier
 
@@ -30,6 +31,7 @@ class FlutterCraftApp(App):
         Binding("ctrl+q", "quit", "Quit"),
         Binding("ctrl+p", "command_palette", "Command Palette", show=False),
         Binding("ctrl+t", "cycle_theme", "Theme", show=False),
+        Binding("ctrl+comma", "open_settings", "Settings", show=False),
     ]
 
     def __init__(self, **kwargs) -> None:
@@ -72,7 +74,22 @@ class FlutterCraftApp(App):
         )
         self._plugin_registry.init_all(ctx)
         self._plugin_registry.start_all()
-        self.push_screen(DashboardScreen())
+        self.push_screen(SplashScreen())
+
+    def on_exception(self, error: Exception) -> None:
+        """Log unhandled exceptions to ~/.fluttercraft/error.log without crashing."""
+        import os
+        import traceback
+        try:
+            log_dir = os.path.join(os.path.expanduser("~"), ".fluttercraft")
+            os.makedirs(log_dir, exist_ok=True)
+            log_path = os.path.join(log_dir, "error.log")
+            with open(log_path, "a", encoding="utf-8") as f:
+                import time
+                f.write(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}]\n")
+                f.write(traceback.format_exc())
+        except Exception:
+            pass
 
     # ── Command palette ────────────────────────────────────────────────────────
 
@@ -114,6 +131,13 @@ class FlutterCraftApp(App):
                 action()
             except Exception:
                 pass
+
+    # ── Settings ──────────────────────────────────────────────────────────────
+
+    def action_open_settings(self) -> None:
+        """Ctrl+, — open the settings modal."""
+        from fluttercraft.screens.settings import SettingsScreen
+        self.push_screen(SettingsScreen())
 
     # ── Theme ─────────────────────────────────────────────────────────────────
 

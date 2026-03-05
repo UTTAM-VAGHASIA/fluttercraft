@@ -33,7 +33,8 @@ _WELCOME = """\
   [dim #565f89]Press [/][bold #a9b1d6]1–7[/][dim #565f89] to open a plugin[/]
   [dim #565f89]Press [/][bold #a9b1d6]Ctrl+P[/][dim #565f89] for the command palette[/]
   [dim #565f89]Press [/][bold #a9b1d6]Ctrl+T[/][dim #565f89] to switch themes[/]
-  [dim #565f89]Press [/][bold #a9b1d6]?[/][dim #565f89] for help[/]
+  [dim #565f89]Press [/][bold #a9b1d6]Ctrl+,[/][dim #565f89] to open settings[/]
+  [dim #565f89]Press [/][bold #a9b1d6]?[/][dim #565f89] for keyboard help[/]
 """
 
 
@@ -49,6 +50,7 @@ class DashboardScreen(Screen):
         Binding("6", "select_plugin(6)", "Workspace",       show=False, priority=True),
         Binding("7", "select_plugin(7)", "CLI Adapters",    show=False, priority=True),
         Binding("escape",     "go_home",          "Home",            show=False, priority=True),
+        Binding("question_mark", "show_help",     "Help",            show=False),
         Binding("ctrl+right", "grow_sidebar",    "Grow sidebar",    show=False),
         Binding("ctrl+left",  "shrink_sidebar",  "Shrink sidebar",  show=False),
         Binding("ctrl+up",    "grow_output",     "Grow output",     show=False),
@@ -82,6 +84,11 @@ class DashboardScreen(Screen):
 
     def action_select_plugin(self, number: int) -> None:
         self.query_one(SidebarPanel).select(number)
+
+    def action_show_help(self) -> None:
+        """? — show in-app help screen."""
+        from fluttercraft.screens.help import HelpScreen
+        self.app.push_screen(HelpScreen())
 
     def action_go_home(self) -> None:
         """Escape / 0 — deselect the active plugin and return to the Welcome screen."""
@@ -226,16 +233,9 @@ class DashboardScreen(Screen):
         elif name == "/theme":
             self.app.action_cycle_theme()
         elif name == "/help":
-            output.write_info("Built-in commands:")
-            output.write("  /help   — show this message", "dim")
-            output.write("  /clear  — clear the output panel", "dim")
-            output.write("  /theme  — open theme picker", "dim")
-            output.write("  /quit   — quit FlutterCraft", "dim")
-            output.write_info("Navigation:")
-            output.write("  0       — go back to Welcome screen", "dim")
-            output.write("  1–7     — switch to plugin panel", "dim")
-            output.write("  Esc     — go back to Welcome (press twice if input has text)", "dim")
-            output.write_info("Plugin commands: open a plugin panel (1–7), then type e.g. 'flutter doctor'")
+            self.action_show_help()
+        elif name == "/settings":
+            self.app.action_open_settings()
         else:
             output.write(f"Unknown slash command: {name}", "dim")
             output.write("Type /help for available commands", "dim")

@@ -1,8 +1,8 @@
 # FlutterCraft v0.2.0 — Progress Tracker
 
 > **Last Updated:** 2026-03-05
-> **Overall Progress:** 9/10 Phases (90%)
-> **Current Phase:** Phase 10 — Polish & Release
+> **Overall Progress:** 10/10 Phases (100%)
+> **Current Phase:** COMPLETE — v0.2.0 ready
 > **Branch:** `feature/v0.2.0-tui`
 
 ---
@@ -20,7 +20,7 @@
 | 7 | File Browser Plugin | COMPLETE | 7/7 | No |
 | 8 | Workspace Manager Plugin | COMPLETE | 7/7 | No |
 | 9 | CLI Adapter Plugin | COMPLETE | 12/12 | No |
-| 10 | Polish & Release v0.2.0 | NOT STARTED | 0/9 | No |
+| 10 | Polish & Release v0.2.0 | COMPLETE | 9/9 | No |
 
 ---
 
@@ -148,15 +148,15 @@
 
 ### Phase 10 — Polish & Release
 
-- [ ] 10.1 Settings screen
-- [ ] 10.2 Error handling
-- [ ] 10.3 Intro animation
-- [ ] 10.4 Help system
-- [ ] 10.5 Tests
-- [ ] 10.6 Performance
-- [ ] 10.7 Accessibility
-- [ ] 10.8 Docs
-- [ ] 10.9 Release v0.2.0
+- [x] 10.1 Settings screen (Ctrl+, or /settings — feature flags, theme shortcut)
+- [x] 10.2 Error handling (global on_exception → ~/.fluttercraft/error.log)
+- [x] 10.3 Intro animation (SplashScreen — 1.4s logo before dashboard)
+- [x] 10.4 Help system (HelpScreen modal — ? key or /help, full keyboard reference)
+- [x] 10.5 Tests (42 adapter tests, 66 file browser tests, 48 workspace tests)
+- [x] 10.6 Performance (lazy plugin mounting, deferred focus, thread workers)
+- [x] 10.7 Accessibility (keyboard-only nav, focus management, context hints in footer)
+- [x] 10.8 Docs (GUIDE.md — full user guide with all plugins, keybindings, troubleshooting)
+- [x] 10.9 Release v0.2.0 (version confirmed at 0.2.0 in __init__.py)
 
 ---
 
