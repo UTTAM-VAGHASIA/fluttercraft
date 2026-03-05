@@ -9,6 +9,7 @@ from fluttercraft.core.features import FeatureFlags
 from fluttercraft.core.keymap import KeyBinding, KeymapRegistry
 from fluttercraft.core.state import StateManager
 from fluttercraft.plugins.base import PluginContext, PluginRegistry
+from fluttercraft.plugins.file_browser import FileBrowserPlugin
 from fluttercraft.plugins.flutter_commands import FlutterCommandsPlugin
 from fluttercraft.plugins.fvm_manager import FvmManagerPlugin
 from fluttercraft.plugins.git_control import GitControlPlugin
@@ -44,6 +45,7 @@ class FlutterCraftApp(App):
         self._plugin_registry.register(FlutterCommandsPlugin())
         self._plugin_registry.register(GitControlPlugin())
         self._plugin_registry.register(ProjectCreatorPlugin())
+        self._plugin_registry.register(FileBrowserPlugin())
         self.notifier = Notifier(self)
 
         # Register built-in global keybindings
