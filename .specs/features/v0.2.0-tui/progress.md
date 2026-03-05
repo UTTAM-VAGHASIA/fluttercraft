@@ -1,8 +1,8 @@
 # FlutterCraft v0.2.0 — Progress Tracker
 
 > **Last Updated:** 2026-03-03
-> **Overall Progress:** 5/10 Phases (50%)
-> **Current Phase:** Phase 6 — Project Creator + Templates + Icons
+> **Overall Progress:** 6/10 Phases (60%)
+> **Current Phase:** Phase 7 — File Browser Plugin
 > **Branch:** `feature/v0.2.0-tui`
 
 ---
@@ -16,7 +16,7 @@
 | 3 | FVM Manager Plugin | COMPLETE | 8/8 | No |
 | 4 | Flutter Command Runner Plugin | COMPLETE | 11/11 | No |
 | 5 | Git Control Plugin | COMPLETE | 10/10 | No |
-| 6 | Project Creator + Templates + Icons | NOT STARTED | 0/9 | No |
+| 6 | Project Creator + Templates + Icons | COMPLETE | 9/9 | No |
 | 7 | File Browser Plugin | NOT STARTED | 0/7 | No |
 | 8 | Workspace Manager Plugin | NOT STARTED | 0/7 | No |
 | 9 | CLI Adapter Plugin | NOT STARTED | 0/12 | No |
@@ -101,15 +101,15 @@
 
 ### Phase 6 — Project Creator + Templates + Icons
 
-- [ ] 6.1 Wizard screen
-- [ ] 6.2 Platform detection
-- [ ] 6.3 Template registry
-- [ ] 6.4 State management setup
-- [ ] 6.5 Folder structure generation
-- [ ] 6.6 App icon setup
-- [ ] 6.7 Splash screen setup
-- [ ] 6.8 Post-creation
-- [ ] 6.9 Template preview
+- [x] 6.1 Multi-step wizard (name → org → platforms → template → features → review)
+- [x] 6.2 Platform auto-detection (Android SDK, Xcode, Chrome, Linux/Windows)
+- [x] 6.3 Template registry (simple, bloc, riverpod, provider, getx, mobx, mvvm, clean_arch)
+- [x] 6.4 State management deps auto-added to pubspec.yaml
+- [x] 6.5 Folder structure per template (with .gitkeep)
+- [x] 6.6 App icon setup — flutter_launcher_icons config
+- [x] 6.7 Splash screen setup — flutter_native_splash config
+- [x] 6.8 Post-creation guide + open in editor (E key)
+- [x] 6.9 Template preview (P key — folder tree + deps)
 
 ### Phase 7 — File Browser Plugin
 
