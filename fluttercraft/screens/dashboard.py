@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from textual.app import ComposeResult
 from textual.widget import Widget
 from textual.binding import Binding
@@ -46,7 +48,7 @@ class DashboardScreen(Screen):
         Binding("5", "select_plugin(5)", "File Browser",    show=False, priority=True),
         Binding("6", "select_plugin(6)", "Workspace",       show=False, priority=True),
         Binding("7", "select_plugin(7)", "CLI Adapters",    show=False, priority=True),
-        Binding("escape",     "go_home",          "Home",            show=False),
+        Binding("escape",     "go_home",          "Home",            show=False, priority=True),
         Binding("ctrl+right", "grow_sidebar",    "Grow sidebar",    show=False),
         Binding("ctrl+left",  "shrink_sidebar",  "Shrink sidebar",  show=False),
         Binding("ctrl+up",    "grow_output",     "Grow output",     show=False),
@@ -237,6 +239,28 @@ class DashboardScreen(Screen):
         else:
             output.write(f"Unknown slash command: {name}", "dim")
             output.write("Type /help for available commands", "dim")
+
+    # ── Workspace project switching ───────────────────────────────────────────
+
+    def on_workspace_widget_project_switched(self, event: Any) -> None:
+        """When user switches project in Workspace — update file browser & git."""
+        project = event.project
+        output = self.query_one(OutputPanel)
+        output.write_info(f"Project: {project.name}  ({project.path})")
+
+        # Update file browser root if mounted
+        if "files" in self._mounted_plugins:
+            try:
+                self._mounted_plugins["files"].set_root(project.path)
+            except Exception:
+                pass
+
+        # Update git control working dir if mounted
+        if "git" in self._mounted_plugins:
+            try:
+                self._mounted_plugins["git"]._check_repo_and_load()
+            except Exception:
+                pass
 
     # ── Sidebar resize ────────────────────────────────────────────────────────
 
