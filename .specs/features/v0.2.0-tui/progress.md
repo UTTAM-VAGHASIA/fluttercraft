@@ -1,8 +1,8 @@
 # FlutterCraft v0.2.0 — Progress Tracker
 
 > **Last Updated:** 2026-03-03
-> **Overall Progress:** 4/10 Phases (40%)
-> **Current Phase:** Phase 5 — Git Control Plugin
+> **Overall Progress:** 5/10 Phases (50%)
+> **Current Phase:** Phase 6 — Project Creator + Templates + Icons
 > **Branch:** `feature/v0.2.0-tui`
 
 ---
@@ -15,7 +15,7 @@
 | 2 | Plugin Architecture & Core Systems | COMPLETE | 8/8 | No |
 | 3 | FVM Manager Plugin | COMPLETE | 8/8 | No |
 | 4 | Flutter Command Runner Plugin | COMPLETE | 11/11 | No |
-| 5 | Git Control Plugin | NOT STARTED | 0/10 | No |
+| 5 | Git Control Plugin | COMPLETE | 10/10 | No |
 | 6 | Project Creator + Templates + Icons | NOT STARTED | 0/9 | No |
 | 7 | File Browser Plugin | NOT STARTED | 0/7 | No |
 | 8 | Workspace Manager Plugin | NOT STARTED | 0/7 | No |
@@ -88,16 +88,16 @@
 
 ### Phase 5 — Git Control Plugin
 
-- [ ] 5.1 Plugin shell
-- [ ] 5.2 Status display
-- [ ] 5.3 Diff viewer
-- [ ] 5.4 Stage/Unstage
-- [ ] 5.5 Commit
-- [ ] 5.6 Push/Pull
-- [ ] 5.7 Branch management
-- [ ] 5.8 Log viewer
-- [ ] 5.9 Stash
-- [ ] 5.10 File watching
+- [x] 5.1 Plugin shell — branch bar + file list (left) + diff viewer (right)
+- [x] 5.2 Status display — staged/unstaged/untracked with icons and colors
+- [x] 5.3 Diff viewer — colorized unified diff, auto-shows on navigation
+- [x] 5.4 Stage/Unstage — per-file (s/u keys), bulk stage-all (a key)
+- [x] 5.5 Commit — modal with message input and amend option
+- [x] 5.6 Push/Pull/Fetch — with confirmations and rebase option for pull
+- [x] 5.7 Branch management — list (b), create (n), switch/delete via handle_command
+- [x] 5.8 Log viewer — recent commits with hash/author/date/message (l key)
+- [x] 5.9 Stash — push (z), pop (Z), list via handle_command
+- [x] 5.10 File watching — watchdog observer + 10s polling fallback
 
 ### Phase 6 — Project Creator + Templates + Icons
 
